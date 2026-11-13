@@ -1,5 +1,4 @@
 .env
 __pycache__/
-raw/seoul_rent/*.zip
 # 카카오 로컬 응답 원본은 저장·재배포하지 않음 (시연용 로컬 캐시만)
 processed/step3_homes/cache.json

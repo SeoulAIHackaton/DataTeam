@@ -34,35 +34,10 @@ def main():
     problems = 0
     print("=== .env 키 ===")
     load_env()
-    for k in ["DATA_GO_KR_API_KEY", "YOUTHCENTER_API_KEY", "SEOUL_OPEN_API_KEY"]:
+    for k in ["DATA_GO_KR_API_KEY", "YOUTHCENTER_API_KEY"]:
         problems += not line(bool(os.environ.get(k, "").strip()), k)
 
     print("\n=== STEP 2 ===")
-    api = sorted(ROOT.glob("raw/seoul_rent/seoul_rent_api_*.json"))
-    years = {}
-    for f in api:
-        n, d = count_json(f, "row")
-        m = d.get("meta", {})
-        years[f.name] = (m.get("RCPT_YR"), m.get("CGG_CD"), n, m.get("list_total_count"))
-    for name, (yr, gu, n, tot) in years.items():
-        full = str(tot) == str(n)
-        problems += not line(full, f"전월세 API {name}", f"접수연도 {yr}, 자치구 {gu}, {n:,}/{tot}건")
-    if any(gu not in (None, "전체") for _, gu, _, _ in years.values()) and any(gu == "전체" for _, gu, _, _ in years.values()):
-        problems += not line(False, "자치구 테스트 파일이 서울 전체 파일과 같이 있음", "중복 집계됨 → 테스트 파일 삭제 후 build_rent_median 재실행")
-    if not api:
-        problems += not line(False, "전월세 API 수집본 없음", "python scripts/collect_seoul_rent.py --year 2025 2026")
-
-    p = ROOT / "processed/rent_median_seoul.json"
-    if p.exists():
-        n, d = count_json(p, "table")
-        t = d["table"]
-        gus = {r["gu"] for r in t}
-        bad = sum(1 for r in t if r["area_bin"] == "전체" and r["dong"] != "(구 전체)" and not r["sample_ok"])
-        problems += not line(len(gus) == 25, "rent_median_seoul.json",
-                             f"{n}행, 자치구 {len(gus)}/25, 기간 {d['meta'].get('period')}, 표본부족 동 {bad}곳")
-    else:
-        problems += not line(False, "rent_median_seoul.json 없음", "python scripts/build_rent_median.py")
-
     for f, key, want in [("processed/loan_products.json", "products", 3),
                          ("processed/sh_youth_housing.json", "complexes", 77)]:
         p = ROOT / f
