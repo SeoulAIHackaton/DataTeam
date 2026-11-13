@@ -19,7 +19,7 @@ firsthome_data/
 ├── scripts/              # 수집·가공·계산·AI 코드
 ├── web/                  # index.html (최종 화면) · kakaomap_test.html
 ├── docs/                 # 기능 CRUD 명세 (엑셀) · 서비스 소개 (PDF)
-└── archive/              # 빠진 "주거 전략" 단계 코드·결과, 예전 4단계 프로토타입
+└── archive/              # 지금 안 쓰는 데이터·코드 보관 (주거 전략 단계, 전월세 시세·전환율, 예전 프로토타입)
 ```
 
 금액 단위는 따로 적지 않으면 **만원**이에요.
@@ -34,10 +34,15 @@ firsthome_data/
 - ✅ **키로 수집 완료**: API 키로 실제 데이터를 받아 저장한 것
 - ⬜ **아직**: 신청·수집 전
 
+단계 표시
+- **STEP 1·2·3**: 지금 서비스에서 쓰는 것
+- **보관**: 안 써서 `archive/`로 옮긴 것 → [5-1. archive 폴더](#5-1-archive-폴더)
+- **보류**: 지금은 안 쓰지만 다시 넣을 수 있어서 `raw/`·`scripts/`에 그대로 둔 것 (현재 LH)
+
 | 단계 | 데이터 | 방식 | 상태 | 쓰는 곳 | 파일 |
 |---|---|---|---|---|---|
 | STEP 1 | 사용자 입력 | LLM 구조화 | – | 프로필 JSON (STEP 2·3에서 재사용) | `processed/profile_demo.json` |
-| 보류 | 서울시 부동산 전월세가 | 서울 열린데이터광장 API | ✅ 수집·가공 | **"어디서 찾아볼까?" 동네 추천에 쓸 예정** (집 하나 가격 비교는 안 함) | `raw/seoul_rent/` → `processed/rent_median_seoul.*` |
+| 보관 | 서울시 부동산 전월세가 | 서울 열린데이터광장 API | ✅ 수집·가공 | 안 씀 (원본 없음, 가공본만 보관) | `archive/processed/rent_median_seoul.*` |
 | STEP 2 | 주택도시기금 대출 3종 | 웹 원문 | 📥 | RAG 상담 (대출 조건·한도 질문) | `processed/loan_products.json` |
 | STEP 2 | SH 청년안심주택 1·2차 공고 | PDF | 📥 | RAG 상담 (입주 자격·일정 질문) | `processed/sh_youth_housing.json` |
 | 보관 | 서울시 전월세 전환율 | 웹 | 📥 | 주거 전략 단계용 → 안 씀 | `archive/processed/rent_conversion_rate_2026Q3.csv` |
@@ -55,7 +60,6 @@ firsthome_data/
 |---|---|---|---|
 | 공공데이터포털 인증키 | data.go.kr | 정부24 혜택, LH 공고 목록·공급정보 (나중에 약국도 같은 키로 신청) | `DATA_GO_KR_API_KEY` |
 | 온통청년 API 키 | youthcenter.go.kr | 청년정책 목록 | `YOUTHCENTER_API_KEY` |
-| 서울 열린데이터광장 인증키 | data.seoul.go.kr | 전월세가 Open API | `SEOUL_OPEN_API_KEY` |
 | 카카오 | developers.kakao.com | 로컬(REST) · 지도(JavaScript 키는 HTML에) | `KAKAO_REST_API_KEY` |
 | ODsay | lab.odsay.com | 대중교통 길찾기 (서버 IP 등록 필요) | `ODSAY_API_KEY` |
 | LLM | (팀에서 정하기) | AI 설명 · RAG 답변 | `LLM_API_KEY` |
@@ -67,9 +71,11 @@ firsthome_data/
 ## 1. 대출 · 청년주택 · 시세 데이터
 
 > 3단계 개편 후: 원래 "주거 전략" 단계용이던 데이터예요. 지금은 **대출 3종·SH 공고는 RAG 색인**(STEP 2 AI 상담)에 들어가고,
-> **전월세 시세는 "어디서 찾아볼까?" 동네 추천용으로 보류**, 전환율·LH는 쓰지 않아요. 아래 설명의 "전략 A·B·C"는 예전 기준이에요.
+> 전월세 시세·전환율·LH는 쓰지 않아요 (전월세 시세·전환율은 `archive/`에 보관). 아래 설명의 "전략 A·B·C"는 예전 기준이에요.
 
-### 1-1. 서울시 부동산 전월세가 🔑
+### 1-1. 서울시 부동산 전월세가 🔑 (보관: `archive/`, 지금은 안 씀)
+> 수집·가공 스크립트는 `archive/scripts/collect_seoul_rent.py`, `build_rent_median.py`로 옮겼어요. 다시 쓰려면 `scripts/`로 되돌려 실행해요.
+
 - 출처: 서울 열린데이터광장 「서울시 부동산 전월세가 정보」(OA-21276)
 - **수집은 Open API로 해요** (최신 계약까지 들어옴). 2025년 파일 다운로드본은 API가 안 될 때의 대안이에요.
   - 호출: `http://openapi.seoul.go.kr:8088/{KEY}/json/tbLnOpendataRentV/{시작}/{끝}/{접수연도}/{자치구코드}`
@@ -175,7 +181,7 @@ firsthome_data/
 - 공고부터 입주까지 약 6개월 → 전략 C의 "대기 중 원가 부담" 구간이에요.
 - `note`가 붙은 행은 PDF 표 배치로 단지를 추정한 것이라, 시연에 쓰려면 원문과 대조해야 해요. 유벤투스 240은 B 월세가 A와 같게 적혀 있어요(공고 오기일 수 있음).
 
-### 1-4. 서울시 전월세 전환율 📥 → `processed/rent_conversion_rate_2026Q3.csv`
+### 1-4. 서울시 전월세 전환율 📥 → `archive/processed/rent_conversion_rate_2026Q3.csv` (보관, 지금은 안 씀)
 - 출처: 서울주택 정보마당(housinginfo.seoul.go.kr), 2026년 3분기
 
 | 컬럼 | 예시 |
@@ -417,8 +423,6 @@ copy .env.example .env                             # 윈도우 (맥은 cp .env.e
 python scripts/collect_youthcenter.py              # 온통청년 전체 약 3,960건 (100건씩 40번 호출)
 python scripts/collect_gov24.py                    # 정부24 전체 약 10,942건 (목록 + 지원조건)
 python scripts/filter_seoul_housing.py             # 서울 청년 주거 정책만 골라 processed/에 저장 (나이 조건 없이)
-python scripts/collect_seoul_rent.py --year 2025 2026  # 서울 전월세 신고 (건수가 많아 오래 걸릴 수 있음)
-python scripts/build_rent_median.py                # 전월세 → 동네별 원룸 시세 중앙값
 python scripts/build_sh_youth_housing.py           # (선택) SH JSON 재생성, 이미 processed/에 있음
 ```
 
@@ -439,8 +443,6 @@ python scripts/collect_lh.py --no-supply           # 공급정보 API 활용신�
 | `collect_youthcenter.py` | 온통청년 전체 페이지 수집, 중복 제거 |
 | `collect_gov24.py` | 정부24 serviceList·supportConditions 전체 수집 |
 | `filter_seoul_housing.py` | 서울·주거·나이 기준으로 걸러 processed/에 JSON·CSV 저장 |
-| `collect_seoul_rent.py` | 서울 전월세가 Open API 수집 (연도·자치구 지정 가능) |
-| `build_rent_median.py` | 전월세 원본 → 동·구별 원룸 전세/월세 중앙값 |
 | `build_sh_youth_housing.py` | SH 공고 표 데이터로 `sh_youth_housing.json` 재생성 |
 | `collect_lh.py` | LH 서울 임대 공고 목록 + 공고별 공급정보 수집 (공급정보 실패해도 목록은 저장) |
 
@@ -450,7 +452,6 @@ python scripts/collect_lh.py --no-supply           # 공급정보 API 활용신�
 
 | 경로 | 내용 | 비고 |
 |---|---|---|
-| `raw/seoul_rent/` | 서울시 전월세가 API 수집본 (또는 파일 다운로드 zip) | 스크립트 실행 후 생김 |
 | `raw/loan/` | 대출 상품 원문 txt 3개 | |
 | `raw/sh_notice/` | SH 1·2차 공고 PDF | |
 | `raw/youthcenter/` | 온통청년 전체 수집본 | 스크립트 실행 후 생김 |
@@ -458,6 +459,22 @@ python scripts/collect_lh.py --no-supply           # 공급정보 API 활용신�
 | `raw/lh/` | LH 공고 목록·공급정보 수집본 | 2026-11-10 수집분 포함 |
 | `raw/api_samples/` | API 테스트 응답 (LH, 정부24, 온통청년) | 구조 확인용 |
 | `processed/` | 가공본 + 단계별 결과 | 서비스에서 바로 사용 |
+
+- LH(`raw/lh/`, `scripts/collect_lh.py`)는 **보류**예요. 지금은 안 쓰지만 다시 넣을 수 있어서 그대로 뒀어요.
+
+### 5-1. archive 폴더
+
+지금 서비스에서 **안 쓰는** 데이터·코드를 지우지 않고 모아 둔 곳이에요. 서비스·`check_data.py`는 이 폴더를 읽지 않아요 (전환율 파일 존재 확인만 해요).
+
+| 경로 | 내용 | 빠진 이유 |
+|---|---|---|
+| `archive/processed/rent_median_seoul.json` / `.csv` | 서울 동네별 원룸 전월세 중앙값 (1-1) | 동네 추천 기능을 안 만들기로 함. 원본(API 수집본·zip)은 없음 |
+| `archive/scripts/collect_seoul_rent.py`, `build_rent_median.py` | 위 데이터 수집·가공 스크립트 | 다시 쓰려면 `scripts/`로 옮겨서 실행 (`common.py`를 불러옴) |
+| `archive/processed/rent_conversion_rate_2026Q3.csv` | 서울 전월세 전환율 (1-4) | 주거 전략 단계 삭제 |
+| `archive/processed/step2_strategy/` | 주거 전략 추천·설명 결과 | 주거 전략 단계 삭제 |
+| `archive/scripts/strategy.py` | 주거 전략 계산 코드 | 주거 전략 단계 삭제 (경로가 `processed/` 기준이라 그대로는 안 돌아감) |
+| `archive/prototype_4단계.html` | 예전 4단계 화면 프로토타입 | 3단계로 개편 |
+| `docs/archive/` | 예전 작업 정리 PDF | 3단계 개편 전 문서 |
 
 ---
 
@@ -514,7 +531,7 @@ firsthome_data/
 ├── scripts/          수집·가공·계산·AI 코드
 ├── web/              index.html (최종 화면) · kakaomap_test.html (카카오 지도 테스트)
 ├── docs/             기능 CRUD 명세(엑셀, 3단계 번호) · 서비스 소개(PDF) · archive/ 예전 작업 정리
-├── archive/          빠진 "주거 전략" 단계 (strategy.py, 결과, 전환율) · 예전 4단계 프로토타입
+├── archive/          안 쓰는 것 보관: 주거 전략 단계 (strategy.py, 결과, 전환율) · 전월세 시세 · 예전 4단계 프로토타입
 └── raw/              원본 (용량이 커서 압축본에는 빠져 있음 → 기존 raw 폴더를 그대로 옮겨 넣기)
 ```
 - 이 정리본에는 **키가 하나도 들어 있지 않아요.** 키는 `.env`(REST·ODsay·AI)와 `web/index.html`의 `JS_KEY` 자리(카카오 JavaScript 키)에만 넣어요.
