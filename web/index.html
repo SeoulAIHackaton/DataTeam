@@ -1,0 +1,1569 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>첫집 내비 프로토타입</title>
+<style>
+:root{
+  --ink:#191f28; --sub:#6b7684; --mute:#9aa3ad; --line:#e8ebee; --bg:#f7f8fa; --white:#fff;
+  --pri:#2f6bff; --pri-d:#1f55d9; --pri-s:#eef3ff;
+  --warn:#e8590c; --warn-s:#fff4e6;
+  /* 보조색: 보라(AI) · 초록(좋음·지금 가능) · 주황(주의·마감) — 집 A/B/C도 이 세 색 */
+  --purple:#7048e8; --purple-s:#f3efff; --green:#0ca678; --green-t:#099268; --green-s:#e6f8f1; --orange:#f76707; --orange-s:#fff4e6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans KR","Noto Sans CJK KR",-apple-system,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.app{min-height:100vh;background:var(--white);display:flex;flex-direction:column}
+
+/* header */
+.top{height:64px;display:flex;align-items:center;gap:32px;padding:0 32px;border-bottom:1px solid var(--line);background:var(--white);position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.3px}
+.logo b{color:var(--pri)}
+.tabs{display:flex;gap:4px}
+.tab{font-size:15px;color:var(--mute);padding:8px 12px;border-radius:8px}
+.tab:hover{background:var(--bg)}
+.tab.on{color:var(--ink);font-weight:700}
+.tab i{font-style:normal;display:inline-flex;width:20px;height:20px;border-radius:10px;background:var(--line);color:var(--sub);font-size:12px;align-items:center;justify-content:center;margin-right:6px}
+.tab.on i{background:var(--pri);color:#fff}
+.tab.done i{background:var(--pri-s);color:var(--pri)}
+.toggle{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--sub)}
+.sw{width:46px;height:26px;border-radius:13px;background:#d5dae0;position:relative;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:10px;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.sw.on{background:var(--pri)}
+.sw.on::after{left:23px}
+
+/* layout */
+.main{flex:1;display:flex;justify-content:center;padding:48px 32px 120px}
+.col{width:680px;display:flex;flex-direction:column}
+.eyebrow{font-size:14px;font-weight:700;color:var(--pri);margin-bottom:8px}
+h1{font-size:28px;line-height:1.4;letter-spacing:-.5px;font-weight:800}
+.lead{font-size:16px;color:var(--sub);line-height:1.6;margin-top:8px}
+.sec{margin-top:40px}
+.sec-t{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec-t small{font-size:13px;font-weight:500;color:var(--mute)}
+.p{font-size:16px;line-height:1.7}
+.s{font-size:14px;color:var(--sub);line-height:1.6}
+.hr{height:1px;background:var(--line);margin:28px 0}
+.pill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--pri-s);color:var(--pri)}
+.pill.warn{background:var(--warn-s);color:var(--warn)}
+.pill.gray{background:var(--bg);color:var(--sub)}
+
+/* buttons */
+.btn{white-space:nowrap;flex-shrink:0;height:52px;border-radius:12px;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 22px}
+.btn.pri{background:var(--pri);color:#fff}
+.btn.pri:hover{background:var(--pri-d)}
+.btn.ghost{background:var(--bg);color:var(--ink)}
+.btn.wide{width:100%}
+.chip{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);font-size:15px;color:var(--ink);background:#fff}
+.chip.on{border-color:var(--pri);background:var(--pri-s);color:var(--pri);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.link{color:var(--pri);font-weight:600;font-size:14px;text-align:left}
+.back{align-self:flex-start}
+.cta .btn.wide{width:auto;flex:1}
+.cta{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 30%);padding:24px 0 28px;margin-top:40px;display:flex;gap:10px}
+
+/* chat */
+.chat{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+.bub{max-width:82%;font-size:16px;line-height:1.65;padding:14px 18px;border-radius:18px}
+.bub.me{align-self:flex-end;background:var(--pri);color:#fff;border-bottom-right-radius:6px}
+.bub.ai{align-self:flex-start;background:var(--bg);border-bottom-left-radius:6px}
+.who{font-size:13px;color:var(--mute);margin:4px 0 -8px}
+.prof{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.prof button{display:flex;gap:10px;align-items:flex-start;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--sub);transition:border-color .15s}
+.prof button:hover{border-color:var(--pri)}
+.prof .pi{width:28px;height:28px;border-radius:8px;background:var(--pri-s);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prof .pi svg{width:16px;height:16px}
+.prof b{display:block;font-size:15px;color:var(--ink);margin-top:1px}
+.bub.me mark{background:rgba(255,255,255,.22);color:#fff;border-radius:4px;padding:0 3px;border-bottom:2px solid rgba(255,255,255,.8)}
+.found{font-size:12.5px;color:var(--sub);align-self:flex-end;margin-top:-6px}
+.found b{color:var(--pri)}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:10px}
+.qcard .qn{display:inline-flex;width:22px;height:22px;border-radius:11px;background:var(--pri);color:#fff;font-size:12px;font-weight:800;align-items:center;justify-content:center;margin-right:8px}
+.qcard.ok .qn{background:#fff;color:var(--pri);border:1.5px solid var(--pri)}
+.qcard .chips{margin-top:10px}
+.qcard .chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.prog{height:8px;border-radius:4px;background:#f1f3f5;margin:4px 0 14px;overflow:hidden}
+.prog span{display:block;height:100%;background:var(--pri);border-radius:4px;transition:width .3s}
+.ex{display:block;width:100%;text-align:left;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:8px}
+.ex:hover{border-color:var(--pri)}
+.compose{margin-top:24px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:28px;padding:6px 6px 6px 20px}
+.compose input{flex:1;border:0;outline:0;font:inherit;font-size:15px}
+.send{width:40px;height:40px;border-radius:20px;background:var(--pri);color:#fff;font-weight:700}
+
+/* list rows (instead of boxes) */
+.list{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:16px;padding:18px 4px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.row:hover{background:#fbfcfd}
+.radio{width:22px;height:22px;border-radius:11px;border:2px solid #cfd5dc;flex-shrink:0;position:relative}
+.radio.on{border-color:var(--pri)}
+.radio.on::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--pri)}
+.check{width:22px;height:22px;border-radius:6px;border:2px solid #cfd5dc;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.check.on{background:var(--pri);border-color:var(--pri)}
+.row .name{font-size:16px;font-weight:700}
+.row .meta{font-size:14px;color:var(--sub);margin-top:3px}
+.row .right{margin-left:auto;text-align:right}
+.row .amt{font-size:17px;font-weight:800}
+.row .amt.pri{color:var(--pri)}
+.chev{color:var(--mute);font-size:14px;margin-left:8px;transition:.2s}
+.chev.open{transform:rotate(90deg)}
+.detail{padding:4px 4px 22px 98px;border-bottom:1px solid var(--line)}
+
+/* evidence */
+.ev{display:grid;grid-template-columns:150px 18px 1fr;gap:10px 8px;align-items:center;font-size:15px;margin-top:10px}
+.ev .k{color:var(--sub)}
+.ev .ar{color:var(--mute)}
+.ev .v.ok::before{content:"✓ ";color:var(--pri);font-weight:800}
+.ev .v.q{color:var(--warn)}
+.ev .v.q::before{content:"? ";font-weight:800}
+.quote{margin-top:14px;font-size:14px;line-height:1.7;color:var(--sub);padding-left:14px;border-left:3px solid var(--pri)}
+.quote mark{background:#e3ebff;color:var(--ink);padding:0 2px}
+
+/* summary strip */
+.strip{display:flex;gap:32px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.strip div{font-size:13px;color:var(--sub)}
+.strip b{display:block;font-size:24px;color:var(--ink);margin-top:4px;letter-spacing:-.4px}
+.strip b.pri{color:var(--pri)}
+
+/* note */
+.note{display:flex;gap:10px;font-size:15px;line-height:1.65;padding:14px 16px;border-radius:12px;background:var(--bg)}
+.note.warn{background:var(--warn-s)}
+.note .ic{font-weight:800;color:var(--pri)}
+.note.warn .ic{color:var(--warn)}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--sub);font-weight:600;padding:10px 8px;border-bottom:1px solid var(--line)}
+td{padding:15px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.best{background:none}
+td.best b{color:#2f6bff}
+td .v{font-size:17px;font-weight:700;color:var(--ink)}
+td .w{display:block;font-size:12.5px;color:var(--sub);margin-top:2px;font-weight:400}
+.htag{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--ink)}
+.htag i{font-style:normal;width:22px;height:22px;border-radius:11px;color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.sumcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sumcard{border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;border-top-width:5px}
+.sumcard .k{font-size:13px;color:var(--sub);margin-top:10px}
+.sumcard .n{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.sumcard .n small{font-size:14px;font-weight:600;color:var(--sub);margin-left:2px}
+.sumcard .top1{font-size:12px;font-weight:800;color:#2f6bff;background:#eef3ff;border-radius:999px;padding:2px 8px;margin-left:6px}
+@media (max-width:760px){.sumcards{grid-template-columns:1fr}}
+tr.clk{cursor:pointer}
+tr.clk:hover td{background:#fbfcfd}
+
+/* diff */
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px}
+.diff h4{font-size:14px;margin-bottom:6px}
+.plus h4{color:var(--pri)} .minus h4{color:var(--warn)}
+
+/* map */
+.map{border-radius:14px;overflow:hidden;background:#f1f3f6}
+
+/* modal sheet */
+.dim{position:fixed;inset:0;background:rgba(25,31,40,.35);display:flex;align-items:center;justify-content:center;z-index:20}
+.sheet{width:720px;background:#fff;border-radius:20px;padding:32px;max-height:88vh;overflow:auto}
+.sheet-h{display:flex;align-items:center;margin-bottom:18px}
+.x{margin-left:auto;font-size:22px;color:var(--sub)}
+
+/* ===== EASY MODE ===== */
+.easy .col{width:720px}
+.easy h1{font-size:38px;line-height:1.35}
+.easy .lead{font-size:22px;color:var(--ink)}
+.easy .eyebrow{font-size:18px}
+.easy .p,.easy .bub{font-size:22px}
+.easy .s{font-size:19px;color:#4e5968}
+.easy .btn{height:76px;font-size:24px;border-radius:16px}
+.easy .tab{font-size:17px}
+.easy .toggle{font-size:18px;color:var(--ink)}
+.easy .sw{width:58px;height:32px;border-radius:16px}
+.easy .sw::after{width:26px;height:26px;border-radius:13px}
+.easy .sw.on::after{left:29px}
+.big-q{display:flex;flex-direction:column;gap:14px;margin-top:36px}
+.erow{display:flex;align-items:center;gap:20px;padding:26px 4px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.erow .n{width:48px;height:48px;border-radius:24px;background:var(--pri-s);color:var(--pri);font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.erow .n.warn{background:var(--warn-s);color:var(--warn)}
+.erow .t{font-size:24px;font-weight:800}
+.erow .d{font-size:19px;color:#4e5968;margin-top:4px;line-height:1.5}
+.erow .m{margin-left:auto;font-size:24px;font-weight:800;color:var(--pri);white-space:nowrap}
+.hero-num{font-size:56px;font-weight:800;letter-spacing:-1px;color:var(--pri);margin:8px 0}
+
+/* icons & map extras */
+.ico{width:40px;height:40px;border-radius:12px;background:var(--pri-s);color:var(--pri);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ico svg{width:22px;height:22px}
+.ico.sm{width:30px;height:30px;border-radius:9px}.ico.sm svg{width:17px;height:17px}
+.ico.lg{width:56px;height:56px;border-radius:16px}.ico.lg svg{width:30px;height:30px}
+.ico.warn{background:var(--warn-s);color:var(--warn)}
+.ico.gray{background:var(--bg);color:var(--sub)}
+.pin{width:30px;height:30px;border-radius:15px;color:#fff;font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.pin.a{background:#191f28}.pin.b{background:var(--pri)}
+.legend{display:flex;gap:22px;align-items:center;font-size:14px;color:var(--sub);margin:14px 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:5px;margin-right:6px}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.slot{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;border:1.5px dashed #d5dae0}
+.slot.now{border-color:var(--pri);background:var(--pri-s)}
+.slot.full{border:1px solid var(--line)}
+.slot .name{font-size:16px;font-weight:700}.slot .meta{font-size:13px;color:var(--sub);margin-top:2px}
+.pin.empty{background:#fff;border:1.5px dashed #b8c0ca;color:var(--mute)}
+.segs{display:inline-flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
+.seg{height:38px;padding:0 18px;border-radius:9px;font-size:15px;color:var(--sub);font-weight:600}
+.seg.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(25,31,40,.1)}
+textarea.paste{margin-top:16px;width:100%;height:150px;border:1px solid var(--line);border-radius:14px;padding:16px 18px;font:inherit;font-size:15px;line-height:1.7;resize:none;outline:0;color:var(--ink)}
+textarea.paste:focus{border-color:var(--pri)}
+
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fields label{font-size:13px;color:var(--sub);display:flex;flex-direction:column;gap:6px}
+.inp{display:flex;align-items:center;gap:6px;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 14px;font-size:15px;color:var(--sub)}
+.inp input{flex:1;min-width:0;width:100%;border:0;outline:0;font:inherit;font-size:16px;font-weight:700;color:var(--ink)}
+.inp input::placeholder{font-weight:400;font-size:13px;color:var(--mute)}
+.compose .ico{margin-left:-8px}
+
+.verdict{margin-top:44px;border-top:2px solid var(--ink);padding-top:22px}
+.vhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.vhead .nm{font-size:26px;font-weight:800;letter-spacing:-.4px}
+.vhead .sc{margin-left:auto;font-size:15px;color:var(--sub)}
+.vhead .sc b{font-size:26px;color:var(--ink);margin-right:2px}
+.rk{display:grid;grid-template-columns:28px 120px 1fr 64px;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rk .no{font-weight:800;color:var(--sub)}
+.rk .bar{height:10px;border-radius:5px;background:#f1f3f5;overflow:hidden}
+.rk .bar span{display:block;height:100%;border-radius:5px}
+.rk .t{text-align:right;font-weight:700}
+.rk .d{grid-column:3/5;font-size:12.5px;color:var(--sub);margin-top:-6px}
+.why-list{margin:8px 0 0;padding-left:18px;font-size:15px;line-height:1.75}
+.maplink{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--pri);background:var(--pri-s);border-radius:999px;padding:6px 12px;margin-top:14px}
+.maplink:hover{background:#e3ebff}
+td .go{float:right;font-size:12px;font-weight:700;color:var(--pri);opacity:.0;transition:opacity .15s}
+tr.clk:hover td .go,tr.clk td .go.show{opacity:1}
+tr.clk:hover td{background:#f5f8ff}
+.hchip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px 7px 8px;font-size:15px;font-weight:600;background:#fff}
+.hchip i{font-style:normal;width:22px;height:22px;border-radius:11px;color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.vt{display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;letter-spacing:-.4px;margin:8px 0 18px}
+.vrows{display:flex;flex-direction:column;gap:2px;background:#fff;border-radius:14px;padding:6px 16px}
+.vr{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.vr:last-child{border-bottom:0}
+.vk{width:130px;font-size:15px;font-weight:700}
+.vv{flex:1;font-size:15px;color:var(--sub)}
+
+.cal{border:1px solid var(--line);border-radius:16px;padding:18px 18px 10px}
+.cal-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cal-h b{font-size:17px}
+.cal-h .nav{width:30px;height:30px;border-radius:8px;background:var(--bg);font-size:16px;color:var(--sub)}
+.cal-lg{margin-left:auto;display:flex;gap:14px;font-size:12px;color:var(--sub)}
+.cal-lg span{display:inline-flex;align-items:center;gap:5px}
+.cal-lg i{width:14px;height:8px;border-radius:3px;display:inline-block}
+.cal-lg i.warn{background:var(--warn-s);border:1px solid #ffc078}.cal-lg i.pri{background:var(--pri-s);border:1px solid #b9cbff}.cal-lg i.line{border:1.5px solid var(--pri);background:#fff}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);font-size:12px;color:var(--mute);text-align:left;padding:0 6px 6px}
+.wk{border-top:1px solid var(--line);min-height:76px;padding-bottom:6px}
+.days{display:grid;grid-template-columns:repeat(7,1fr)}
+.dn{font-size:13px;color:var(--ink);padding:6px 6px 4px}
+.dn.sun{color:#d64545}.dn.out{color:#cfd5dc}
+.dn.today span{background:var(--pri);color:#fff;border-radius:11px;padding:2px 6px;font-weight:700}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:24px;row-gap:3px;padding:0 2px}
+.bar{font-size:12px;font-weight:700;text-align:left;padding:0 8px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 2px}
+.bar.warn{background:var(--warn-s);color:var(--warn);border:1px solid #ffc078}
+.bar.pri{background:var(--pri-s);color:var(--pri);border:1px solid #b9cbff}
+.bar.line,.bar.me{background:#fff;color:var(--pri);border:1.5px solid var(--pri)}
+.bar.me{color:var(--ink);border-color:var(--ink)}
+.bar.sel{box-shadow:0 0 0 2px currentColor}
+.slots{grid-template-columns:repeat(3,1fr)!important}
+.slot.add{border-color:#b9cbff;text-align:left}
+.dot{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}
+
+/* ===== WEB LAYOUT ===== */
+.wrap{width:1200px;margin:0 auto;display:flex;align-items:center}
+.gnb{height:72px;border-bottom:1px solid var(--line);background:#fff;flex-shrink:0}
+.gnb .wrap{height:100%;gap:48px}
+.gnb .logo{font-size:21px}
+.menu{display:flex;gap:30px;font-size:15px;color:var(--sub);font-weight:600}
+.menu span.on{color:var(--ink)}
+.gnb-r{margin-left:auto;display:flex;gap:18px;align-items:center}
+.btn-sm{height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--line);font-size:14px;font-weight:600;background:#fff}
+.stepbar{background:var(--bg);border-bottom:1px solid var(--line);flex-shrink:0}
+.stepbar .wrap{height:80px}
+.sb{flex:1;display:flex;align-items:center;gap:12px;color:var(--mute);text-align:left}
+.sb:last-child{flex:0 0 auto}
+.sb i{font-style:normal;width:30px;height:30px;border-radius:15px;background:#fff;border:1.5px solid #d5dae0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.sb .sl{display:flex;flex-direction:column;line-height:1.35}
+.sb .sl b{font-size:15px;white-space:nowrap}
+.sb .sl small{font-size:12px;white-space:nowrap}
+.sb:not(:last-child)::after{content:"";flex:1;height:2px;background:#e1e5ea;margin:0 18px;min-width:30px}
+.sb.on{color:var(--ink)}
+.sb.on i{background:var(--pri);border-color:var(--pri);color:#fff}
+.sb.done{color:var(--sub)}
+.sb.done i{background:var(--pri-s);border-color:#b9cbff;color:var(--pri)}
+.sb.done::after{background:#b9cbff}
+.main{flex:1;display:block;padding:48px 0 88px}
+.layout{width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:56px;align-items:start}
+.col{width:auto;min-width:0}
+.aside{position:sticky;top:24px;display:flex;flex-direction:column;gap:16px}
+.panel{border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:#fff}
+.panel.soft{background:var(--bg);border-color:transparent}
+.panel-t{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.panel-t .link{margin-left:auto;font-size:13px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:0}
+.kv span{color:var(--sub)}
+.kv b{font-weight:700;text-align:right}
+.kv .link{white-space:nowrap;flex-shrink:0}
+.kv b.q{color:var(--pri);font-weight:600}
+.big-amt{font-size:28px;font-weight:800;color:var(--pri);letter-spacing:-.5px;margin:2px 0}
+.tray{display:flex;flex-direction:column;gap:6px;margin:4px 0 14px}
+.tray div{font-size:14px;display:flex;align-items:center;gap:8px}
+.tray .dot{width:8px;height:8px;border-radius:4px}
+.btn.full{width:100%;height:46px;font-size:15px}
+.cta{position:static;background:none;padding:0;margin-top:44px;display:flex;gap:10px;justify-content:flex-end}
+.cta .btn.wide{flex:none;width:auto;min-width:260px}
+h1{font-size:32px}
+.chatpanel{border:1px solid var(--line);border-radius:20px;padding:26px 26px 20px;margin-top:28px;background:#fff}
+.chatpanel .chat{margin-top:0}
+.chatpanel .bub{max-width:76%}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.scard{border:1.5px solid var(--line);border-radius:16px;padding:20px;text-align:left;display:flex;flex-direction:column;gap:6px;background:#fff}
+.scard:hover{border-color:#b9cbff}
+.scard.on{border-color:var(--pri);background:var(--pri-s)}
+.scard .top0{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.scard .top0 .radio{margin-left:auto}
+.scard .name{font-size:17px;font-weight:800}
+.scard .amt{font-size:24px;font-weight:800;letter-spacing:-.4px}
+.scard.on .amt{color:var(--pri)}
+.scard .meta{font-size:13px;color:var(--sub);line-height:1.5}
+.ft{border-top:1px solid var(--line);background:var(--bg);flex-shrink:0}
+.ft .wrap{height:84px;gap:16px;font-size:13px;color:var(--sub)}
+.ft b{color:var(--ink);font-size:15px}
+.ft .r{margin-left:auto}
+/* easy mode on web: one centered column, no sidebar */
+.easy .layout{grid-template-columns:1fr;width:880px}
+.easy .aside{display:none}
+.easy .cta{justify-content:stretch}
+.easy .cta .btn.wide{flex:1;width:100%}
+.easy .sb .sl b{font-size:17px}
+
+.hrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.hrow:last-of-type{border-bottom:0}
+.hrow .pin{width:26px;height:26px;font-size:12px;color:#fff}
+.hn{font-size:15px;font-weight:700}
+.hm{font-size:13px;color:var(--sub)}
+.hrow .link{white-space:nowrap}
+#kmap{width:100%;height:380px;border-radius:14px;background:#f2f4f6}
+.kpin{padding:4px 10px;border-radius:14px;color:#fff;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.kpin.dest{background:#fab005;color:#191f28}
+
+/* ===== RAG ===== */
+:root{--ai:#7048e8;--ai-s:#f3efff;--ai-l:#d0bfff}
+.ragbox{border:1.5px solid var(--ai-l);background:#fbf9ff;border-radius:16px;padding:20px 22px;margin-top:14px}
+.show-rag .ragmark{outline:2px dashed #9775fa;outline-offset:6px;border-radius:14px;position:relative}
+.show-rag .ragmark::after{content:'RAG';position:absolute;top:-16px;right:8px;background:#7048e8;color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:8px;letter-spacing:.5px}
+.aitag{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--ai-s);color:var(--ai);white-space:nowrap}
+.aichip{border:1px solid var(--ai-l);background:#fff;color:var(--ai);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;cursor:pointer}
+.aichip.on{background:var(--ai);color:#fff;border-color:var(--ai)}
+.why{border:0;background:var(--ai-s);color:var(--ai);font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;cursor:pointer;margin-left:6px}
+.qb{background:#f2f4f6;border-radius:14px 14px 4px 14px;padding:10px 14px;margin:14px 0 0 auto;width:fit-content;max-width:88%;font-size:15px}
+.ab{border:1px solid var(--ai-l);background:#fff;border-radius:14px 14px 14px 4px;padding:14px 16px;margin-top:10px;font-size:15px;line-height:1.7}
+.ab .who{font-size:12px;font-weight:800;color:var(--ai);margin-bottom:4px;display:flex;gap:8px;align-items:center}
+.ab sup{color:var(--ai);font-weight:800;font-size:11px;margin-left:1px}
+.ab .src{margin-top:10px;border-top:1px solid #eee;padding-top:8px;font-size:13px;color:var(--sub)}
+.ab .src .qt{display:block;margin:3px 0 6px;padding-left:10px;border-left:3px solid var(--ai-l);color:var(--ink)}
+.ab.load{color:var(--sub)}
+.ab .calc{display:block;margin-top:6px;font-size:13px;color:var(--sub)}
+.askin{display:flex;gap:8px;margin-top:14px}
+.askin input{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font:inherit;font-size:15px}
+.askin button{background:var(--ai);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:700;cursor:pointer}
+.jrow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.jrow:last-child{border-bottom:0}
+.jrow .nm{font-weight:700}.jrow .mt{font-size:13px;color:var(--sub)}
+.jb{margin-left:auto;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.jb.ok{background:#e6f8f1;color:#099268}.jb.no{background:#fdeaea;color:#d64545}.jb.q{background:#f0f1f3;color:var(--sub)}.jb.cond{background:#fff4e6;color:#e8590c}
+.jq{display:block;margin-top:4px;font-size:12.5px;color:var(--ink);padding-left:8px;border-left:3px solid var(--ai-l)}
+.fab{position:fixed;right:28px;bottom:28px;z-index:40;background:var(--ai);color:#fff;border:0;border-radius:999px;padding:14px 20px;font-size:15px;font-weight:800;box-shadow:0 8px 24px rgba(124,58,237,.35);cursor:pointer;display:flex;gap:8px;align-items:center}
+.drawer{position:fixed;right:24px;bottom:24px;z-index:50;width:400px;max-width:calc(100vw - 32px);height:min(640px,calc(100vh - 48px));background:#fff;border:1px solid var(--ai-l);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden}
+.drawer .dh{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.drawer .dh b{font-size:16px}
+.drawer .db{flex:1;overflow:auto;padding:4px 18px 16px}
+.drawer .df{padding:12px 14px;border-top:1px solid var(--line)}
+.drawer .df .askin{margin-top:0}
+.drawer .x{margin-left:auto;border:0;background:none;font-size:22px;color:var(--sub);cursor:pointer}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.sugg .aichip{font-size:13px;padding:6px 11px;text-align:left}
+.toggle.ai .sw.on{background:var(--ai)}
+
+/* ===== 2단계 (민선 수정 · 2026-11-12 합침) ===== */
+:root {--ok:#0ca678;--ok-t:#099268;--ok-s:#e6fcf5;--warn-t:#e8590c}
+/* ===== 2단계 지원 추천 (파랑 메인 · 보라 AI · 초록 좋음 · 주황 주의) ===== */
+.s2  {font-variant-numeric: tabular-nums;}
+.s2 h1  {font-size: 34px;line-height: 1.38;letter-spacing: -1.2px;margin-top: 4px;}
+.s2 h1 em  {font-style: normal;color: var(--pri);}
+.mbar  {display: flex;gap: 3px;height: 10px;margin-top: 28px;border-radius: 5px;overflow: hidden;}
+.mbar .b1,
+.mleg .b1  {background: var(--pri);}
+.mbar .b2,
+.mleg .b2  {background: #5c8dff;}
+.mleg  {display: flex;gap: 24px;margin-top: 12px;font-size: 14px;color: var(--sub);}
+.mleg i  {display: inline-block;width: 8px;height: 8px;border-radius: 2px;margin-right: 7px;vertical-align: 1px;}
+.mleg b  {color: var(--ink);font-weight: 700;margin-left: 6px;}
+.s2-sec  {margin-top: 64px;}
+.s2-h  {display: flex;align-items: baseline;gap: 8px;margin-bottom: 18px;}
+.s2-h h2  {font-size: 21px;font-weight: 800;letter-spacing: -0.6px;}
+.s2-h .n  {font-size: 21px;font-weight: 800;color: var(--ok-t);}
+.s2-h .r  {margin-left: auto;font-size: 13px;color: var(--sub);}
+.ai-by  {display: inline-flex;align-items: center;gap: 6px;font-size: 13px;font-weight: 600;color: var(--ai) !important;}
+.ai-by::before  {content: "";width: 6px;height: 6px;border-radius: 3px;background: var(--ai);}
+/* 지금 신청 카드 */
+.ncards  {display: grid;grid-template-columns: repeat(3, 1fr);gap: 12px;}
+.ncard  {text-align: left;border: 1px solid var(--line);border-radius: 18px;padding: 20px 20px 18px;background: #fff;display: flex;flex-direction: column;min-height: 196px;transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;}
+.ncard:hover  {border-color: #c9d0d8;transform: translateY(-2px);}
+.ncard.on  {border-color: var(--pri);box-shadow: 0 0 0 1px var(--pri);}
+.ncard .dd  {font-size: 26px;font-weight: 800;letter-spacing: -0.8px;color: var(--warn);}
+.ncard .dd.always  {color: var(--ok);}
+.ncard .nn  {font-size: 16px;font-weight: 700;line-height: 1.45;margin-top: 12px;word-break: keep-all;}
+.ncard .nb  {font-size: 14px;color: var(--sub);margin-top: 4px;word-break: keep-all;}
+.ncard .no  {margin-top: auto;padding-top: 16px;font-size: 13px;color: var(--mute);}
+.npanel  {margin-top: 12px;background: var(--bg);border-radius: 18px;padding: 22px 24px;}
+.np-h  {display: flex;align-items: center;gap: 10px;}
+.np-h b  {font-size: 16px;}
+.np-x  {margin-left: auto;font-size: 13px;color: var(--sub);}
+.np-why  {font-size: 15px;line-height: 1.7;margin-top: 8px;}
+.np-q  {margin-top: 14px;padding-left: 12px;border-left: 2px solid var(--ai-l);font-size: 14px;color: var(--sub);line-height: 1.7;}
+.np-q mark  {background: none;color: var(--ink);font-weight: 700;}
+/* 12월 타임라인 */
+.tl  {border: 1px solid var(--line);border-radius: 18px;padding: 18px 24px 14px;}
+.tl-body  {position: relative;}
+.tl-grid  {position: absolute;left: 150px;right: 0;top: 0;bottom: 0;pointer-events: none;}
+.tl-grid i  {position: absolute;top: 0;bottom: 0;border-left: 1px dashed #dfe3e8;}
+.tl-grid i:first-child  {border-left: 2px solid var(--pri);}
+.tl-row  {display: grid;grid-template-columns: 150px 1fr;align-items: center;height: 44px;}
+.tl-lb  {font-size: 14px;font-weight: 600;}
+.tl-tr  {position: relative;height: 100%;}
+.tl-bar  {position: absolute;top: 50%;transform: translateY(-50%);height: 12px;border-radius: 6px;display: block;transition: height 0.15s;}
+.tl-bar.ok  {background: var(--ok);}
+.tl-bar.ok:hover,
+.tl-bar.sel  {height: 18px;border-radius: 9px;}
+.tl-bar.me  {background: var(--ink);}
+.tl-axis  {display: grid;grid-template-columns: 150px 1fr;margin-top: 6px;}
+.tl-ax  {position: relative;height: 38px;}
+.tl-tk  {position: absolute;top: 0;transform: translateX(-50%);font-size: 12px;color: var(--sub);text-align: center;white-space: nowrap;line-height: 1.45;}
+.tl-tk b  {display: block;color: var(--ink);font-size: 13px;}
+.tl-tk.first  {transform: none;text-align: left;color: var(--pri);font-weight: 700;}
+.tl-tk.last  {transform: translateX(-100%);text-align: right;}
+/* 2단계 달력 */
+.s2 .cal  {border-radius: 18px;padding: 20px 22px 14px;}
+.s2 .cal-h  {margin-bottom: 16px;}
+.s2 .cal-h b  {font-size: 18px;letter-spacing: -0.3px;}
+.s2 .cal-lg  {font-size: 13px;gap: 16px;}
+.s2 .dow  {font-weight: 600;padding: 0 8px 8px;}
+.s2 .wk  {min-height: 68px;border-top-color: #f0f2f4;}
+.s2 .dn  {font-size: 13px;font-weight: 500;padding: 8px 8px 4px;}
+.s2 .dn.past  {color: var(--mute);}
+.s2 .dn.sun  {color: var(--warn-t);}
+.s2 .dn.sun.past,
+.s2 .dn.out  {color: #d5dae0;}
+.s2 .dn.today span  {padding: 3px 7px;}
+.s2 .bars  {grid-auto-rows: 26px;row-gap: 4px;}
+.s2 .bar  {border-radius: 7px;font-size: 12.5px;padding: 0 10px;transition: filter 0.15s;}
+.s2 .bar[onclick]:hover  {filter: brightness(0.96);}
+.s2 .bar.sel  {box-shadow: 0 0 0 2px currentColor;}
+.tl-note  {font-size: 14px;color: var(--sub);margin-top: 14px;line-height: 1.7;}
+.tl-note b  {color: var(--ink);}
+/* 내년 지원 */
+.yl  {border-top: 2px solid var(--ink);}
+.yrow  {display: flex;align-items: center;gap: 20px;padding: 22px 0;border-bottom: 1px solid var(--line);}
+.yrow-b  {flex: 1;min-width: 0;display: flex;align-items: center;gap: 20px;text-align: left;}
+.yn  {font-size: 17px;font-weight: 700;display: flex;align-items: center;gap: 6px;}
+.yrow-b:hover .yn  {color: var(--pri);}
+.yd  {font-size: 14px;color: var(--sub);margin-top: 4px;}
+.ya  {margin-left: auto;font-size: 24px;font-weight: 800;color: var(--pri);letter-spacing: -0.8px;white-space: nowrap;}
+.ya small,.ysum b small,.wres .big small  {font-size: 15px;font-weight: 700;margin-left: 3px;letter-spacing: 0;}
+.alarm  {width: 118px;height: 38px;border: 1px solid var(--line);border-radius: 10px;font-size: 13px;font-weight: 700;background: #fff;flex-shrink: 0;}
+.alarm:hover  {border-color: var(--pri);color: var(--pri);}
+.alarm.on  {background: var(--pri);color: #fff;border-color: var(--pri);}
+.alarm-sp  {width: 118px;flex-shrink: 0;}
+.ysum  {display: flex;align-items: center;gap: 20px;padding: 18px 0;}
+.ysum span:first-child  {font-size: 15px;font-weight: 700;color: var(--sub);}
+.ysum b  {margin-left: auto;font-size: 24px;font-weight: 800;letter-spacing: -0.8px;}
+.ydet  {background: var(--bg);border-radius: 16px;padding: 18px 22px;margin: 0 0 18px;}
+.ydet .ev  {grid-template-columns: 120px 14px 1fr auto;font-size: 14px;gap: 9px 8px;margin-top: 0;}
+.ydet .ev .v  {color: var(--ink);}
+.ydet .ev .v::before  {content: none;}
+.ylast  {font-size: 13px;color: var(--mute);margin-top: 12px;}
+.st  {font-size: 13px;font-weight: 700;white-space: nowrap;}
+.st.ok  {color: var(--ok-t);}
+.st.q,
+.st.no  {color: var(--warn-t);}
+.st.cond  {color: var(--sub);}
+.yfoot  {display: flex;gap: 10px;font-size: 14px;color: var(--sub);line-height: 1.7;background: var(--warn-s);border-radius: 12px;padding: 12px 16px;margin-top: 4px;}
+.yfoot > b  {color: var(--warn-t);}
+/* 공고문에 물어보기 */
+.s2-ask  {margin-top: 64px;background: #f6f3ff;border-radius: 22px;padding: 28px 28px 24px;}
+.s2-ask .s2-h  {margin-bottom: 16px;}
+.ask-in  {display: flex;align-items: center;background: #fff;border: 1.5px solid var(--ai-l);border-radius: 14px;padding: 6px 6px 6px 18px;}
+.ask-in:focus-within  {border-color: var(--ai);}
+.ask-in input  {flex: 1;border: 0;outline: 0;font: inherit;font-size: 16px;background: none;}
+.ask-in button  {background: var(--ai);color: #fff;border-radius: 10px;padding: 0 20px;height: 42px;font-weight: 700;font-size: 15px;}
+.ask-sg  {display: flex;flex-wrap: wrap;gap: 8px;margin-top: 12px;}
+.ask-sg button  {background: #fff;border-radius: 999px;padding: 7px 14px;font-size: 14px;color: #4c3a9e;}
+.ask-sg button:hover  {color: var(--ai);}
+.ask-sg button.on  {background: var(--ai);color: #fff;}
+.s2-ask .ab  {border-color: transparent;}
+.s2-ask .qb  {background: #fff;}
+/* 조건이 바뀌면 */
+.seg3  {display: inline-flex;background: var(--bg);border-radius: 12px;padding: 4px;gap: 2px;flex-wrap: wrap;}
+.seg3 button  {height: 38px;padding: 0 16px;border-radius: 9px;font-size: 14px;font-weight: 600;color: var(--sub);}
+.seg3 button.on  {background: #fff;color: var(--ink);box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);}
+.wres  {display: grid;grid-template-columns: 190px 1fr 1fr;gap: 28px;margin-top: 20px;padding-top: 20px;border-top: 1px solid var(--line);}
+.wres .wl  {font-size: 13px;color: var(--sub);}
+.wres .from  {font-size: 14px;color: var(--mute);text-decoration: line-through;margin-top: 6px;}
+.wres .big  {font-size: 30px;font-weight: 800;color: var(--pri);letter-spacing: -1px;}
+.wres h4  {font-size: 13px;margin-bottom: 6px;}
+.wres h4.plus  {color: var(--ok-t);}
+.wres h4.minus  {color: var(--warn-t);}
+.wres p  {font-size: 14px;line-height: 1.75;}
+.whint  {font-size: 14px;color: var(--mute);margin-top: 14px;}
+/* 받기 어려운 지원 */
+.more-t  {display: flex;align-items: center;gap: 8px;width: 100%;padding: 20px 0;border-top: 1px solid var(--line);border-bottom: 1px solid var(--line);font-size: 17px;font-weight: 700;text-align: left;}
+.more-t .c  {color: var(--sub);font-weight: 500;font-size: 15px;}
+.more-t .chev  {margin-left: auto;}
+.mrow  {display: grid;grid-template-columns: 1fr auto;gap: 4px 16px;padding: 16px 0;border-bottom: 1px solid var(--line);}
+.mrow .nm  {font-weight: 700;font-size: 15px;}
+.mrow .rs  {font-size: 14px;color: var(--sub);grid-column: 1 / -1;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const ICONS={
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+ train:'<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l1.5-4M15 21l-1.5-4"/>',
+ bus:'<rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 10h16M7 21v-3M17 21v-3"/>',
+ cart:'<path d="M3 4h2l2.5 11h10L20 8H6.5"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/>',
+ pill:'<rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-45 12 12)"/><path d="M9 9l6 6"/>',
+ gym:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ home:'<path d="M4 11l8-7 8 7M6 10v10h12V10"/><path d="M10 20v-5h4v5"/>',
+ building:'<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/>',
+ truck:'<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/>',
+ receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+ bank:'<path d="M3 9l9-5 9 5M5 9v9M10 9v9M14 9v9M19 9v9M3 20h18"/>'
+};
+function svgIcon(n){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`}
+const S = {
+  step:1, easy:false,
+  own:null, sep:null,          // STEP1 answers
+  msgs:[], prof:{}, placeAsk:null, user:null, loginOpen:false, qi:0, redo:null, extra:[], // STEP1 대화 (입력한 문장 · 뽑은 조건)
+  easyQ:0,                     // STEP1 easy question index
+  strategy:'B', easyMore:false,// STEP2
+  open:'rent', cmp:[], showCmp:false, whatif:null, // STEP3
+  ragShow:false, chat:false, log:[], q3:null, why2:null, judged:true, why4:null, alarm:[], // RAG
+  pat:{commute:true, late:true, shop:false, sick:true, gym:false}, detail:null, prio:'bal', over:{}, homes:[], homesDone:false, parsed:null, addrQ:'', adding:false, calM:10 // STEP4
+};
+
+const STRAT = {
+  A:{icon:'bank',name:'전세대출', month:41, total:984, risk:'높음', desc:'보증금을 대출로 마련 · 이자와 관리비 부담', color:'#9aa3ad'},
+  B:{icon:'home',name:'월세 + 지원금', month:38, total:912, risk:'낮음', desc:'월세 지원을 받아 실제 부담을 낮춤', color:'#2f6bff', best:true},
+  C:{icon:'building',name:'청년주택 대기', month:32, total:null, risk:'대기 필요', desc:'당첨되면 가장 저렴 · 입주까지 약 6개월', color:'#9aa3ad'}
+};
+const LINES = { A:'40,90 760,90', B:'40,118 400,118 400,58 760,58', C:'40,36 220,36 220,148 760,148' };
+
+/* 2단계 지원 추천 · 2026-11-21 기준 (processed/demo_policies.json + policy_match.py 결과) */
+const POL = [
+  {id:'molit', icon:'home', name:'국토부 청년월세', amt:'최대 480만 원', how:'월 20만 원 × 최대 24개월', last:'올해 접수 3월 30일 ~ 5월 29일 (끝)', channel:'주민센터 방문 또는 복지로',
+   ev:[['{AGE}','만 19~34세','ok'],['무주택','무주택','ok'],['공공임대 아님','공공임대 거주자 제외','ok'],['{INC}','청년가구 중위 60% · 원가구 중위 100% 이하','q']],
+   quote:'<mark>19~34세</mark> 독립거주 <mark>무주택</mark> 청년 · 실제 월세 범위 내 <mark>월 최대 20만원 × 최대 24개월</mark>', src:'온통청년 20260319005400112218', easy:'매달 월세를 20만 원씩, 2년 동안 도와줘요'},
+  {id:'move', icon:'truck', name:'서울시 중개보수·이사비 지원', amt:'최대 40만 원', how:'중개보수 + 이사비 실비 · 생애 1회', last:'올해 접수 1차 4월 1~14일 · 2차 8월 18~31일 (끝)', channel:'청년몽땅정보통 온라인',
+   ev:[['{AGE}','만 19~39세','ok'],['12월 서울 입주','서울 전입 후 전입신고','ok'],['무주택','무주택 임차가구','ok'],['보증금 2,000만 원 이하 예산','거래금액 2억 원 이하','ok'],['{INC}','기준 중위소득 150% 이하','q']],
+   quote:'<mark>2024-01-01 이후 서울시로 전입</mark> 또는 서울시 내 이사 후 <mark>전입신고 완료</mark> · 중개보수 + 이사비 실비, <mark>최대 40만원</mark>', src:'서울시 2026 청년 부동산 중개보수 및 이사비 지원', easy:'부동산 수수료와 이사비를 40만 원까지 도와줘요'},
+  {id:'seoul', icon:'home', name:'서울시 청년월세', amt:'최대 240만 원', how:'월 20만 원 × 최대 12개월 · 생애 1회', last:'올해 접수 5월 6~19일 (끝)', channel:'서울주거포털 온라인', excluded:true,
+   ev:[['{AGE}','만 19~39세','ok'],['서울 입주','서울시 주민등록 + 임차 건물 전입','ok'],['무주택','무주택 월세 거주','ok'],['아직 집 안 정함','보증금 8천만 원 · 월세 60만 원 이하','q'],['{INC}','기준 중위소득 150% 이하','q']],
+   quote:'보증금 <mark>8천만원 이하·월세 60만원 이하</mark>. 월세 60 초과여도 (보증금×5%/12 + 월세) ≤ 93만원이면 가능', src:'서울시 청년몽땅정보통'}
+];
+const WHATIF = {
+  age:{label:'내년에 35살이 되면', total:280, plus:['서울시 청년월세 240만 원 (만 39세까지)'], minus:['국토부 청년월세 480만 원 (만 34세까지)','청년 전월세 대출보증 (만 34세까지)']},
+  income:{label:'국토부 소득 조건이 안 맞으면', total:280, plus:['서울시 청년월세 240만 원'], minus:['국토부 청년월세 480만 원']},
+  jeonse:{label:'전세로 계약하면', total:null, plus:['서울시 청년 임차보증금 이자지원 (연 2.0% 이자 지원)','전세보증금반환보증 보증료 지원'], minus:['국토부·서울시 청년월세 (월세 거주 조건)']}
+};
+/* ===== 2단계 판정 · 1단계 답(S.prof)으로 계산 (policy_match.py 규칙을 옮김) =====
+   기준 중위소득 1인 가구 2026년 월 256.4만 원 (보건복지부 고시)
+   코드가 확실히 판정: 나이 · 무주택 · 연소득(이자지원·대출보증)
+   추정 판정: 서울시 소득 48%~150% (세전 월급으로 추정, 실제는 건보료 기준) · 국토부 소득은 계산식이 복잡해 '확인 필요' */
+const MED1 = 256.4;
+function me(o){ const P=S.prof||{}; return {age:P.age||27, inc:P.income!=null?P.income:230, own:(S.own||P.own)==='있어요', sep:(S.sep||P.sep)==='네', cash:P.cash!=null?P.cash:2000, job:P.job||'직장인', ...(o||{})}; }
+function judge(o){
+  const m=me(o), pct=Math.round(m.inc/MED1*100), yinc=m.inc*12;
+  const age=(lo,hi)=>[`만 ${m.age}세`,`만 ${lo}~${hi}세`, m.age>=lo&&m.age<=hi?'ok':'no', `만 ${lo}~${hi}세 대상 (지금 만 ${m.age}세)`];
+  const home=t=>[m.own?'집 있음':'무주택', t, m.own?'no':'ok', '무주택이어야 해요'];
+  const incK=`월 ${m.inc}만 원 (중위 ${pct}%)`;
+  const inc150=lo=>[incK, `기준 중위소득 ${lo?'48% 초과 ~ ':''}150% 이하`, m.inc>MED1*1.5||(lo&&m.inc<=MED1*.48)?'no':'q', m.inc>MED1*1.5?`소득이 중위 150%를 넘어요 (지금 약 ${pct}%)`:`소득이 중위 48% 이하예요 (지금 약 ${pct}%) · 주거급여 대상일 수 있어요`];
+  const ev={
+    molit:[age(19,34), home('무주택'), m.sep?['부모님과 같은 주소','독립거주 (이사하며 세대 분리하면 충족)','q']:['부모님과 따로 살아요','독립거주','ok'], ['공공임대 아님','공공임대 거주자 제외','ok'], [incK,'청년가구 중위 60% · 원가구 중위 100% 이하','q']],
+    move:[age(19,39), ['12월 서울 입주','서울 전입 후 전입신고','ok'], home('무주택 임차가구'), [`보증금 ${m.cash.toLocaleString()}만 원 예산`,'거래금액 2억 원 이하', m.cash<=15000?'ok':'q'], inc150(false)],
+    seoul:[age(19,39), ['서울 입주','서울시 주민등록 + 임차 건물 전입','ok'], home('무주택 월세 거주'), ['아직 집 안 정함','보증금 8천만 원 · 월세 60만 원 이하','q'], inc150(true)]
+  };
+  const AMT={molit:480, move:40, seoul:240};
+  const list=POL.map(p=>{ const e=ev[p.id]; let st=e.some(x=>x[2]==='no')?'no':'ok'; if(o&&o.noMolit&&p.id==='molit') st='no';
+    const why=e.filter(x=>x[2]==='no').map(x=>x[3]||x[1]);
+    if(o&&o.noMolit&&p.id==='molit') why.push('소득 조건 안 맞음');
+    return {...p, ev:e, st, why, amtN:st==='ok'?AMT[p.id]:0}; });
+  const by=Object.fromEntries(list.map(p=>[p.id,p]));
+  let ex=null; if(by.molit.st==='ok'&&by.seoul.st==='ok'){ by.seoul.st='dup'; by.seoul.amtN=0; ex=by.seoul; }
+  const chosen=list.filter(p=>p.st==='ok'), fail=list.filter(p=>p.st==='no');
+  return {m, pct, yinc, list, chosen, fail, ex, total:chosen.reduce((s,p)=>s+p.amtN,0)};
+}
+/* 더 찾아본 지원도 내 조건으로 다시 판정 */
+function moreJ(){
+  const m=me(), y=m.inc*12, A=v=>v.toLocaleString();
+  return MORE.map((x,i)=>{ const r={...x};
+    if(i===1){ if(m.own){r.j='no';r.why='✗ 본인 무주택이어야 해요';} else if(m.age<19||m.age>39){r.j='no';r.why=`✗ 만 19~39세 대상 · 지금 만 ${m.age}세`;} }
+    if(i===2){ const bad=[]; if(m.age<19||m.age>34) bad.push(`✗ 만 19~34세 대상 · 지금 만 ${m.age}세`); if(y>7000) bad.push(`✗ 연소득 7천만 원 이하 · 지금 약 ${A(y)}만 원`); if(m.own) bad.push('✗ 무주택이어야 해요');
+      if(bad.length){r.j='no';r.why=bad.join(' · ');} }
+    if(i===3){ if(y>4000){r.j='no';r.why=`✗ 연소득 4천만 원 이하 · 지금 약 ${A(y)}만 원`;} else if(m.own||m.age>39){r.j='no';r.why=m.own?'✗ 무주택 세대주여야 해요':`✗ 만 19~39세 대상`;} }
+    if(i===5&&m.job==='대학생'){ r.j='ok'; r.ic='home'; r.end=[11,31]; r.kd='대학생 · 어르신 집에 저렴하게 거주'; r.why='✓ 대학(원)생 대상 · {NM}은 대학생'; }
+    return r; });
+}
+/* 조건이 바뀌면? → 같은 판정을 바꾼 조건으로 다시 돌림 */
+function whatifs(){
+  const J=judge(), m=J.m, out={}, nm=p=>`${p.name} ${p.amtN||{molit:480,move:40,seoul:240}[p.id]}만 원`;
+  const diff=(K,extra)=>{ const a=J.chosen.map(p=>p.id), b=K.chosen.map(p=>p.id);
+    return {total:K.total, plus:K.chosen.filter(p=>!a.includes(p.id)).map(nm), minus:J.chosen.filter(p=>!b.includes(p.id)).map(nm).concat(extra||[])}; };
+  const tgt=m.age<35?35:m.age<40?40:null;
+  if(tgt){ const d=diff(judge({age:tgt}), tgt===35&&m.age<=34&&m.inc*12<=7000&&!m.own?['청년 전월세 대출보증 (만 34세까지)']:[]); if(d.plus.length||d.minus.length) out.age={label:`만 ${tgt}살이 되면`, ...d}; }
+  if(J.chosen.some(p=>p.id==='molit')) out.income={label:'국토부 소득 조건이 안 맞으면', ...diff(judge({noMolit:true}))};
+  const plus=[]; if(m.inc*12<=4000&&!m.own&&m.age<=39) plus.push('서울시 청년 임차보증금 이자지원 (연 2.0% 이자 지원)'); if(!m.own) plus.push('전세보증금반환보증 보증료 지원');
+  const rentPol=J.chosen.filter(p=>p.id!=='move');
+  if(plus.length||rentPol.length) out.jeonse={label:'전세로 계약하면', total:null, plus, minus:rentPol.length?[rentPol.map(p=>p.name).join('·')+' (월세 거주 조건)']:[]};
+  return out;
+}
+/* ===================== RAG (공고문 검색 + 근거 답변) =====================
+   실제 서비스: POST /api/ask {question, profile} → {answer, citations, sources}
+   이 프로토타입은 scripts/rag.py가 돌려줄 답을 미리 넣어 둔 시연용이에요.
+   문장 속 숫자와 인용문은 processed/ 데이터 원문에서 가져왔어요. */
+const QA = {
+  loan1y:{q:'직장 다닌 지 1년 안 됐는데 전세대출 받을 수 있어요?',
+    a:'받을 수 있어요. 재직 1년 미만이면 전년도 원천징수영수증 대신 급여명세서·재직증명서로 소득을 증빙하는 경우가 많아요[1]. 소득 계산 방법과 한도는 은행 심사마다 달라서, 대출 은행이나 주택도시기금에 꼭 확인해야 해요[1].',
+    src:[['주택도시기금 대출 공통 규칙','재직 1년 미만이면 급여명세서·재직증명서 등으로 소득을 증빙하는 경우가 많음 (계산 방식·한도는 은행 심사 기준 확인 필요)']]},
+  rent12:{q:'월세 지원은 왜 12개월 뒤에 끝나요?',
+    a:'청년 월세 지원은 월 최대 20만 원을 최대 12개월 동안 주는 사업이에요[1]. 그래서 13개월째부터는 지원금 없이 월세를 내야 해서 한 달 부담이 늘어나요.',
+    src:[['청년 월세 지원 · 지원 내용','월 최대 20만 원 · 12개월']], calc:'늘어나는 금액(월 13만 원)은 코드가 계산했어요.'},
+  sh:{q:'청년주택은 왜 바로 못 들어가요?',
+    a:'청년안심주택은 1년에 공고가 두 번 나와요. 올해 2차 공고는 7월 31일에 나왔고, 계약은 2027년 1월 4~6일, 입주는 2027년 2월 1일~3월 2일이에요[1]. 공고부터 입주까지 약 6개월이라, 다음 공고를 기다려야 해요. {NM}은 본인 월소득이 1인 기준 100%(약 457만 원) 이하라 3순위로 신청할 수 있어요[2].',
+    src:[['2026년 2차 서울시 청년안심주택 입주자 모집공고 (SH, 2026.07.31)','계약 2027-01-04~01-06 · 입주 2027-02-01~03-02'],['같은 공고 · 입주자격','1·2순위 외, 본인 월평균소득 100% 이하 (1인가구 기준)']]},
+  when:{q:'국토부 청년월세는 내년에 언제 신청해요?',
+    a:'아직 2027년 공고는 나오지 않았어요. 올해는 3월 30일부터 5월 29일까지 주민센터 방문이나 복지로 온라인으로 접수했어요[1]. 새 공고가 나오면 알림으로 알려드릴게요.',
+    src:[['(국토부) 2026 청년월세 지원 · 온통청년','신청기간 2026-03-30 ~ 2026-05-29 · 주민센터 방문 또는 복지로 온라인']]},
+  deposit:{q:'전세로 하면 받을 수 있는 지원이 있어요?',
+    a:'서울시 청년 임차보증금 이자지원이 있어요. 임차보증금의 90% 이내, 최대 2억 원 대출에 대해 서울시가 연 2.0% 이자를 지원해요[1]. 연소득 4천만 원 이하 무주택 세대주가 대상이고, 상시 신청할 수 있어요[1].',
+    src:[['2026 서울시 청년 임차보증금 이자지원','임차보증금의 90% 이내, 최대 2억원 대출에 대해 서울시가 연 2.0% 이자 지원 · 연소득 4천만원 이하']]},
+  dupRent:{q:'서울시 청년월세랑 국토부 청년월세 같이 받을 수 있어요?',
+    a:'같이 받을 수 없어요. 둘 다 선정되면 서울주거포털에서 서울시 청년월세 지급중지를 신청하라고 안내하고 있어요[1]. 중지하면 이미 받은 돈은 돌려줘야 하고, 기한 안에 중지 신청을 안 하면 나중에 서울시 청년월세를 신청할 수 없어요[1]. 어느 쪽을 유지할지 고를 수 있는지는 청년월세지원센터(1833-2030)에 확인해야 해요.',
+    src:[['서울주거포털 공지 · 중복 선정자 지급중지 신청 안내','기한까지 중지 신청을 하지 않으면 추후 서울시 청년월세 지원 사업 신청 불가 (선정 및 지급 이력 남음) · 지원중지 신청자는 기지급분 환수']]},
+  seoulRent:{q:'역삼 집은 왜 서울시 청년월세가 안 돼요?',
+    a:'서울시 청년월세는 보증금 8천만 원 이하, 월세 60만 원 이하인 집이어야 해요[1]. 월세가 60만 원을 넘어도 (보증금×5%÷12 + 월세)가 93만 원 이하면 신청할 수 있어요[2]. 역삼 집은 이 값이 약 94.2만 원이라 조건에서 빠져요.',
+    src:[['2026 서울시 청년월세 지원 · 거주 요건','임차 보증금 8천만원 이하, 월세 60만원 이하 건물 월세 거주'],['같은 공고 · 예외','월세 60 초과여도 (보증금×5%/12 + 월세) ≤ 93만원이면 가능']],
+    calc:'94.2만 원 = 1,000만 원 × 5% ÷ 12 + 90만 원 (코드 계산)'},
+  age35:{q:'내년에 35살이 되면 못 받는 게 있어요?',
+    a:'국토부 청년월세는 만 19~34세가 대상이라 35살이 되면 빠져요[1]. 대신 서울시 청년월세는 만 39세까지라 신청할 수 있어요[2]. 그래서 받을 수 있는 금액이 최대 520만 원에서 280만 원으로 줄어요.',
+    src:[['(국토부) 2026 청년월세 지원','19~34세 독립거주 무주택 청년'],['2026 서울시 청년월세 지원','신청일 기준 만 19~39세']], calc:'520만 원 → 280만 원은 코드가 계산했어요.'},
+  move:{q:'이사비 지원은 누가 받을 수 있어요?',
+    a:'만 19~39세 무주택 청년이 서울로 전입하거나 서울 안에서 이사하고 전입신고를 마치면 받을 수 있어요[1]. 거래금액 2억 원 이하 집이어야 하고, 실제로 낸 중개보수와 이사비를 합쳐 최대 40만 원까지 받아요. 생애 1회예요[1].',
+    src:[['2026 서울시 청년 부동산 중개보수 및 이사비 지원','2024-01-01 이후 서울시로 전입 또는 서울시 내 이사 후 전입신고 완료 · 거래금액 2억원 이하 · 최대 40만원']]},
+  none:{q:'',
+    a:'공고문에서 근거를 찾지 못했어요. 확실하지 않은 내용은 답하지 않아요. 국토교통부 「찾아가는 청년주거 상담소」에서 직접 상담받을 수 있어요[1].',
+    src:[['찾아가는 청년주거 상담소 · 온통청년','대상: 주거정책에 관심있는 청년']], miss:true}
+};
+function matchQ(t){
+  const has=r=>r.test(t);
+  if(has(/1년|재직|신입|입사/)) return 'loan1y';
+  if(has(/중복|같이|둘 ?다|동시/)) return 'dupRent';
+  if(has(/전세|이자|보증금/)) return 'deposit';
+  if(has(/역삼|60만|월세 ?[6-9]\d ?만|서울시.*(안|못)/)) return 'seoulRent';
+  if(has(/35|나이/)) return 'age35';
+  if(has(/언제|기간|내년|공고/)) return 'when';
+  if(has(/12개월|끝나|종료/)) return 'rent12';
+  if(has(/청년주택|안심주택|SH|대기|입주/)) return 'sh';
+  if(has(/이사비|이사/)) return 'move';
+  if(has(/대출|버팀목/)) return 'loan1y';
+  return 'none';
+}
+const SUGG = {2:['when','dupRent','age35','move','deposit']};
+function ansCard(k, q){
+  const v=QA[k];
+  const a=v.a.replace(/\[(\d)\]/g,'<sup>[$1]</sup>');
+  return `${q!==false?`<div class="qb">${q||v.q}</div>`:''}<div class="ab"><div class="who">주거 상담 AI ${v.miss?'<span class="jb q" style="margin:0">근거 없음 → 상담 연결</span>':`<span class="aitag">공고문 ${v.src.length}건 근거</span>`}</div>${a}${v.calc?`<span class="calc">${v.calc}</span>`:''}
+    <div class="src">${v.src.map((s,i)=>`[${i+1}] ${s[0]} · <a href="#" onclick="return false" style="color:var(--pri)">원문 보기</a><span class="qt">"${s[1]}"</span>`).join('')}</div></div>`;
+}
+/* ===== 공고문 질문 · 서버 연결 =====
+   python scripts/server.py 로 열면 → /api/ask 로 진짜 RAG(검색 + AI 답 + 숫자 검사)가 답해요.
+   파일로 열거나 Live Server로 열면 → 서버가 없으니 위 QA에 미리 넣어 둔 답을 보여줘요. */
+let API_OK = null;
+function apiCheck(){
+  if(!location.protocol.startsWith('http')){ API_OK=false; return; }
+  fetch('/api/health').then(r=>r.ok?r.json():null).then(j=>{ API_OK=!!(j&&j.ok); render(); }).catch(()=>{ API_OK=false; });
+}
+function apiProfile(){ const P=S.prof||{}; return {age:P.age||27, income_monthly:P.income, job:P.job, homeless:S.own!=='있어요', area:{}}; }
+function apiAsk(q){
+  return fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q, profile:apiProfile()})})
+    .then(r=>r.ok?r.json():null).catch(()=>null);
+}
+const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function apiCard(r, q){
+  const a = esc(r.answer).replace(/\n/g,'<br>').replace(/\[(\d+)\]/g,'<sup>[$1]</sup>');
+  const tag = r.found===false ? '<span class="jb q" style="margin:0">근거 없음 → 상담 연결</span>'
+    : `<span class="aitag">${r.mode==='AI'?'AI 답변':'공고문 원문'} · 근거 ${r.sources.length}건</span>`;
+  return `${q?`<div class="qb">${esc(q)}</div>`:''}<div class="ab"><div class="who">주거 상담 AI ${tag}</div>${a}
+    <div class="src">${r.sources.map(s=>`[${s.n}] ${esc(s.name)} · ${esc(s.section)}${s.url&&/^https?:/.test(s.url)?` · <a href="${esc(s.url)}" target="_blank" rel="noopener" style="color:var(--pri)">원문 보기</a>`:''}<span class="qt">"${esc((s.text||'').slice(0,160))}${(s.text||'').length>160?'…':''}"</span>`).join('')}</div></div>`;
+}
+function ask3(q, k){   // q: 질문 문장 · k: 예시 질문 키 (서버가 없을 때 미리 넣어 둔 답)
+  q=(q||'').trim(); if(!q) return;
+  if(!location.protocol.startsWith('http')){ S.q3res=null; S.q3k=k||null; S.q3t=k?null:q; S.q3=k||matchQ(q); render(); return; }
+  Object.assign(S,{q3:null, q3res:null, q3t:q, q3k:k||null, q3load:true}); render();
+  apiAsk(q).then(r=>{ S.q3load=false; API_OK=!!r; if(r) S.q3res=r; else S.q3=k||matchQ(q); render(); });   // 서버가 늦게 켜져도 질문할 때마다 다시 시도
+}
+function loadCard(){ return `<div class="ab load"><div class="who">주거 상담 AI</div>공고문 1,300여 개 조각에서 찾는 중…</div>`; }
+function ask(k, q){ S.log.push({k, q, load:true}); set({chat:true}); setTimeout(()=>{ S.log[S.log.length-1].load=false; render(); const b=document.querySelector('.drawer .db'); if(b) b.scrollTop=1e6; },700); }
+function askText(id){ const el=document.getElementById(id); const t=(el&&el.value||'').trim(); if(!t) return; ask(matchQ(t), t); }
+function inline(field, k){ set({[field]: S[field]===k?null:k}); }
+function chatDrawer(){
+  if(!S.chat) return `<button class="fab" onclick="set({chat:true})" data-act="주거 상담 열기"><span style="font-size:18px">💬</span>주거 상담</button>`;
+  const sg=SUGG[S.step];
+  return `<div class="drawer"><div class="dh"><b>주거 상담</b><span class="aitag">공고문 근거로만 답해요</span><button class="x" onclick="set({chat:false})">×</button></div>
+    <div class="db">${S.log.length?'':`<p class="s" style="margin-top:16px">대출, 청년주택, 지원금 조건을 물어보세요. 온통청년·정부24·SH 공고문에서 찾아서 원문과 함께 답해요.</p>`}
+      ${S.log.map(m=>`<div class="qb">${m.q||QA[m.k].q}</div>${m.load?loadCard():ansCard(m.k,false)}`).join('')}
+      <div class="sugg">${sg.map(k=>`<button class="aichip" onclick="ask('${k}')">${QA[k].q}</button>`).join('')}</div></div>
+    <div class="df"><div class="askin"><input id="chatq" placeholder="예: 35살인데 대출 돼요?" onkeyup="if(event.key==='Enter'&&!event.isComposing)askText('chatq')"><button onclick="askText('chatq')">질문</button></div></div></div>`;
+}
+/* 3단계 · 더 찾아본 지원 (온통청년·정부24 → AI가 조건 문장 추출 → 코드가 판정) */
+const MORE = [
+  {n:'2026 전월세 안심계약 도움서비스', ic:'home', o:'서울특별시', end:[11,31], j:'ok', why:'✓ 사회초년생 1인가구 · 집 계약 전에 받으면 좋아요', qt:'사회초년생 등 내 집 찾기가 어려운 1인가구에게 전월세 계약상담 및 집보기 동행 서비스'},
+  {n:'2026 청년안심주택 공급(매입)', ic:'building', o:'서울특별시', end:[11,31], j:'ok', why:'✓ 만 19~39세 · ✓ 서울 · ? 소득·자산은 서류 확인', qt:'공고일 기준 만 19~39세, 미혼, 본인 무주택'},
+  {n:'청년 전월세 대출보증', ic:'bank', o:'금융위원회', end:null, j:'ok', why:'✓ {AGE} (19~34세) · ✓ 연소득 {YINC} (7천만 원 이하) · ✓ 무주택', qt:'연소득 7천만원 이하인 만 19~34세 무주택 청년'},
+  {n:'서울시 청년 임차보증금 이자지원', o:'서울특별시 · 상시', j:'cond', why:'전세로 계약하면 해당 · 지금 월세 계획에선 해당 없음', qt:'임차보증금의 90% 이내, 최대 2억원 대출에 대해 서울시가 연 2.0% 이자 지원'},
+  {n:'전세보증금반환보증 보증료 지원', o:'국토교통부 · 상시', j:'cond', why:'전세로 계약하면 해당 · 지금 월세 계획에선 해당 없음', qt:'유효한 전세보증금반환보증(HUG, HF, SGI)에 가입한 임차보증금 3억원 이하'},
+  {n:'2026 청년과 어르신 주거공유', o:'서울특별시 · 12/31까지', j:'no', why:'✗ 대학(원)생 대상 · {NM}은 직장인', qt:'대학(원)생에게 주변 임대료보다 저렴하게 주거공간을 제공'},
+  {n:'2026 청년 매입임대주택 사업', o:'서울특별시', j:'no', why:'✗ 접수 마감 (2026-06-30) · 내년 공고 확인', qt:'무주택 저소득 청년층에게 저렴하게 공급'}
+];
+const JB = {ok:['ok','해당돼요'], no:['no','안 돼요'], cond:['cond','조건부'], q:['q','조건 확인 필요']};
+const AIROW_BG={bank:['#f1f3f6','#5c6b80'],building:['#e6f8f1','#099268'],home:['#fff4e6','#e8590c']};
+const ddayOf = e => e ? Math.round((new Date(2026,e[0],e[1]) - TODAY)/864e5) : null;
+function aiRow(m,i){
+  const id='ai'+i, open=S.open===id, c=AIROW_BG[m.ic];
+  return `<div class="row ragmark" style="cursor:default">
+      <span class="check" style="visibility:hidden"></span>
+      <button style="display:flex;align-items:center;gap:16px;flex:1;text-align:left" onclick="set({open:${open?'null':`'${id}'`}})" data-act="펼치기 → AI 판정 근거"><span class="ico" style="background:${c[0]};color:${c[1]}">${svgIcon(m.ic)}</span>
+        <div><div class="name">${m.n} ${m.end?`<span class="pill warn">D-${ddayOf(m.end)}</span>`:''} <span class="aitag">AI 판정</span></div><div class="meta">${m.o} · ${m.end?`${m.end[0]+1}월 ${m.end[1]}일까지`:'상시 신청'}</div></div>
+        <div class="right"><div class="amt" style="font-size:15px;color:var(--sub)">${m.ic==='home'?'무료 상담':m.ic==='bank'?'대출 보증':'시세보다 저렴'}</div><div class="meta">지금 신청 가능</div></div><span class="chev ${open?'open':''}">›</span>
+      </button></div>
+    ${open?`<div class="detail"><div class="s" style="font-weight:700;color:var(--ink)">왜 해당되나요? &nbsp;<span style="font-weight:400;color:var(--sub)">AI가 공고문에서 찾은 조건과 {NM} 조건을 비교했어요</span></div>
+      <p class="p" style="margin:10px 0">${m.why}</p>
+      <div class="quote" style="border-color:var(--ai)">원문 「지원 대상」 "${m.qt}"</div>
+      <p class="s" style="margin-top:8px">금액이 정해진 지원이 아니라서 오른쪽 합계에는 넣지 않았어요.</p></div>`:''}`;
+}
+function moreList(){
+  const j=S.judged;
+  return `<div class="list" style="padding:0 18px">${MORE.filter(m=>!j||m.j!=='ok').map(m=>{const b=j?JB[m.j]:JB.q;return `<div class="jrow"><div style="min-width:0"><div class="nm">${m.n}</div><div class="mt">${m.o}</div>${j?`<div class="mt" style="color:var(--ink);margin-top:4px">${m.why}</div><span class="jq">"${m.qt}"</span>`:''}</div><span class="jb ${b[0]}">${b[1]}</span></div>`}).join('')}</div>`;
+}
+/* 4단계 · 이 집에서 받을 수 있는 지원 (금액 규칙은 policy_match.py 코드, 설명은 RAG) */
+function seoulOK(h){ const d=val(h,'deposit'), r=val(h,'rent'); return d<=8000 && (r<=60 || d*0.05/12 + r <= 93); }
+function supportTable(H){
+  const rows=[
+    ['청년 월세 지원 (국토부)', H.map(()=>true), null],
+    ['서울시 청년월세', H.map(seoulOK), 'seoulRent'],
+    ['청년 이사비 지원', H.map(()=>true), 'move']
+  ];
+  return `<div class="sec ragmark"><div class="sec-t"><span class="ico sm">${svgIcon('receipt')}</span>이 집에서 받을 수 있는 지원 <small>✗를 누르면 공고문 근거로 이유를 알려줘요</small></div>
+    <table><tr><th style="width:26%">지원</th>${H.map(h=>`<th><span class="dot" style="background:${h.color}"></span>${h.key} · ${h.label}</th>`).join('')}</tr>
+    ${rows.map(r=>`<tr><td style="font-weight:700">${r[0]}${r[2]==='move'?`<button class="why" onclick="inline('why4','move')">조건?</button>`:''}</td>${r[1].map(ok=>`<td>${ok?'<b style="color:var(--ok,#099268)">✓</b>':`<b style="color:#d64545">✗</b><button class="why" onclick="inline('why4','${r[2]}')">왜?</button>`}</td>`).join('')}</tr>`).join('')}</table>
+    ${S.why4?`<div style="max-width:720px">${ansCard(S.why4)}</div>`:''}
+    <p class="s" style="margin-top:10px">✓·✗는 코드가 보증금·월세로 판정하고, 이유 설명만 AI가 공고문에서 찾아서 해요.</p></div>`;
+}
+const $ = h => h;
+function set(p){ Object.assign(S,p); render(); }
+function go(n){ set({step:n, detail:null, showCmp:false}); window.scrollTo(0,0); }
+
+function header(){
+  const names=['내 상황','지원 추천','집 비교'];
+  const ez=['내 상황','받을 수 있는 돈','어느 집이 맞을까'];
+  const desc=['조건 정리','근거 있는 지원 · AI 상담','후보 집 종합 비교'];
+  return `<header class="gnb"><div class="wrap">
+      <div class="logo">첫집 <b>내비</b></div>
+      <nav class="menu"><span class="on">집 구하기</span><span>지원 정책 찾기</span><span>이용 방법</span></nav>
+      <div class="gnb-r"><button class="toggle" onclick="set({easy:!S.easy})" data-act="쉬운 화면 켜기/끄기">쉬운 화면 <span class="sw ${S.easy?'on':''}"></span></button>${S.user?`<span class="s" style="font-weight:700;color:var(--ink)">${S.user.name}님</span><button class="btn-sm" onclick="set({user:null})" data-act="로그아웃">로그아웃</button>`:`<button class="btn-sm" onclick="set({loginOpen:true})" data-act="로그인 창 (0-1)">로그인</button>`}</div>
+    </div></header>
+    <div class="stepbar"><div class="wrap">${(S.easy?ez:names).map((n,i)=>`<button class="sb ${S.step===i+1?'on':S.step>i+1?'done':''}" onclick="go(${i+1})" data-act="단계 ${i+1} 이동"><i>${S.step>i+1?'✓':i+1}</i><span class="sl"><b>${n}</b>${S.easy?'':`<small>${desc[i]}</small>`}</span></button>`).join('')}</div></div>`;
+}
+function footer(){
+  return `<footer class="ft"><div class="wrap"><b>첫집 <span style="color:var(--pri)">내비</span></b><span>처음 독립하는 서울 청년을 위한 주거 도우미</span><span class="r">정책 정보: 온통청년 · 정부24 · 서울시 · SH (2026년 11월 21일 기준) · 집 정보: 카카오 로컬 · ODsay</span></div></footer>`;
+}
+function profilePanel(){
+  const own = S.own ? (S.own==='없어요'?'무주택':'주택 있음') : null;
+  const sep = S.sep ? (S.sep.startsWith('네')?'부모님과 같은 주소':'세대 분리됨') : null;
+  const P=S.prof, rows=[['나이',P.age?`만 ${P.age}세`:null],['구분',P.job],['자주 가는 곳',P.placeOk?P.place:null],['모아둔 돈',P.cash!=null?won(P.cash):null],['월 소득',P.income!=null?won(P.income):null],['내 집',own],['주소',sep]];
+  const filled=rows.filter(r=>r[1]).length;
+  return `<div class="panel"><div class="panel-t"><span class="ico sm">${svgIcon('home')}</span>내 조건${S.step>1?`<button class="link" onclick="go(1)">수정</button>`:`<span class="s" style="margin-left:auto;font-weight:600">${filled}/${rows.length}</span>`}</div>
+    ${S.step===1?`<div class="prog"><span style="width:${filled/rows.length*100}%"></span></div>`:''}
+    ${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b class="${r[1]?'':'q'}">${r[1]||'확인 중'}</b></div>`).join('')}</div>`;
+}
+function aside(){
+  if(S.step===1) return profilePanel()+`<div class="panel soft"><div class="panel-t">이렇게 적어도 돼요</div><p class="s">누르면 입력창에 들어가요</p>${['학교는 신촌이고 알바로 한 달 80 벌어요','보증금은 500까지, 월세는 50 아래로요','3월에 이사하고 싶어요'].map(t=>`<button class="ex" onclick="document.querySelector('.compose input').value='${t}'" data-act="예시 문장 넣기">“${t}”</button>`).join('')}</div>`;
+  if(false){ const st=STRAT[S.strategy]; return `<div class="panel"><div class="panel-t"><span class="ico sm">${svgIcon(st.icon)}</span>선택한 전략</div><div class="name" style="font-size:17px;font-weight:800">${st.name}</div><div class="big-amt">월 ${st.month}만 원</div><p class="s">2년 총비용 ${st.total?st.total+'만 원':'당첨 시 결정'} · 보증금 위험 ${st.risk}</p></div>`+profilePanel(); }
+  if (S.step === 2) {
+    const al = POL.filter(p => S.alarm.includes(p.id));
+    return `<div class="panel"><div class="panel-t">공고 알림 <small class="s" style="font-weight:400">${al.length}개</small></div>
+    ${al.length ? `<div class="tray">${al.map(p => `<div><span class="dot" style="background:${PCOL[p.id].fg}"></span>${p.name}</div>`).join('')}</div><p class="s">2027년 공고가 나오면 알려드려요.</p>` : `<p class="s">내년에 신청할 지원의 [공고 알림 받기]를 누르면 여기에 모여요.</p>`}</div>` + profilePanel();
+  }
+  if(S.step===3){
+    if(!S.homesDone) return `<div class="panel soft"><div class="panel-t">이렇게 넣어 보세요</div><p class="s" style="line-height:1.9">부동산 앱에서 본 집 주소를 건물 번호까지 검색해요.<br>보증금과 월세는 매물에 적힌 금액을 넣어요.<br>2곳 이상이면 비교할 수 있어요 (최대 3곳).</p></div>`+profilePanel();
+    const H=hs(), top=scores()[0];
+    return `<div class="panel"><div class="panel-t"><span class="ico sm">${svgIcon('building')}</span>후보 집 ${H.length}곳</div>
+        ${H.map((h,i)=>`<div class="hrow"><span class="pin" style="background:${h.color}">${h.key}</span><div style="flex:1;min-width:0"><div class="hn">${h.label}</div><div class="hm">한 달 ${monthly(h)}만 원 · ${h.commute}분</div></div><button class="link" onclick="set({homes:S.homes.filter(x=>x!==${S.homes[i]}),homesDone:false})" data-act="집 바꾸기">바꾸기</button></div>`).join('')}
+        ${H.length<MAX_HOMES?`<button class="link" style="margin-top:10px" onclick="set({homesDone:false,adding:true})" data-act="후보 하나 더 넣기">+ 후보 하나 더 넣기</button>`:''}</div>
+      `;
+  }
+  return '';
+}
+
+/* ---------- STEP 1 ---------- */
+function step1(){
+  if(S.easy){
+    const qs=[
+      {k:'own', q:'내 이름으로 된 집이<br>있나요?', h:'집을 산 적이 없으면 "없어요"를 눌러 주세요.', a:['없어요','있어요']},
+      {k:'sep', q:'지금 부모님과<br>주소가 같나요?', h:'주민등록 주소를 말해요. 모르면 "잘 모르겠어요"를 눌러 주세요.', a:['네, 같아요','아니요','잘 모르겠어요']}
+    ];
+    if(S.easyQ>=2) return `<div class="eyebrow">질문 끝</div><h1>고마워요.<br>{NM} 상황을 정리했어요</h1>
+      <div class="sec">${[['나이','27살'],['자주 가는 곳','멀티캠퍼스 역삼'],['모아둔 돈','2,000만 원'],['한 달 월급','230만 원'],['내 집','없어요']].map(r=>`<div class="erow"><div class="t" style="font-weight:500;color:#4e5968;width:220px">${r[0]}</div><div class="t">${r[1]}</div></div>`).join('')}</div>
+      <div class="cta"><button class="btn pri wide" onclick="go(2)" data-act="다음 단계">받을 수 있는 돈 보기</button></div>`;
+    const q=qs[S.easyQ];
+    return `<div class="eyebrow">질문 2개 중 ${S.easyQ+1}번째</div><h1>${q.q}</h1><div class="lead">${q.h}</div>
+      <div class="big-q">${q.a.map((a,i)=>`<button class="btn ${i===0?'pri':'ghost'} wide" onclick="set({${q.k}:'${a}',easyQ:${S.easyQ+1}})" data-act="답 선택 → 다음 질문">${a}</button>`).join('')}</div>
+      <p class="s" style="text-align:center;margin-top:28px">글로 쓰기 어렵다면 말로 해도 돼요</p>`;
+  }
+  const P=S.prof, qi=S.qi||0, Q=QS1[qi], done=qi>=QS1.length;
+  const ans=QS1.slice(0,qi).map(q=>`<div class="who">첫집 내비</div><div class="bub ai">${q.q}</div><div class="bub me">${q.show(P)}</div>`).join('');
+  const tiles=[['나이',P.age?`만 ${P.age}세`:null,'user'],['상황',P.job,'building'],['자주 가는 곳',P.place,'train'],['보증금으로 쓸 돈',P.cash!=null?won(P.cash):null,'bank'],['한 달 수입',P.income!=null?won(P.income):null,'receipt'],['출퇴근 시간',P.time?(P.time>=999?'상관없음':`${P.time}분 이내`):null,'clock'],['입주 시기',P.when,'home'],['내 집',S.own?(S.own==='없어요'?'무주택':'있음'):null,'home'],['주소',S.sep?(S.sep==='네'?'부모님과 같음':'따로 전입'):null,'home']].filter(t=>t[1]);
+  return `<div class="eyebrow">1단계</div><h1>어떤 상황인지 알려 주세요</h1>
+    <div class="lead">질문에 하나씩 답해 주세요. 버튼을 눌러도 되고 직접 적어도 돼요. 마지막에 더 궁금한 걸 물어볼 수 있어요.</div>
+    <div class="chatpanel"><div class="chat">
+      <div class="who">첫집 내비</div><div class="bub ai">안녕하세요! 집 구하기에 필요한 것만 ${QS1.length}가지 여쭤볼게요.</div>
+      ${ans}
+      ${!done?`${Q.k==='place'&&P.place&&!P.placeOk?`<div class="who">첫집 내비</div><div class="bub ai">${Q.q}</div><div class="bub me">${P.place}</div>`:''}<div class="who">첫집 내비 · ${qi+1}/${QS1.length}</div><div class="bub ai">${Q.k==='place'&&P.place&&!P.placeOk?`${P.place}는 넓어서 출퇴근 시간을 정확히 계산하기 어려워요. <b>어디쯤인지</b> 골라 주시거나 역·건물 이름을 적어 주세요.`:Q.q}${Q.h&&!(Q.k==='place'&&P.place&&!P.placeOk)?`<div class="s" style="margin-top:4px">${Q.h}</div>`:''}
+        ${Q.opts&&Q.opts(P).length?`<div class="chips" style="margin-top:12px">${Q.opts(P).map(o=>`<button class="chip" onclick="answer1(${JSON.stringify(o[1]).replace(/"/g,'&quot;')})" data-act="답 고르기">${o[0]}</button>`).join('')}</div>`:''}</div>${(S.miss||[]).map(m=>`<div class="bub me">${m.t}</div><div class="who">첫집 내비</div><div class="bub ai">${m.m}</div>`).join('')}`
+      :`<div class="who">첫집 내비</div><div class="bub ai">고마워요! 이렇게 정리했어요. 틀린 게 있으면 눌러서 다시 답해 주세요.
+        <div class="prof">${tiles.map(r=>`<button onclick="redo1('${r[0]}')" data-act="다시 답하기"><span class="pi">${svgIcon(r[2])}</span><span>${r[0]}<b>${r[1]}</b></span></button>`).join('')}</div></div>
+        ${S.sep==='네'?`<div class="bub ai">부모님과 주소가 같으면 <b>세대 분리 후 전입신고</b>를 해야 받을 수 있는 지원이 있어요. 2단계에서 자세히 알려드릴게요.</div>`:''}
+        ${(S.extra||[]).map(m=>`<div class="bub me">${m.q}</div><div class="who">첫집 내비</div><div class="bub ai">${m.a}</div>`).join('')}
+        <div class="bub ai">더 궁금한 게 있거나 덧붙일 내용이 있으면 아래에 적어 주세요. 없으면 다음 단계로 넘어가요.</div>`}
+    </div>
+    <div class="compose"><input id="msgin" placeholder="${done?'예: 반려동물 키워도 돼요? / 회사가 판교로 바뀌었어요':Q.ph}" onkeyup="if(event.key==='Enter'&&!event.isComposing)${done?'extra1':'typed1'}(this.value)"><button class="send" onclick="${done?'extra1':'typed1'}(document.getElementById('msgin').value)" data-act="보내기">↑</button></div></div>
+    <div class="cta"><button class="btn pri wide" ${done?'':'style="opacity:.4;pointer-events:none"'} onclick="go(2)" data-act="다음 단계">${done?'받을 수 있는 지원 보기':`질문에 답하면 다음으로 넘어가요 (${qi}/${QS1.length})`}</button></div>`;
+}
+
+/* ----- 1단계 질문 (하나씩) ----- */
+const QS1 = [
+  {k:'age', q:'나이가 어떻게 되세요?', h:'만 나이로 알려 주세요. 청년 지원은 나이 조건이 있어요.', ph:'예: 27', opts:()=>[],
+   set:v=>({age:+v}), parse:t=>{const m=t.match(/\d{2}/);return m&&+m[0]>=14&&+m[0]<=99?+m[0]:null}, show:P=>`만 ${P.age}세`},
+  {k:'job', q:'지금 어떤 상황이에요?', ph:'예: 직장인', opts:()=>[['직장인','직장인'],['대학생','대학생'],['취업 준비','취업 준비'],['기타','기타']],
+   set:v=>({job:v}), parse:t=>/직장|회사|근무|재직|사원|직원|공무원|정규|계약직|프리랜서|일해|다녀/.test(t)?'직장인':/대학|학생|휴학|졸업반/.test(t)?'대학생':/취준|취업|구직|준비|쉬고|백수/.test(t)?'취업 준비':/^[가-힣 ]{2,}$/.test(t.trim())?t.trim():null, show:P=>P.job},
+  {k:'place', q:'회사나 학교는 어디예요?', h:'오가는 시간을 계산할 곳이에요. 역 이름이나 건물 이름이면 더 정확해요.', ph:'예: 역삼역 멀티캠퍼스',
+   opts:P=>P.place&&!P.placeOk?placeOpts(P.place).map(o=>[o[0],o[0]+'|'+o[1]]):[['멀티캠퍼스 역삼','멀티캠퍼스 역삼|서울 강남구 테헤란로 212'],['강남역','강남역|강남역 2호선'],['홍대입구역','홍대입구역|홍대입구역 2호선'],['판교역','판교역|판교역 신분당선']],
+   set:v=>{const [n,q]=String(v).split('|');const vague=!q&&KNOWN_PLACES[n.replace(/역$/,'')]&&!/역$/.test(n);if(!vague)setDest(n,q||n);return {place:n,placeOk:!vague}}, parse:t=>/^[가-힣A-Za-z0-9 ]{2,}$/.test(t.trim())?t.trim():null, show:P=>P.place},
+  {k:'cash', q:'보증금으로 쓸 수 있는 돈은 얼마예요?', h:'모아둔 돈이나 부모님 도움을 합쳐서요.', ph:'예: 2천만 원', opts:()=>[['500만 원',500],['1,000만 원',1000],['2,000만 원',2000],['3,000만 원 이상',3000]],
+   set:v=>({cash:+v}), parse:t=>money(t), show:P=>won(P.cash)},
+  {k:'income', q:'한 달 수입은 얼마예요?', h:'세금 떼기 전 월급, 알바비를 합쳐서요. 지원 자격을 볼 때 써요.', ph:'예: 230', opts:()=>[['100만 원 이하',100],['150만 원',150],['230만 원',230],['300만 원 이상',300]],
+   set:v=>({income:+v}), parse:t=>money(t), show:P=>won(P.income)},
+  {k:'time', q:'출퇴근은 몇 분까지 괜찮아요?', ph:'예: 40분', opts:()=>[['30분',30],['45분',45],['1시간',60],['상관없어요',999]],
+   set:v=>({time:+v}), parse:t=>{if(/상관|아무|괜찮/.test(t))return 999;const h=t.match(/(\d+)\s*시간/),m=t.match(/(\d+)/);return h?+h[1]*60+(/반/.test(t)?30:0):/한 ?시간/.test(t)?60+(/반/.test(t)?30:0):m?+m[1]:null}, show:P=>P.time>=999?'상관없어요':`${P.time}분까지`},
+  {k:'when', q:'언제쯤 이사하고 싶어요?', ph:'예: 다음 달', opts:()=>[['이번 달','이번 달'],['다음 달','다음 달'],['3개월 안','3개월 안'],['아직 몰라요','아직 몰라요']],
+   set:v=>({when:v}), parse:t=>/이번 ?달|당장|바로|빨리|지금/.test(t)?'이번 달':/다음 ?달|한 ?달 ?(뒤|후)/.test(t)?'다음 달':/(\d{1,2})\s*월/.test(t)?t.match(/(\d{1,2})\s*월/)[1]+'월':/(\d)\s*개월|석 ?달|분기/.test(t)?'3개월 안':/모르|미정|아직|글쎄/.test(t)?'아직 몰라요':null, show:P=>P.when},
+  {k:'own', q:'지금 본인 명의로 된 집이 있나요?', h:'대부분의 청년 주거 지원은 무주택이어야 받을 수 있어요.', ph:'없어요 / 있어요', opts:()=>[['없어요','없어요'],['있어요','있어요']],
+   set:v=>{S.own=v;return {}}, parse:t=>/없|무주택|아니/.test(t)?'없어요':/있/.test(t)?'있어요':null, show:()=>S.own},
+  {k:'sep', q:'지금 부모님과 같은 주소에 전입되어 있나요?', h:'주민등록 주소 기준이에요. 같으면 세대 분리가 필요할 수 있어요.', ph:'네 / 아니요', opts:()=>[['네, 같아요','네'],['아니요','아니요'],['잘 모르겠어요','네']],
+   set:v=>{S.sep=v;return {}}, parse:t=>/아니|따로|분리/.test(t)?'아니요':/네|같|응/.test(t)?'네':null, show:()=>S.sep==='네'?'네, 같아요':'아니요'}
+];
+function answer1(v){
+  const q=QS1[S.qi||0], prof={...S.prof, ...q.set(v)};
+  const next = q.k==='place'&&!prof.placeOk ? (S.qi||0) : (S.redo!=null ? QS1.length : (S.qi||0)+1);
+  set({prof, qi: next, redo:null, miss:[]});
+  setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();}},0);
+}
+function typed1(t){ t=(t||'').trim(); if(!t) return; if(/^[a-z]{2,}$/.test(t) && !['age','cash','income','time'].includes(QS1[S.qi||0].k)) return alertSoft1(t,'영어로 입력됐어요. 한/영 키를 바꿔서 다시 적어 주세요'); const v=QS1[S.qi||0].parse(t); if(/[ㄱ-ㅎㅏ-ㅣ]/.test(t)||v==null||Number.isNaN(v)) return alertSoft1(t,`잘 못 알아들었어요. "${QS1[S.qi||0].ph.replace(/^예:\s*/,'')}"처럼 적거나 위 버튼을 눌러 주세요`); answer1(v); }
+function redo1(label){ const map={'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'};
+  set({qi: QS1.findIndex(q=>q.k===map[label]), redo:true, miss:[]}); }
+function alertSoft1(t,m){ S.miss=[...(S.miss||[]),{t:esc(t),m}]; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();} const c=document.querySelector('.chat'); if(c) c.lastElementChild.scrollIntoView({block:'nearest'});},0); }
+function alertSoft(m){ const e=document.getElementById('msgin'); if(e){ e.value=''; e.placeholder=m; } }
+function extra1(t){
+  t=(t||'').trim(); if(!t) return;
+  const isQ=/[?？]\s*$|(나요|까요|되나|있나)\s*$/.test(t);   // 질문이면 조건은 안 바꾸고 답만
+  const {P}=isQ?{P:{}}:parseMsg(t); const keys=Object.keys(P);
+  let a;
+  if(keys.length){ const prof={...S.prof,...P}; if(P.place){ prof.placeOk=/역$|대학교|캠퍼스|빌딩|타워/.test(P.place); if(prof.placeOk) setDest(P.place,P.place); } S.prof=prof;
+    a=`알겠어요, <b>${keys.map(k=>({age:'나이',job:'상황',place:'자주 가는 곳',cash:'보증금',income:'한 달 수입',time:'출퇴근 시간',when:'입주 시기'})[k]).filter(Boolean).join(', ')}</b>을 바꿨어요. 위 정리에 반영했어요.`; }
+  else if(location.protocol.startsWith('http')){ const i=(S.extra||[]).length; set({extra:[...(S.extra||[]), {q:t.replace(/[<>&]/g,''), a:'<span class="s">공고문에서 찾는 중…</span>'}]});
+    apiAsk(t).then(r=>{ API_OK=!!r; const e=S.extra[i]; if(!e) return;
+      e.a = r ? esc(r.answer).replace(/\s*\[\d+\]/g,'').replace(/\n/g,'<br>') + (r.sources.length?` <span class="s">(근거: ${[...new Set(r.sources.map(x=>esc(x.name)))].slice(0,2).join(', ')})</span>`:'')
+              : (()=>{const k=matchQ(t); return k!=='none'?QA[k].a.replace(/\[\d\]/g,''):'지금은 답을 찾지 못했어요. 2단계 공고문에 물어보기에서 다시 물어봐 주세요.';})();
+      render(); }); return; }
+  else { const k=matchQ(t); a = k!=='none' ? QA[k].a.replace(/\[\d\]/g,'') + ` <span class="s">(2단계 공고문에 물어보기에서 근거 원문을 볼 수 있어요)</span>` : '그 내용은 2단계 지원 추천이나 3단계 집 비교에서 다룰게요. 다음 단계로 넘어가 볼까요?'; }
+  set({extra:[...(S.extra||[]), {q:t.replace(/[<>&]/g,''), a}]});
+}
+
+/* ----- 1단계 문장 → 조건 (브라우저 규칙 버전. 서버를 켜면 LLM 버전으로 바꿀 자리: POST /api/profile) ----- */
+const won = v => v >= 10000 ? `${Math.floor(v/10000)}억${v%10000?' '+(v%10000).toLocaleString()+'만':''} 원` : `${v.toLocaleString()}만 원`;
+function money(t){   // "2천" "2천만" "2,000만" "1억 5천" "230" → 만 원
+  t = t.replace(/,/g,''); let m, v = 0;
+  if ((m = t.match(/(\d+(?:\.\d+)?)\s*억/))) v += parseFloat(m[1]) * 10000;
+  if ((m = t.match(/(\d+(?:\.\d+)?)\s*천/))) v += parseFloat(m[1]) * 1000;
+  if (!v && (m = t.match(/(\d+(?:\.\d+)?)\s*(만|만원|만 원)?/))) v = parseFloat(m[1]);
+  return v ? Math.round(v) : null;
+}
+const KNOWN_PLACES = {'강남':[['강남역','강남역 2호선'],['역삼역','역삼역 2호선'],['선릉역','선릉역 2호선'],['멀티캠퍼스 역삼','서울 강남구 테헤란로 212']],
+  '홍대':[['홍대입구역','홍대입구역 2호선'],['홍익대학교','홍익대학교 서울캠퍼스']], '신촌':[['신촌역','신촌역 2호선'],['연세대학교','연세대학교 신촌캠퍼스']],
+  '판교':[['판교역','판교역 신분당선'],['판교테크노밸리','판교테크노밸리']], '여의도':[['여의도역','여의도역 5호선'],['국회의사당역','국회의사당역 9호선']],
+  '종로':[['종각역','종각역 1호선'],['광화문역','광화문역 5호선']], '성수':[['성수역','성수역 2호선'],['뚝섬역','뚝섬역 2호선']]};
+function placeOpts(p){ const k = Object.keys(KNOWN_PLACES).find(k => p.includes(k)); return k ? KNOWN_PLACES[k] : [[p + '역', p + '역']]; }
+function parseMsg(t){
+  const P = {}, hit = [];
+  const mark = re => t.match(re), put = v => { if (v) hit.push(String(v).trim()); };
+  let m;
+  if ((m = mark(/(만\s*)?(\d{2})\s*(살|세)/))) { P.age = +m[2]; put(m[0]); }
+  if ((m = mark(/직장인|회사원|회사|직장|출근|월급/))) P.job = '직장인'; else if ((m = mark(/대학생|학생|학교|대학|등교/))) { P.job = '대학생'; put(m[0]); }
+  if ((m = mark(/(회사|직장|학교|대학교|일하는 곳|사무실|출근|등교)(은|는|가|이|하는 곳은)\s*([가-힣A-Za-z0-9 ]{2,20}?)(이고|이에요|예요|이라|라서|에 있|쪽|근처|,|\.|$)/))) { P.place = m[3].trim().replace(/\s*(에|에서)$/,''); put(P.place); }
+  else if ((m = mark(/([가-힣]{2,10}역)/))) { P.place = m[1]; put(m[1]); }
+  if ((m = mark(/(모아둔 돈|모은 돈|목돈|보증금으로 쓸 수 있는 돈|보증금)\s*(은|는|이|으로)?\s*([0-9][0-9,.\s]*(억|천|만)?[0-9,.\s]*(천|만)?)/))) { P.cash = money(m[3]); put(m[3]); }
+  if ((m = mark(/(월급|월 소득|한 달 수입|한 달에|월)\s*(은|는|이)?\s*([0-9][0-9,]*\s*만?)\s*(원|정도)?/))) { P.income = money(m[3]); put(m[3]); }
+  if ((m = mark(/(\d+)\s*시간/))) { P.time = +m[1] * 60; put(m[0]); } else if ((m = mark(/(\d+)\s*분\s*(안|이내|이하)?/))) { P.time = +m[1]; put(m[0]); }
+  if ((m = mark(/다음\s*달|이번\s*달|(\d{1,2})\s*월에/))) { P.when = m[1] ? `${m[1]}월` : m[0]; put(m[0].replace(/에$/,'')); }
+  if (/집\s*(이|은)?\s*없|무주택/.test(t)) S.own = '없어요';
+  if (/세대\s*분리|혼자\s*전입|따로\s*전입/.test(t)) S.sep = '아니요';
+  return {P, hit};
+}
+function sendMsg(t){
+  t = (t || '').trim(); if (!t) return;
+  const {P, hit} = parseMsg(t);
+  let html = t.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+  [...new Set(hit)].sort((a,b)=>b.length-a.length).forEach(h => { html = html.split(h).join(`<mark>${h}</mark>`); });
+  const prof = {...S.prof, ...P};
+  if (P.place) { const exact = /역$|대학교|캠퍼스|로\s*\d|길\s*\d|빌딩|타워/.test(P.place) && !KNOWN_PLACES[P.place]; prof.placeOk = exact; if (exact) setDest(P.place, P.place); }
+  set({msgs: [...S.msgs, {html, n: Object.keys(P).length}], prof});
+}
+function pickPlace(name, q){ setDest(name, q); set({prof: {...S.prof, place: name, placeOk: true}}); }
+function setDest(name, q){ DEST.name = name; DEST.addr = q; }
+
+/* ---------- STEP 2 ---------- */
+function chart(){
+  const lines=Object.keys(LINES).map(k=>{const on=S.strategy===k;return `<polyline points="${LINES[k]}" fill="none" stroke="${on?'#2f6bff':'#d5dae0'}" stroke-width="${on?4:2.5}" ${k==='C'?'stroke-dasharray="8 6"':''}/>`}).join('');
+  const note = S.strategy==='B'?`<circle cx="400" cy="88" r="6" fill="#2f6bff"/><text x="414" y="50" font-size="14" fill="#2f6bff" font-weight="700">12개월 뒤 지원 종료 → 월 13만 원 증가</text>`:
+               S.strategy==='C'?`<text x="232" y="30" font-size="14" fill="#2f6bff" font-weight="700">6개월 대기 중엔 월세 원가 부담</text>`:
+               `<text x="420" y="80" font-size="14" fill="#2f6bff" font-weight="700">2년 내내 이자 부담 일정</text>`;
+  return `<svg viewBox="0 0 800 190" width="100%"><line x1="40" y1="170" x2="760" y2="170" stroke="#e8ebee"/>
+    <text x="40" y="188" font-size="13" fill="#9aa3ad">입주</text><text x="383" y="188" font-size="13" fill="#9aa3ad">12개월</text><text x="718" y="188" font-size="13" fill="#9aa3ad">24개월</text>${lines}${note}</svg>`;
+}
+function step2(){
+  const st=STRAT[S.strategy];
+  if(S.easy){
+    return `<div class="eyebrow">2단계</div><h1>{NM}에게는<br><span style="color:var(--pri)">월세 + 지원금</span>이 가장 좋아요</h1>
+      <div class="sec"><div class="s">한 달에 내는 돈</div><div class="hero-num">약 38만 원</div><div class="p">지원금 20만 원을 받고 남은 금액이에요.</div></div>
+      <div class="sec"><div class="note warn" style="font-size:21px;padding:22px"><span class="ic">!</span><div><b>1년 뒤를 기억하세요.</b><br>지원금이 끝나면 한 달에 13만 원을 더 내야 해요.</div></div></div>
+      ${S.easyMore?`<div class="sec">${Object.entries(STRAT).filter(([k])=>k!=='B').map(([k,v])=>`<div class="erow"><div><div class="t">${v.name}</div><div class="d">${v.desc}</div></div><div class="m" style="color:var(--ink)">월 ${v.month}만 원</div></div>`).join('')}</div>`:''}
+      <div class="cta" style="flex-direction:column"><button class="btn pri wide" onclick="go(3)" data-act="다음 단계">받을 수 있는 돈 보기</button>${S.easyMore?'':`<button class="btn ghost wide" onclick="set({easyMore:true})" data-act="다른 방법 펼치기">다른 방법도 보기</button>`}</div>`;
+  }
+  return `<div class="eyebrow">2단계</div><h1>{NM} 조건에 맞는 주거 전략 3가지</h1>
+    <div class="lead">모아둔 돈 2,000만 원 · 월 소득 230만 원 · 자주 가는 곳 멀티캠퍼스 역삼 기준이에요. 눌러서 비교해 보세요.</div>
+    <div class="sec cards3">${Object.entries(STRAT).map(([k,v])=>`<button class="scard ${S.strategy===k?'on':''}" onclick="set({strategy:'${k}'})" data-act="전략 선택 → 그래프 변경">
+        <div class="top0"><span class="ico ${S.strategy===k?'':'gray'}">${svgIcon(v.icon)}</span>${v.best?'<span class="pill">추천</span>':''}<span class="radio ${S.strategy===k?'on':''}"></span></div>
+        <div class="name">${v.name}</div><div class="amt">월 ${v.month}만 원</div><div class="meta">${v.desc}</div><div class="meta">보증금 위험 ${v.risk}</div></button>`).join('')}</div>
+    <div class="sec"><div class="sec-t">2년 살아보기 <small>월별 실제 부담</small></div>${chart()}</div>
+    <div class="strip"><div>월 실제 부담<b class="pri">${st.month}만 원</b></div><div>2년 총비용<b>${st.total?st.total+'만 원':'당첨 시 결정'}</b></div><div>보증금 위험<b>${st.risk}</b></div></div>
+    <div class="sec"><div class="note"><div>${S.strategy==='B'?'월세 + 지원금이 2년 기준 가장 저렴하지만, 12개월 뒤 지원이 끝나면 월 13만 원이 늘어요. <b>그 전에 청년주택에 미리 지원</b>해 두는 걸 추천해요.':S.strategy==='A'?'전세대출은 매달 부담은 비슷하지만 <b>보증금을 돌려받지 못할 위험</b>이 있어요. 4단계에서 집을 꼭 확인하세요.':'청년주택은 가장 싸지만 <b>당첨이 확실하지 않아요</b>. 기다리는 동안 살 곳은 월세 + 지원금으로 구하는 걸 추천해요.'}</div></div></div>
+    <div class="sec ragbox ragmark"><div class="row" style="border:0;padding:0;gap:8px;flex-wrap:wrap"><b>왜 그런지 궁금하면</b><span class="aitag">AI · 공고문 근거</span></div>
+      <div class="chips" style="margin-top:12px">${(S.strategy==='A'?['loan1y']:S.strategy==='B'?['rent12','sh']:['sh','rent12']).map(k=>`<button class="aichip ${S.why2===k?'on':''}" onclick="inline('why2','${k}')" data-act="왜? → 공고문 근거 답변">${QA[k].q}</button>`).join('')}</div>
+      ${S.why2?ansCard(S.why2,false):''}
+      <p class="s" style="margin-top:12px">비용·그래프는 코드가 계산하고, AI는 대출·공고 원문에서 조건을 찾아 설명만 해요.</p></div>
+    <div class="cta"><button class="btn ghost" onclick="go(1)">이전</button><button class="btn pri wide" onclick="go(3)" data-act="다음 단계">이 전략으로 받을 수 있는 지원 보기</button></div>`;
+}
+
+/* ---------- STEP 3 · 신청 달력 ---------- */
+const TODAY = new Date(2026,10,21);
+const PCOL = {
+  molit: {fg: '#2f6bff', bg: '#eef3ff', bd: '#c5d5ff', short: '국토부 월세'},
+  move: {fg: '#5c8dff', bg: '#f0f5ff', bd: '#c5d5ff', short: '이사비'},
+  seoul: {fg: '#1b3a8a', bg: '#edf1fb', bd: '#c3cdea', short: '서울시 월세'},
+  safe: {fg: '#099268', bg: '#e6fcf5', bd: '#96f2d7', short: '안심계약 도움'},
+  house: {fg: '#e8590c', bg: '#fff4e6', bd: '#ffc078', short: '청년안심주택'},
+  loan: {fg: '#7048e8', bg: '#f3f0ff', bd: '#d0bfff', short: '대출보증'}
+};
+const CAL_EVENTS = [
+  {id:'safe',  name:'전월세 안심계약 도움서비스 신청', s:[10,21], e:[11,31], kind:'warn'},
+  {id:'house', name:'청년안심주택 공급(매입) 신청', s:[10,21], e:[11,31], kind:'pri'},
+  {id:null,    name:'입주 예정일', s:[11,1], e:[11,1], kind:'me'},
+  {id:null,    name:'전입신고 (입주 후 14일 안)', s:[11,1], e:[11,14], kind:'me'}
+];
+function d0(m,d){ return new Date(2026,m,d); }
+function calendar(M) {
+  M = M || moreJ();
+  const m = S.calM, first = d0(m, 1), start = new Date(first); start.setDate(1 - first.getDay());
+  const weeks = []; let cur = new Date(start);
+  while (true) {const w = []; for (let i = 0; i < 7; i++) {w.push(new Date(cur)); cur.setDate(cur.getDate() + 1);} weeks.push(w); if (cur.getMonth() !== m) break;}
+  const evs = CAL_EVENTS.filter(e => e.id !== 'house' || M[1].j === 'ok').filter(e => e.id !== 'safe' || M[0].j === 'ok').map(e => ({...e, sd: d0(...e.s), ed: d0(...e.e)}));
+  const body = weeks.map(w => {
+    const ws = w[0], we = w[6]; const lanes = [];
+    const bars = evs.filter(e => e.sd <= we && e.ed >= ws).map(e => {
+      const a = Math.max(0, Math.round((e.sd - ws) / 864e5)), b = Math.min(6, Math.round((e.ed - ws) / 864e5));
+      let lane = 0; while (lanes[lane] && lanes[lane].some(([x, y]) => !(b < x || a > y))) lane++; (lanes[lane] = lanes[lane] || []).push([a, b]);
+      const dd = Math.round((e.ed - TODAY) / 864e5);
+      const label = (b - a < 2 && e.sd < ws) ? `${e.ed.getDate()}일 마감` : e.name;
+      const c = PCOL[e.id] || {}; const st = e.kind === 'me' ? 'background:#fff;color:#191f28;border:1.5px solid #191f28' : e.kind === 'line' ? `background:#fff;color:${c.fg};border:1.5px solid ${c.fg}` : `background:${c.bg};color:${c.fg};border:1px solid ${c.bd}`;
+      return `<button class="bar ${e.id && S.open === 'ai' + (e.id === 'safe' ? 0 : 1) ? 'sel' : ''}" style="${st};grid-column:${a + 1}/${b + 2};grid-row:${lane + 1}" ${e.id ? `onclick="set({open:'ai'+(e.id==='safe'?0:1)})" data-act="달력 막대 → 해당 정책 펼침"` : ''}>${label}</button>`;
+    }).join('');
+    return `<div class="wk"><div class="days">${w.map(d => {const out = d.getMonth() !== m, today = +d === +TODAY; return `<div class="dn ${out ? 'out' : ''} ${today ? 'today' : ''} ${d < TODAY && !out ? 'past' : ''} ${d.getDay() === 0 ? 'sun' : ''}"><span>${d.getDate()}</span></div>`}).join('')}</div><div class="bars">${bars}</div></div>`;
+  }).join('');
+  return `<div class="cal">
+<div class="cal-h"><button class="nav" onclick="set({calM:10})" ${m === 10 ? 'style="opacity:.3"' : ''} data-act="이전 달">‹</button><b>2026년 ${m + 1}월</b><button class="nav" onclick="set({calM:11})" ${m === 11 ? 'style="opacity:.3"' : ''} data-act="다음 달">›</button>
+  <div class="cal-lg">${['safe','house'].map(k=>`<span><i style="background:${PCOL[k].bg};border:1px solid ${PCOL[k].bd}"></i>${PCOL[k].short}</span>`).join('')}<span><i style="background:#fff;border:1.5px solid #191f28"></i>내 일정</span></div></div>
+<div class="dow">${['일', '월', '화', '수', '목', '금', '토'].map(x => `<div>${x}</div>`).join('')}</div>${body}</div>`;
+}
+/* ---------- STEP 3 ---------- */
+function polRow(p){
+  const open=S.open===p.id, al=S.alarm.includes(p.id);
+  return `<div class="row" style="cursor:default;${p.excluded?'opacity:.6':''}">
+      <button style="display:flex;align-items:center;gap:16px;flex:1;text-align:left" onclick="set({open:${open?'null':`'${p.id}'`}})" data-act="정책 펼치기 → 추천 근거"><span class="ico" style="background:${PCOL[p.id].bg};color:${PCOL[p.id].fg}">${svgIcon(p.icon)}</span>
+        <div><div class="name">${p.name} ${p.excluded?'<span class="pill gray">중복 불가</span>':''}</div><div class="meta">${p.how}</div><div class="meta">${p.last}</div></div>
+        <div class="right"><div class="amt" ${p.excluded?'style="text-decoration:line-through"':''}>${p.amt}</div><div class="meta">${p.excluded?'국토부를 고르면 못 받아요':'받을 수 있어요'}</div></div><span class="chev ${open?'open':''}">›</span>
+      </button>
+      ${p.excluded?'':`<button class="btn-sm" style="margin-left:12px;white-space:nowrap;${al?'background:var(--pri-s);color:var(--pri);border-color:transparent':''}" onclick="toggleAlarm('${p.id}')" data-act="공고 알림 받기">${al?'✓ 알림 받는 중':'공고 알림 받기'}</button>`}</div>
+    ${open?`<div class="detail"><div class="s" style="font-weight:700;color:var(--ink)">왜 받을 수 있나요? &nbsp;<span style="font-weight:400;color:var(--sub)">내 조건 → 정책 조건</span></div>
+      <div class="ev">${p.ev.map(e=>`<span class="k">${e[0]}</span><span class="ar">→</span><span class="v ${e[2]}">${e[1]} ${e[2]==='ok'?'충족':'확인 필요'}</span>`).join('')}</div>
+      <div class="quote">원문 · ${p.src} <br>${p.quote}</div>
+      <p class="s" style="margin-top:8px">신청 방법: ${p.channel}</p></div>`:''}`;
+}
+function toggleAlarm(id){ set({alarm:S.alarm.includes(id)?S.alarm.filter(x=>x!==id):[...S.alarm,id]}); }
+function step3() {
+  const J = judge(), M = moreJ(), W = whatifs();
+  const won0 = n => n.toLocaleString();
+  const sepNote = J.m.sep ? ` 지금 부모님과 같은 주소라면 <b>이사하면서 세대 분리</b>도 같이 하세요. 국토부 청년월세는 부모님과 따로 사는 청년만 받아요.` : '';
+  if (S.easy) {
+    return `<div class="eyebrow">2단계</div><h1>${J.total ? `내년에 받을 수 있는 돈이<br><span style="color:var(--pri)">최대 ${won0(J.total)}만 원</span> 있어요` : `지금 조건으로는<br>받을 수 있는 지원금이 없어요`}</h1>
+  <div class="lead">${J.total ? '올해 신청은 끝났어요. 내년 공고가 나오면 알려드릴게요.' : (J.fail[0] ? J.fail[0].why[0] : '') + ' 조건이 바뀌면 다시 확인해 보세요.'}</div>
+  <div class="sec">${J.chosen.map(p => `<button class="erow" onclick="toggleAlarm('${p.id}')" data-act="알림 받기">
+      <span class="ico lg">${svgIcon(p.icon)}</span><div><div class="t">${p.name}</div><div class="d">${p.easy || p.how}</div></div><div class="m">${p.amtN}만 원<div class="d" style="text-align:right">${S.alarm.includes(p.id) ? '✓ 알림 받는 중' : '눌러서 알림 받기'}</div></div></button>`).join('')}</div>
+  <div class="sec"><div class="note"><span class="ic">!</span><div><b>지금 할 일</b><br>이사하고 14일 안에 전입신고를 해요. 그래야 내년에 받을 수 있어요.${J.m.sep ? '<br>부모님과 주소가 같으면 세대 분리도 같이 해요.' : ''}</div></div></div>
+  <div class="cta"><button class="btn pri wide" onclick="go(3)" data-act="다음 단계">어느 집이 맞을지 보기</button></div>`;
+  }
+  if (S.whatif && !W[S.whatif]) S.whatif = null;
+  const w = S.whatif ? W[S.whatif] : null;
+  const nowN = M.filter(m => m.j === 'ok').length, hard = M.filter(m => m.j !== 'ok');
+  return `<div class="s2"><div class="eyebrow">2단계 · 2026년 11월 21일 기준 · 만 ${J.m.age}세 · 월 소득 ${J.m.inc}만 원</div>
+<h1>${J.total ? `{NM}은 내년에 지원금<br><em>최대 ${won0(J.total)}만 원</em>을 받을 수 있어요` : `{NM}이 내년에 받을 수 있는<br>지원금은 <em>지금 조건으론 없어요</em>`}</h1>
+${J.total ? `<div class="mbar">${J.chosen.map(p => `<span style="flex:${p.amtN};background:${PCOL[p.id].fg}"></span>`).join('')}</div>
+<div class="mleg">${J.chosen.map(p => `<span><i style="background:${PCOL[p.id].fg}"></i>${PCOL[p.id].short.replace(' 월세',' 청년월세')}<b>${p.amtN}만 원</b></span>`).join('')}</div>`
+ : `<p class="lead" style="margin-top:12px">${J.fail.map(p => `${p.name}: ${p.why.join(', ')}`).join('<br>')}</p>`}
+
+<section class="s2-sec"><div class="s2-h"><h2>지금 신청할 수 있어요</h2><span class="n">${nowN}</span><span class="ai-by r">AI가 공고문으로 판정했어요</span></div>${nowN ? s2Now(M) : '<p class="whint">지금 조건으로 바로 신청할 수 있는 지원이 없어요.</p>'}</section>
+
+<section class="s2-sec"><div class="s2-h"><h2>신청 일정</h2><span class="r">신청 기간을 누르면 위 카드가 열려요</span></div>${calendar(M)}<p class="tl-note">12월 1일에 입주하면 <b>12월 14일까지 전입신고</b>를 꼭 하세요. 서울시 지원은 전입신고를 마친 사람만 신청할 수 있어요.${sepNote}</p></section>
+
+<section class="s2-sec"><div class="s2-h"><h2>내년에 신청할 지원</h2><span class="r">올해 접수는 끝났어요</span></div>${s2Year(J)}</section>
+
+<section class="s2-ask ragmark"><div class="s2-h"><h2>공고문에 물어보기</h2><span class="ai-by r">공고문 근거로만 답해요${API_OK?' · AI 연결됨':API_OK===false?' · 서버 꺼짐 (미리 넣은 답)':''}</span></div>
+  <div class="ask-in"><input id="q3in" placeholder="궁금한 조건을 물어보세요" onkeyup="if(event.key==='Enter'&&!event.isComposing)ask3(this.value)"><button onclick="ask3(document.getElementById('q3in').value)">질문</button></div>
+  <div class="ask-sg">${['when', 'dupRent', 'age35'].map(k => `<button class="${(S.q3 === k || S.q3k === k) ? 'on' : ''}" onclick="ask3(QA['${k}'].q,'${k}')" data-act="예시 질문 → 답변">${QA[k].q}</button>`).join('')}</div>
+  ${S.q3load ? loadCard() : S.q3res ? apiCard(S.q3res, S.q3t) : S.q3 ? ansCard(S.q3, S.q3t || undefined) : ''}</section>
+
+<section class="s2-sec"><div class="s2-h"><h2>조건이 바뀌면?</h2></div>
+  ${Object.keys(W).length?'':'<p class="whint">지금 조건에서는 나이나 계약 방식이 바뀌어도 달라지는 게 없어요.</p>'}<div class="seg3">${Object.entries(W).map(([k, v]) => `<button class="${S.whatif === k ? 'on' : ''}" onclick="set({whatif:S.whatif==='${k}'?null:'${k}'})" data-act="조건 바꾸기 → 생긴 것/사라진 것">${v.label}</button>`).join('')}</div>
+  ${w ? `<div class="wres"><div><div class="wl">받을 수 있는 금액</div>${w.total !== null ? `<div class="from">${won0(J.total)}만 원</div><div class="big">${won0(w.total)}<small>만 원</small></div>` : `<div class="big" style="font-size:20px;margin-top:6px">계약마다 달라요</div>`}</div>
+    <div><h4 class="plus">새로 생겨요</h4><p>${w.plus.join('<br>') || '없음'}</p></div><div><h4 class="minus">빠져요</h4><p>${w.minus.join('<br>') || '없음'}</p></div></div>` : `<p class="whint">하나를 고르면 받을 수 있는 금액이 어떻게 바뀌는지 보여드려요.</p>`}</section>
+
+<section class="s2-sec ragmark"><button class="more-t" onclick="set({moreOpen:!S.moreOpen})" data-act="받기 어려운 지원 펼치기">지금은 받기 어려운 지원 <span class="c">${hard.length}개</span><span class="chev ${S.moreOpen ? 'open' : ''}">›</span></button>
+  ${S.moreOpen ? hard.map(m => `<div class="mrow"><div class="nm">${m.n}</div><div class="st ${m.j}">${JB[m.j][1]}</div><div class="rs">${m.why}</div></div>`).join('') : ''}</section>
+
+<div class="cta"><button class="btn ghost" onclick="go(1)">이전</button><button class="btn pri wide" onclick="go(3)" data-act="다음 단계">후보 집 비교하기</button></div></div>`;
+}
+function s2Now(M) {
+  M = M || moreJ();
+  const now = M.map((m, i) => ({m, i})).filter(x => x.m.j === 'ok');
+  const sel = now.find(x => S.open === 'ai' + x.i);
+  const kind = m => m.kd || (m.ic === 'home' ? '계약 상담 · 집보기 동행 무료' : m.ic === 'bank' ? '전월세 대출 보증' : '시세보다 저렴한 임대주택');
+  return `<div class="ncards">${now.map(({m, i}) => {
+    const d = ddayOf(m.end), on = S.open === 'ai' + i, c = PCOL[{home:'safe',building:'house',bank:'loan'}[m.ic]];
+    return `<button class="ncard ${on ? 'on' : ''}" style="border-top:4px solid ${c.fg};${on?`border-color:${c.fg};box-shadow:0 0 0 1px ${c.fg}`:''}" onclick="set({open:${on ? 'null' : `'ai${i}'`}})" data-act="카드 → AI 판정 근거">
+      <div class="dd" style="color:${c.fg}">${d === null ? '상시' : 'D-' + d}</div>
+      <div class="nn">${m.n.replace(/^2026 /, '')}</div><div class="nb">${kind(m)}</div>
+      <div class="no">${m.o} · ${m.end ? `${m.end[0] + 1}월 ${m.end[1]}일 마감` : '언제든 신청'}</div></button>`;
+  }).join('')}</div>
+  ${sel ? `<div class="npanel ragmark"><div class="np-h"><b>왜 해당되나요?</b><button class="np-x" onclick="set({open:null})">닫기</button></div>
+    <p class="np-why">${sel.m.why}</p><div class="np-q">원문 「지원 대상」 "${sel.m.qt}"</div></div>` : ''}`;
+}
+function s2Timeline() {
+  const D = (m, d) => Math.round((new Date(2026, m, d) - TODAY) / 864e5) / 40 * 100;
+  const rows = [
+    {lb: '안심계약 도움서비스', a: 0, b: 100, c: 'ok', id: 'ai0'},
+    {lb: '청년안심주택 신청', a: 0, b: 100, c: 'ok', id: 'ai1'},
+    {lb: '입주 → 전입신고', a: D(11, 1), b: D(11, 14), c: 'me'}
+  ];
+  const ticks = [[0, '11.21', '오늘'], [D(11, 1), '12.1', '입주'], [D(11, 14), '12.14', '전입신고 마감'], [100, '12.31', '신청 마감']];
+  return `<div class="tl"><div class="tl-body"><div class="tl-grid">${ticks.map(t => `<i style="left:${t[0]}%"></i>`).join('')}</div>
+    ${rows.map(r => `<div class="tl-row"><div class="tl-lb">${r.lb}</div><div class="tl-tr">${r.id
+    ? `<button class="tl-bar ${r.c} ${S.open === r.id ? 'sel' : ''}" style="left:${r.a}%;width:${r.b - r.a}%" onclick="set({open:'${r.id}'})" data-act="일정 → 카드 열기"></button>`
+    : `<span class="tl-bar ${r.c}" style="left:${r.a}%;width:${r.b - r.a}%"></span>`}</div></div>`).join('')}</div>
+    <div class="tl-axis"><div></div><div class="tl-ax">${ticks.map((t, k) => `<div class="tl-tk ${k === 0 ? 'first' : k === ticks.length - 1 ? 'last' : ''}" style="left:${t[0]}%"><b>${t[1]}</b>${t[2]}</div>`).join('')}</div></div></div>
+  <p class="tl-note">12월 1일에 입주하면 <b>12월 14일까지 전입신고</b>를 꼭 하세요. 서울시 지원은 전입신고를 마친 사람만 신청할 수 있어요.</p>`;
+}
+function s2Year(J) {
+  J = J || judge();
+  const LB = {ok:'충족', q:'확인 필요', no:'안 맞음'};
+  const row = p => {
+    const open = S.open === p.id, al = S.alarm.includes(p.id), bad = p.st === 'no';
+    return `<div class="yrow" ${bad ? 'style="opacity:.6"' : ''}><button class="yrow-b" onclick="set({open:${open ? 'null' : `'${p.id}'`}})" data-act="정책 펼치기 → 추천 근거">
+      <div style="min-width:0"><div class="yn">${p.name}<span class="chev ${open ? 'open' : ''}">›</span></div><div class="yd">${bad ? '조건이 안 맞아요 · ' + p.why.join(', ') : p.how}</div></div>
+      ${bad ? '<div class="ya" style="color:var(--sub);font-size:15px">해당 안 돼요</div>' : `<div class="ya" style="color:${PCOL[p.id].fg}">${p.amtN}<small>만 원</small></div>`}</button>
+      ${bad ? '<span class="alarm-sp"></span>' : `<button class="alarm ${al ? 'on' : ''}" onclick="toggleAlarm('${p.id}')" data-act="공고 알림 받기">${al ? '알림 받는 중' : '공고 알림 받기'}</button>`}</div>
+    ${open ? `<div class="ydet"><div class="ev">${p.ev.map(e => `<span class="k">${e[0]}</span><span class="ar">→</span><span class="v">${e[1]}</span><span class="st ${e[2]}" ${e[2]==='no'?'style="color:#d64545"':''}>${LB[e[2]]}</span>`).join('')}</div>
+      <div class="np-q">${p.src}<br>${p.quote}</div><p class="ylast">${p.last} · ${p.channel}</p></div>` : ''}`;
+  };
+  const ex = J.ex;
+  return `<div class="yl">${J.chosen.map(row).join('')}${J.fail.map(row).join('')}<div class="ysum"><span>합계</span><b>${J.total.toLocaleString()}<small>만 원</small></b><span class="alarm-sp"></span></div></div>
+  ${ex ? `<p class="yfoot"><b>!</b><span>${ex.name}(${ex.amt.replace('최대 ', '')})도 조건은 맞지만 국토부 청년월세와 같이 받을 수 없어서, 금액이 큰 쪽만 넣었어요. <button class="why" onclick="S.q3='dupRent';S.q3t=null;S.q3res=null;S.q3k=null;render();document.getElementById('q3in').scrollIntoView({behavior:'smooth',block:'center'})">원문 근거</button></span></p>` : ''}`;
+}
+function cmpSheet(){
+  const ids=S.cmp;
+  return `<div class="dim" onclick="if(event.target===this)set({showCmp:false})"><div class="sheet">
+    <div class="sheet-h"><h1 style="font-size:22px">고른 정책 비교</h1><button class="x" onclick="set({showCmp:false})">×</button></div>
+    <table><tr><th></th>${ids.map(i=>`<th>${POL.find(p=>p.id===i).name}</th>`).join('')}</tr>
+    ${CMP.rows.map((r,ri)=>`<tr><td class="s" style="font-weight:600">${r}</td>${ids.map(i=>`<td class="${(BEST[i]||[]).includes(ri)?'best':''}">${CMP[i][ri]}</td>`).join('')}</tr>`).join('')}</table>
+    ${ids.includes('rent')&&ids.includes('jeonse')?`<div class="note warn" style="margin-top:20px"><span class="ic">!</span><div>두 정책은 <b>같이 받을 수 없어요.</b></div></div>`:''}
+  </div></div>`;
+}
+
+/* ---------- STEP 4 · 후보 집 넣기 (실제 수집 데이터: 카카오 로컬 + ODsay, 2026.11.11) ---------- */
+const DEST = {name:'멀티캠퍼스 역삼', addr:'서울 강남구 테헤란로 212'};
+const HOMES = [
+  {key:'A', label:'성수동 원룸', addr:'서울 성동구 성수동2가 333-76', station:'성수역 걸어서 8분', deposit:1000, rent:60, fee:0,
+   fare:1550, commute:30, route:'2호선 · 환승 없음', x:546, y:82, color:'#f76707'},
+  {key:'B', label:'역삼동 원룸', addr:'서울 강남구 역삼동 778-26', station:'한티역 걸어서 15분', deposit:1000, rent:90, fee:0,
+   fare:0, commute:13, route:'걸어서', x:420, y:262, color:'#0ca678'},
+  {key:'C', label:'신림동 원룸', addr:'서울 관악구 신림동 502-36', station:'신대방역 걸어서 6분', deposit:500, rent:42, fee:0,
+   fare:1650, commute:30, route:'2호선 · 환승 없음', x:112, y:246, color:'#7048e8'}
+];
+// 가장 가까운 시설 (이름, 도보 추정 분 = 직선거리 × 1.3 ÷ 분당 67m)
+const FAC = [
+  {k:'station', label:'지하철역', icon:'train'}, {k:'mart', label:'대형마트', icon:'cart'}, {k:'super', label:'동네슈퍼', icon:'cart'},
+  {k:'conv', label:'편의점', icon:'cart'}, {k:'pharm', label:'약국', icon:'pill'}, {k:'clinic', label:'내과', icon:'pill'},
+  {k:'gym', label:'헬스장', icon:'gym'}, {k:'park', label:'공원', icon:'home'}
+];
+const LIFE = {
+  A:{station:['성수역',8], mart:['라성마트',10], super:['해태의집',8], conv:['세븐일레븐',1], pharm:['성수약국',3], clinic:['성수탑내과',6], gym:['라이프짐',1], park:['무지개어린이공원',1]},
+  B:{station:['한티역',15], mart:['이마트 역삼점',10], super:['오아시스마켓',2], conv:['GS25',1], pharm:['유진약국',2], clinic:['연세기쁜내과',4], gym:['머스트무브짐',3], park:['역삼장미공원',2]},
+  C:{station:['신대방역',6], mart:['하나로마트',17], super:['진흥마트',2], conv:['GS25',2], pharm:['일광약국',2], clinic:['최준호내과',3], gym:['짐엑스',2], park:['보라매공원',7]}
+};
+const SCENES = {shop:{name:'장보기', f:['mart','super','conv']}, sick:{name:'아플 때', f:['pharm','clinic']}, move:{name:'운동·산책', f:['gym','park']}, go:{name:'역까지', f:['station']}};
+const PRIO = {
+  bal:{name:'균형', w:{cost:.40, time:.35, life:.25}},
+  money:{name:'돈이 먼저', w:{cost:.60, time:.25, life:.15}},
+  time:{name:'시간이 먼저', w:{cost:.20, time:.60, life:.20}},
+  life:{name:'동네 생활', w:{cost:.30, time:.20, life:.50}}
+};
+const DAYS = 20;
+const MAX_HOMES = 3;
+const ADDR_RESULTS = {
+  0:[['서울 성동구 성수동2가 333-76','지번 주소 · 건물 단위로 위치 확인',0],['서울 성동구 성수이로20길','길 이름만 있어요 · 건물 번호까지 넣어 주세요',null]],
+  1:[['서울 강남구 역삼동 778-26','지번 주소 · 건물 단위로 위치 확인',1],['서울 강남구 역삼로','길 이름만 있어요 · 건물 번호까지 넣어 주세요',null]],
+  2:[['서울 관악구 신림동 502-36','지번 주소 · 건물 단위로 위치 확인',2],['서울 관악구 신림로','길 이름만 있어요 · 건물 번호까지 넣어 주세요',null]]
+};
+const ADDR_Q = {0:'성수동2가 333-76', 1:'역삼동 778-26', 2:'신림동 502-36'};
+
+// ===== 실제 주소 검색 (카카오 키가 있을 때) =====
+// 주소 검색·주변 시설: 카카오 JavaScript SDK (services) · 오가는 시간·요금: ODsay (웹 키가 있을 때만, 없으면 거리로 추정)
+const ODSAY_WEB_KEY = 'ODSAY_KEY';   // ODsay에 웹 플랫폼(http://127.0.0.1:5500)으로 등록한 키. 없으면 그대로 두기
+const walkMin = d => Math.max(1, Math.round(d * 1.3 / 67));
+function kq(fn){ return new Promise(ok => fn((r, st) => ok(st === kakao.maps.services.Status.OK ? r : []))); }
+async function liveSearch(){
+  const q = (S.addrQ || '').trim(); if(!q) return;
+  set({liveBusy:'search', live:null, cand:null});
+  await loadKakao();
+  const geo = new kakao.maps.services.Geocoder(), ps = new kakao.maps.services.Places();
+  const [ad, kw] = await Promise.all([kq(cb => geo.addressSearch(q, cb, {size:10})), kq(cb => ps.keywordSearch(q, cb, {size:5}))]);
+  const out = ad.map(r => {
+    const a = r.address || {}, road = r.road_address;
+    const numbered = r.address_type === 'REGION_ADDR' || r.address_type === 'ROAD_ADDR';
+    return {name: r.address_name, sub: road && road.address_name !== r.address_name ? road.address_name : (a.address_name || ''), x:+r.x, y:+r.y,
+            dong: a.region_3depth_name || (road && road.region_3depth_name) || '', ok: numbered};
+  }).concat(kw.map(r => ({name: r.address_name || r.road_address_name, sub: r.place_name + (r.road_address_name ? ' · ' + r.road_address_name : ''), x:+r.x, y:+r.y,
+            dong: (r.address_name || '').split(' ').find(t => /[동가리]$/.test(t)) || '', ok: /\d/.test(r.address_name || '')})));
+  set({liveBusy:null, live: out});
+}
+async function nearest(loc, how){
+  const ps = new kakao.maps.services.Places(), opt = {location: loc, radius: 2000, sort: kakao.maps.services.SortBy.DISTANCE};
+  const r = how.code ? await kq(cb => ps.categorySearch(how.code, cb, opt)) : await kq(cb => ps.keywordSearch(how.kw, cb, opt));
+  const hit = r.find(x => !how.must || how.must.some(m => (x.category_name + x.place_name).includes(m)));
+  return hit ? [hit.place_name.replace(/^(.{0,14}).*$/, '$1'), walkMin(+hit.distance)] : ['2km 안에 없음', 30];
+}
+async function commute(x, y){
+  const d = await geocode(DEST.addr), dx = d.getLng(), dy = d.getLat();
+  const dist = Math.hypot((x - dx) * 88200, (y - dy) * 111000);
+  if(ODSAY_WEB_KEY !== 'ODSAY_KEY'){
+    try{
+      const j = await (await fetch(`https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${dx}&EY=${dy}&apiKey=${encodeURIComponent(ODSAY_WEB_KEY)}`)).json();
+      if(j.result && j.result.path){ const i = j.result.path[0].info, sp = j.result.path[0].subPath.find(s => s.lane);
+        const line = sp ? (sp.lane[0].name || sp.lane[0].busNo + '번 버스') : '대중교통';
+        const tr = i.subwayTransitCount + i.busTransitCount - 1;
+        return {commute: i.totalTime, fare: i.payment, route: `${line} · ${tr > 0 ? '환승 ' + tr + '번' : '환승 없음'}`}; }
+      if(dist < 1500) return {commute: walkMin(dist), fare: 0, route: '걸어서'};
+    }catch(e){}
+  }
+  if(dist < 1500) return {commute: walkMin(dist), fare: 0, route: '걸어서'};
+  return {commute: Math.round(12 + dist / 1000 * 2.6), fare: 1550, route: '대중교통 · 거리로 추정', est: true};
+}
+async function livePick(k){
+  const r = S.live[k], slot = nextSlot(), base = HOMES[slot];
+  set({liveBusy:'pick'});
+  const loc = new kakao.maps.LatLng(r.y, r.x);
+  const F = {station:{code:'SW8'}, mart:{code:'MT1'}, super:{kw:'슈퍼마켓', must:['슈퍼','마트']}, conv:{code:'CS2'}, pharm:{code:'PM9'},
+             clinic:{code:'HP8', must:['내과','가정의학과']}, gym:{kw:'헬스장', must:['헬스','피트니스','짐']}, park:{kw:'공원', must:['공원']}};
+  const life = {}; for(const [k2, how] of Object.entries(F)) life[k2] = await nearest(loc, how);
+  const c = await commute(r.x, r.y);
+  GEO[r.name] = loc;
+  const cand = {...base, label: (r.dong || r.name.split(' ').slice(-2, -1)[0] || '후보') + ' 원룸', addr: r.name,
+    station: `${life.station[0]} 걸어서 ${life.station[1]}분`, deposit: 1000, rent: 50, fee: 0, ...c, live: true, life};
+  set({liveBusy:null, cand});
+}
+function addLive(){
+  const g = id => { const e = document.getElementById(id); return e && e.value !== '' ? Number(e.value) : undefined; };
+  const slot = nextSlot(), c = S.cand;
+  c.deposit = g('in-dep') ?? c.deposit; c.rent = g('in-rent') ?? c.rent; c.fee = g('in-fee') ?? 0;
+  HOMES[slot] = c; LIFE[c.key] = c.life; delete S.over[c.key];
+  set({homes:[...S.homes, slot].sort(), cand:null, live:null, addrQ:'', adding:false});
+}
+
+
+// ----- 계산 (recommend.py와 같은 규칙) -----
+const val = (h, f) => (S.over[h.key] && S.over[h.key][f] !== undefined) ? S.over[h.key][f] : h[f];
+const fareMonth = h => Math.round(h.fare * 2 * DAYS / 1000) / 10;            // 만 원
+const monthly = h => Math.round((val(h,'rent') + val(h,'fee') + fareMonth(h)) * 10) / 10;
+const clamp = v => Math.max(0, Math.min(100, v));
+const walkScore = m => clamp(100 * (20 - m) / 15);
+const r1 = v => Math.round(v * 10) / 10;
+function scores(){
+  const H = hs(), minC = Math.min(...H.map(monthly)), w = PRIO[S.prio].w;
+  return H.map(h => {
+    const cost = clamp(100 - (monthly(h) - minC) * 1.5);
+    const time = clamp(100 - Math.max(0, h.commute - 15) * 2);
+    const life = FAC.reduce((a, f) => a + walkScore(LIFE[h.key][f.k][1]), 0) / FAC.length;
+    return {h, cost:r1(cost), time:r1(time), life:r1(life), total:r1(cost*w.cost + time*w.time + life*w.life)};
+  }).sort((a, b) => b.total - a.total);
+}
+function reasons(rank){
+  const out = [], top = rank[0].h, H = rank.map(r => r.h);
+  const cheap = H.reduce((a, b) => monthly(a) <= monthly(b) ? a : b), fast = H.reduce((a, b) => a.commute <= b.commute ? a : b);
+  const eun = s => s + ((s.charCodeAt(s.length-1) - 0xAC00) % 28 ? '은' : '는');
+  const nm = h => h.label.replace(' 원룸', '').replace('동', '');
+  if (top === cheap) out.push(`한 달 실부담이 <b>${monthly(top)}만 원</b>으로 ${H.length}곳 중 가장 적어요.${val(top,'deposit') === Math.min(...H.map(h => val(h,'deposit'))) ? ` 보증금도 ${val(top,'deposit').toLocaleString()}만 원으로 처음 드는 목돈이 가장 적어요.` : ''}`);
+  if (top === fast) out.push(`${DEST.name}까지 <b>${top.route === '걸어서' ? '걸어서 ' : ''}${top.commute}분</b>으로 가장 가까워요.`);
+  H.forEach(a => H.forEach(b => { if (a !== b && monthly(a) > monthly(b) && a.commute >= b.commute)
+    out.push(`${eun(nm(a))} ${nm(b)}보다 한 달 <b>${r1(monthly(a) - monthly(b))}만 원</b> 더 들지만, 오가는 시간은 ${a.commute === b.commute ? '같아요' : '더 길어요'} (${a.commute}분 vs ${b.commute}분).`); }));
+  if (fast !== cheap) { const hrs = r1((cheap.commute - fast.commute) * 2 * DAYS / 60), extra = r1(monthly(fast) - monthly(cheap));
+    if (hrs > 0) out.push(`${eun(nm(fast))} ${nm(cheap)}보다 한 달 ${extra}만 원 더 내고, 오가는 시간을 한 달 약 <b>${hrs}시간</b> 아껴요. 1시간에 약 ${r1(extra / hrs)}만 원인 셈이에요.`); }
+  return out;
+}
+function weakness(h){
+  const far = FAC.filter(f => LIFE[h.key][f.k][1] >= 15).map(f => `${f.label}(${LIFE[h.key][f.k][0]})까지 걸어서 약 ${LIFE[h.key][f.k][1]}분`);
+  return far.length ? far.join(', ') + '이라 조금 멀어요.' : '';
+}
+
+function nextSlot(){ return [0,1,2].find(i=>!S.homes.includes(i)); }
+function addHome(i){
+  const g = id => { const e = document.getElementById(id); return e && e.value !== '' ? Number(e.value) : undefined; };
+  const o = {}; const d = g('in-dep'), r = g('in-rent'), f = g('in-fee');
+  if (d !== undefined) o.deposit = d; if (r !== undefined) o.rent = r; o.fee = f !== undefined ? f : 0;
+  S.over[HOMES[i].key] = o;
+  set({homes:[...S.homes,i].sort(), parsed:null, addrQ:'', adding:false});
+}
+function homeVis(){ const v={}; S.homes.forEach(i=>v[HOMES[i].key]='on'); if(S.parsed!==null&&S.parsed!==undefined) v[HOMES[S.parsed].key]='ghost'; return v; }
+function step4Input(){
+  const slot=nextSlot(), n=S.homes.length, searching = (n<2 || S.adding) && n<MAX_HOMES;
+  const slots=[0,1,2].map(i=>{const h=HOMES[i], has=S.homes.includes(i);
+    if(has) return `<div class="slot full"><span class="pin" style="background:${h.color}">${h.key}</span><div><div class="name">${h.label}</div><div class="meta">보증금 ${val(h,'deposit').toLocaleString()} / 월세 ${val(h,'rent')} · ${h.station}</div></div><button class="link right" onclick="set({homes:S.homes.filter(x=>x!==${i})})" data-act="집 빼기">빼기</button></div>`;
+    if(i===slot && searching) return `<div class="slot now"><span class="pin empty">${h.key}</span><div><div class="name" style="color:var(--sub)">집 ${h.key}</div><div class="meta">지금 넣는 중</div></div></div>`;
+    if(i===slot && n>=2) return `<button class="slot add" onclick="set({adding:true})" data-act="후보 하나 더 넣기"><span class="pin empty">+</span><div><div class="name" style="color:var(--pri)">하나 더 넣기</div><div class="meta">최대 3곳까지</div></div></button>`;
+    return `<div class="slot"><span class="pin empty">${h.key}</span><div><div class="name" style="color:var(--sub)">집 ${h.key}</div><div class="meta">${i===2?'선택 · 최대 3곳':'비어 있어요'}</div></div></div>`;}).join('');
+  let body='';
+  if(S.liveBusy==='pick'){
+    body=`<div class="sec"><div class="note"><div>주변 역·마트·약국 등 8곳과 ${DEST.name}까지 오가는 시간을 찾고 있어요…</div></div></div>`;
+  } else if(S.cand || (S.parsed!==null&&S.parsed!==undefined)){
+    const h=S.cand||HOMES[S.parsed], live=!!S.cand;
+    body=`<div class="sec"><div class="sec-t"><span class="ico sm">${svgIcon('building')}</span>집 ${h.key} <small>${h.addr}</small></div>
+      <div class="prof" style="grid-template-columns:repeat(3,1fr);gap:16px 24px">
+        <div>가까운 역<b>${h.station}</b></div><div>${DEST.name}까지<b>${h.route==='걸어서'?'걸어서 ':''}${h.commute}분${h.route==='걸어서'?'':' · '+h.route}</b></div><div>한 달 교통비<b>${fareMonth(h)?'약 '+fareMonth(h)+'만 원':'0원 (걸어서)'}</b></div></div>
+      ${live?`<div class="prof" style="grid-template-columns:repeat(4,1fr);gap:10px 18px;margin-top:14px">${FAC.map(f=>`<div>${f.label}<b style="font-size:14px">${h.life[f.k][0]} ${h.life[f.k][1]}분</b></div>`).join('')}</div>`:''}
+      <div class="s" style="margin-top:8px">역·주변 시설은 카카오 장소 검색${h.est?', 오가는 시간·요금은 <b>직선거리로 추정</b>했어요 (ODsay 웹 키를 넣으면 실제 길찾기로 바뀌어요)':', 오가는 시간·요금은 ODsay 대중교통 길찾기'}로 자동으로 채웠어요. 교통비 = 편도 요금 × 2 × ${DAYS}일.</div>
+      <div class="sec-t" style="margin-top:28px">계약 조건 <small>매물에 적힌 금액을 넣어 주세요 · 바꾸면 추천도 바뀌어요</small></div>
+      <div class="fields"><label>보증금<span class="inp"><input id="in-dep" type="number" value="${h.deposit}">만 원</span></label><label>월세<span class="inp"><input id="in-rent" type="number" value="${h.rent}">만 원</span></label><label>관리비<span class="inp"><input id="in-fee" type="number" placeholder="모르면 비워 두기">만 원</span></label></div>
+      <div class="row" style="border:0;padding:20px 0 0;gap:10px"><button class="btn pri" onclick="${live?'addLive()':`addHome(${S.parsed})`}" data-act="집 추가 → 다음 칸">집 ${h.key}로 추가</button><button class="btn ghost" onclick="set({parsed:null,cand:null})" data-act="다시 검색">다시 검색</button></div></div>`;
+  } else if(searching){
+    body=`<div class="sec"><div class="compose" style="margin-top:0"><span class="ico sm gray">${svgIcon('home')}</span><input value="${S.addrQ||''}" placeholder="집 ${HOMES[slot].key} · 도로명 또는 지번 주소 (건물 번호까지)" oninput="S.addrQ=this.value" onkeyup="if(event.key==='Enter'&&!event.isComposing){S.addrQ=this.value;kakaoOn()?liveSearch():render()}"><button class="send" onclick="kakaoOn()?liveSearch():set({addrQ:S.addrQ||'${ADDR_Q[slot]}'})" data-act="주소 검색 → 결과 목록">⌕</button></div>
+      ${kakaoOn()?(S.liveBusy==='search'?`<p class="s" style="margin-top:12px">카카오에서 주소를 찾는 중…</p>`:S.live?(S.live.length?`<div class="list" style="margin-top:12px">${S.live.map((r,k)=>`<button class="row" ${r.ok?`onclick="livePick(${k})"`:'style="opacity:.55;cursor:default"'} data-act="결과 선택 → 주변 시설·시간 계산"><span class="ico gray">${svgIcon('building')}</span><div><div class="name">${r.name}</div><div class="meta">${r.sub}</div></div>${r.ok?'<span class="chev right">›</span>':'<span class="pill warn right">건물 번호 필요</span>'}</button>`).join('')}</div>`:`<p class="s" style="margin-top:12px">검색 결과가 없어요. 동 이름과 번지까지 넣어 보세요 (예: ${ADDR_Q[slot]})</p>`):`<p class="s" style="margin-top:12px">예: ${ADDR_Q[slot]} · 실제 주소를 카카오에서 찾아요</p>`):S.addrQ?`<div class="list" style="margin-top:12px">${ADDR_RESULTS[slot].map(r=>`<button class="row" ${r[2]!==null?`onclick="set({parsed:${r[2]}})"`:'style="opacity:.55;cursor:default"'} data-act="결과 선택 → 집 정보 확인"><span class="ico gray">${svgIcon('building')}</span><div><div class="name">${r[0]}</div><div class="meta">${r[1]}</div></div>${r[2]!==null?'<span class="chev right">›</span>':'<span class="pill warn right">건물 번호 필요</span>'}</button>`).join('')}</div>`
+                :`<p class="s" style="margin-top:12px">예: ${ADDR_Q[slot]} · 검색 버튼만 눌러도 예시 주소로 찾아요</p>`}
+      ${S.adding?`<button class="link" style="margin-top:12px" onclick="set({adding:false,addrQ:''})">취소</button>`:''}</div>`;
+  }
+  const ready = n>=2 && !searching && (S.parsed===null||S.parsed===undefined) && !S.cand;
+  return `<div class="eyebrow">3단계 · 집 비교</div><h1>비교할 후보 집을 넣어 주세요</h1>
+    <div class="lead">부동산 앱에서 본 집 주소를 검색해 주세요. 자주 가는 곳(<b>${DEST.name}</b>)까지 시간과 주변 시설은 자동으로 계산해요. 2곳 이상이면 비교할 수 있고, 최대 3곳까지 넣을 수 있어요.</div>
+    ${!kakaoOn()&&DEST.name!=='멀티캠퍼스 역삼'?`<div class="sec"><div class="note warn"><span class="ic">!</span><div>카카오 키가 없어서 예시 집(성수·역삼·신림)은 <b>멀티캠퍼스 역삼</b> 기준 시간으로 보여줘요. 키를 넣으면 <b>${DEST.name}</b> 기준으로 다시 계산해요.</div></div></div>`:''}
+    <div class="sec">${mapBox(homeVis())}</div>
+    <div class="slots">${slots}</div>
+    ${body}
+    ${ready?`<div class="sec"><div class="note"><div>후보 ${n}곳이 준비됐어요. 생활 편의, 한 달 비용, 오가는 시간을 한 번에 비교해 볼게요.</div></div></div>
+      <div class="cta"><button class="btn pri wide" onclick="set({homesDone:true})" data-act="비교 시작">${n}곳 비교하기</button></div>`:''}`;
+}
+
+/* ---------- 지도 ---------- */
+// ===== 카카오맵 =====
+// 아래 'JS_KEY'를 카카오 JavaScript 키로 바꾸고, Live Server(http://127.0.0.1:5500)로 열면 진짜 지도가 나와요.
+// 키가 없거나 파일을 더블클릭해서 열면 2호선 그림 지도로 보여줘요.
+const KAKAO_JS_KEY = 'JS_KEY';
+const kakaoOn = () => KAKAO_JS_KEY !== 'JS_KEY' && location.protocol.startsWith('http') && !window._kfail;
+const GEO = {};   // 주소 → 좌표 캐시
+let _kvis = null, _kloading = null;
+function mapBox(vis){ if(!kakaoOn()) return seoulMap(vis); _kvis = vis || null; return '<div id="kmap"></div>'; }
+function loadKakao(){
+  if(window.kakao && kakao.maps && kakao.maps.services) return Promise.resolve();
+  if(_kloading) return _kloading;
+  _kloading = new Promise((ok, fail) => {
+    const sc = document.createElement('script');
+    sc.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_JS_KEY}&libraries=services&autoload=false`;
+    sc.onload = () => kakao.maps.load(ok);
+    sc.onerror = () => fail();
+    document.head.appendChild(sc);
+  });
+  return _kloading;
+}
+function geocode(addr){
+  if(GEO[addr]) return Promise.resolve(GEO[addr]);
+  return new Promise((ok, fail) => new kakao.maps.services.Geocoder().addressSearch(addr, (r, st) => {
+    if(st === kakao.maps.services.Status.OK){ GEO[addr] = new kakao.maps.LatLng(r[0].y, r[0].x); ok(GEO[addr]); return; }
+    new kakao.maps.services.Places().keywordSearch(addr, (r2, st2) => {      // 역·건물 이름이면 장소 검색으로
+      if(st2 === kakao.maps.services.Status.OK){ GEO[addr] = new kakao.maps.LatLng(r2[0].y, r2[0].x); ok(GEO[addr]); } else fail(addr); });
+  }));
+}
+async function drawKakao(){
+  const el = document.getElementById('kmap'); if(!el) return;
+  try { await loadKakao(); } catch(e){ window._kfail = true; render(); return; }
+  let vis = _kvis; if(!vis){ vis = {}; S.homes.forEach(i => vis[HOMES[i].key] = 'on'); }
+  const map = new kakao.maps.Map(el, { center: new kakao.maps.LatLng(37.52, 127.0), level: 8 });
+  const bounds = new kakao.maps.LatLngBounds();
+  const dest = await geocode(DEST.addr); bounds.extend(dest);
+  new kakao.maps.Marker({ map, position: dest });
+  new kakao.maps.CustomOverlay({ map, position: dest, yAnchor: 2.8, content: `<div class="kpin dest">★ 자주 가는 곳 · ${DEST.name}</div>` });
+  const shown = HOMES.filter(h => vis[h.key]);
+  for(const h of shown){
+    const p = await geocode(h.addr); bounds.extend(p);
+    const op = vis[h.key] === 'ghost' ? .45 : 1, t = (h.route === '걸어서' ? '걸어서 ' : '') + h.commute + '분' + (h.route === '걸어서' ? '' : ' · ' + h.route.split(' · ')[0]);
+    new kakao.maps.Marker({ map, position: p, opacity: op });
+    new kakao.maps.CustomOverlay({ map, position: p, yAnchor: 1.7, content: `<div class="kpin" style="background:${h.color};opacity:${op}">${h.key} ${h.label} · ${t}</div>` });
+    new kakao.maps.Polyline({ map, path: [p, dest], strokeWeight: 3, strokeColor: h.color, strokeOpacity: .8 * op, strokeStyle: 'dash' });
+    new kakao.maps.Circle({ map, center: p, radius: 500, strokeWeight: 1, strokeColor: h.color, strokeOpacity: .5 * op, strokeStyle: 'dash', fillColor: h.color, fillOpacity: .06 * op });
+  }
+  if(shown.length) map.setBounds(bounds, 80, 80, 80, 80); else { map.setCenter(dest); map.setLevel(7); }
+}
+
+// 집 → 자주 가는 곳(★) 경로 선과 시간 라벨 위치
+const ROUTE = {
+  A:{d:'M546 72 Q 615 170 510 244', lx:592, ly:168},
+  B:{d:'M420 252 Q 452 290 486 258', lx:356, ly:250},
+  C:{d:'M112 238 Q 300 330 486 258', lx:300, ly:286}
+};
+function hs(){ return S.homes.map(i=>HOMES[i]); }
+function homePin(h,mode){ return `<g opacity="${mode==='ghost'?.45:1}"><path d="M${h.x} ${h.y} l-12 -18 a15 15 0 1 1 24 0 z" fill="${h.color}" stroke="#fff" stroke-width="1.5"/><text x="${h.x-5}" y="${h.y-14}" font-size="13" font-weight="800" fill="#fff">${h.key}</text></g>`; }
+function seoulMap(vis){
+  if(!vis){ vis={}; S.homes.forEach(i=>vis[HOMES[i].key]='on'); }
+  const shown = HOMES.filter(h=>vis[h.key]);
+  const st = [[546,116,'성수역',8,-6,'A'],[474,227,'역삼역',-52,-6,'B'],[112,200,'신대방역',10,-8,'C']].filter(x=>vis[x[5]]);  // 넣은 집의 역만 표시
+  return `<svg viewBox="0 0 640 300" width="100%" class="map">
+    <rect width="640" height="300" fill="#f2f4f6"/>
+    <path d="M0 150 C 140 118, 280 190, 420 150 S 600 128, 640 158" stroke="#d6e6f5" stroke-width="22" fill="none"/>
+    <text x="14" y="138" font-size="12" fill="#8aa9c8">한강</text>
+    <ellipse cx="320" cy="150" rx="240" ry="100" fill="none" stroke="#3cb44a" stroke-width="5" opacity=".7"/>
+    <line x1="16" y1="22" x2="40" y2="22" stroke="#3cb44a" stroke-width="5"/><text x="48" y="26" font-size="12" fill="#6b7684">2호선</text>
+    ${st.map(s=>`<circle cx="${s[0]}" cy="${s[1]}" r="6" fill="#fff" stroke="#3cb44a" stroke-width="3"/><text x="${s[0]+s[3]}" y="${s[1]+s[4]}" font-size="12" font-weight="700" fill="#6b7684">${s[2]}</text>`).join('')}
+    ${shown.map(h=>{const r=ROUTE[h.key], lbl=(h.route==='걸어서'?'걸어서 ':'')+h.commute+'분'+(h.route==='걸어서'?'':' · 2호선'), w=lbl.length*7.4+16;
+      return `<g opacity="${vis[h.key]==='ghost'?.45:1}"><path d="${r.d}" fill="none" stroke="${h.color}" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <rect x="${r.lx-w/2}" y="${r.ly-12}" width="${w}" height="22" rx="11" fill="#fff" stroke="${h.color}"/><text x="${r.lx}" y="${r.ly+3}" font-size="12" font-weight="800" fill="${h.color}" text-anchor="middle">${lbl}</text></g>`;}).join('')}
+    <circle cx="500" cy="252" r="15" fill="#fab005" stroke="#fff" stroke-width="2"/><text x="500" y="258" font-size="16" fill="#fff" text-anchor="middle">★</text>
+    <text x="520" y="250" font-size="12" font-weight="800" fill="#191f28">자주 가는 곳</text><text x="520" y="265" font-size="12" font-weight="700" fill="#4e5968">${DEST.name}</text>
+    ${shown.length?'':`<text x="320" y="292" font-size="12" fill="#6b7684" text-anchor="middle">집을 넣으면 자주 가는 곳까지 걸리는 시간이 선으로 표시돼요</text>`}
+    ${shown.map(h=>homePin(h,vis[h.key])).join('')}
+  </svg>`;
+}
+function pinIcon(x,y,name,on,col){
+  const c = on ? (col||'#2f6bff') : '#9aa3ad';
+  return `<g transform="translate(${x-13},${y-13})" opacity="${on?1:.6}"><circle cx="13" cy="13" r="13" fill="#fff" stroke="${c}" stroke-width="2"/>
+    <g transform="translate(5,5) scale(.667)" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</g></g>`;
+}
+function neighMap(h, scene){
+  const hot = SCENES[scene].f, cx = 320, cy = 160, R = 130;   // 원 = 걸어서 10분 (중심에서 70 + 분×6)
+  const pts = FAC.map((f, i) => { const m = LIFE[h.key][f.k][1], a = (i / FAC.length) * Math.PI * 2 - Math.PI / 2 + Math.PI / 8, d = Math.min(175, 70 + m * 6);
+    return {f, m, n:LIFE[h.key][f.k][0], x:cx + Math.cos(a) * d * 1.35, y:cy + Math.sin(a) * d * .78, left:Math.cos(a) < 0, on:hot.includes(f.k)}; });
+  return `<svg viewBox="0 0 640 320" width="100%" class="map">
+    <rect width="640" height="320" rx="16" fill="#f2f4f6"/>
+    <g stroke="#fff" stroke-width="12"><line x1="0" y1="160" x2="640" y2="160"/><line x1="320" y1="0" x2="320" y2="320"/></g>
+    <g stroke="#fff" stroke-width="6"><line x1="0" y1="70" x2="640" y2="70"/><line x1="0" y1="250" x2="640" y2="250"/><line x1="150" y1="0" x2="150" y2="320"/><line x1="490" y1="0" x2="490" y2="320"/></g>
+    <ellipse cx="${cx}" cy="${cy}" rx="${R*1.35}" ry="${R*.78}" fill="${h.color}" fill-opacity=".06" stroke="${h.color}" stroke-opacity=".5" stroke-dasharray="6 5"/>
+    <text x="16" y="306" font-size="12" fill="#6b7684">점선 = 걸어서 약 10분 · 거리는 직선거리 × 1.3으로 계산한 추정이에요</text>
+    ${pts.filter(p=>!p.on).concat(pts.filter(p=>p.on)).map(p=>pinIcon(p.x,p.y,p.f.icon,p.on,h.color)+`<text x="${p.left?p.x-17:p.x+17}" y="${p.y+4}" text-anchor="${p.left?'end':'start'}" font-size="12" font-weight="${p.on?800:500}" fill="${p.on?'#191f28':'#8b95a1'}">${p.n} ${p.m}분</text>`).join('')}
+    ${homePin({...h, x:cx, y:cy+8}, 'on')}
+  </svg>`;
+}
+
+/* ---------- STEP 4 · 비교 ---------- */
+function prioChips(){
+  return `<div class="chips">${Object.entries(PRIO).map(([k,p])=>`<button class="chip ${S.prio===k?'on':''}" onclick="set({prio:'${k}'})" data-act="우선순위 바꾸기 → 종합 점수 다시 계산">${p.name}</button>`).join('')}</div>`;
+}
+/* 3단계 · 이 집에서 받을 수 있는 지원 = 내 조건(2단계 judge) × 집 조건(보증금·월세) · 코드 판정 */
+function houseSupport(h){
+  const J=judge(), by=Object.fromEntries(J.list.map(p=>[p.id,p])), d=val(h,'deposit'), r=val(h,'rent');
+  const person=id=>by[id].st!=='no', pwhy=id=>by[id].why.join(', ');
+  const sv=d*0.05/12+r, amt=d+r*100;
+  const molit = person('molit') ? {ok:true, t:'월 '+Math.min(r,20)+'만 원 × 24개월'} : {ok:false, t:pwhy('molit')};
+  let seoul;
+  if(!person('seoul')) seoul={ok:false, t:pwhy('seoul')};
+  else if(d>8000) seoul={ok:false, t:`보증금 8천만 원 초과 (이 집 ${d.toLocaleString()}만 원)`};
+  else if(r>60 && sv>93) seoul={ok:false, t:`월세 60만 원 초과 · 보증금×5%÷12+월세 = ${r1(sv)}만 원 (93만 원 넘음)`};
+  else seoul={ok:true, t:'월 '+Math.min(r,20)+'만 원 × 12개월'};
+  if(seoul.ok && molit.ok){ seoul.dup=true; seoul.t='조건은 맞지만 국토부와 같이 못 받아요'; }
+  const move = !person('move') ? {ok:false, t:pwhy('move')} : amt>20000 ? {ok:false, t:`거래금액 2억 원 초과 (환산 ${amt.toLocaleString()}만 원)`} : {ok:true, t:'중개보수 + 이사비 최대 40만 원'};
+  const monthSup = molit.ok||seoul.ok ? Math.min(r,20) : 0;
+  return {molit, seoul, move, monthSup, total:(molit.ok?Math.min(r,20)*24:seoul.ok?Math.min(r,20)*12:0)+(move.ok?40:0)};
+}
+function supportSec(H, th){
+  const m=me(), S3=Object.fromEntries(H.map(h=>[h.key,houseSupport(h)]));
+  const cell=x=>x.dup?`<td><b style="color:var(--sub)">△</b><span class="w">${x.t}</span></td>`
+    : x.ok?`<td><b class="v" style="color:var(--ok-t,#099268)">✓</b><span class="w">${x.t}</span></td>`
+    : `<td><b class="v" style="color:#d64545">✗</b><span class="w">${x.t}</span></td>`;
+  const after=h=>r1(monthly(h)-S3[h.key].monthSup), minA=Math.min(...H.map(after)), maxT=Math.max(...H.map(h=>S3[h.key].total));
+  return `<div class="sec"><div class="sec-t"><span class="ico sm">${svgIcon('receipt')}</span>이 집에서 받을 수 있는 지원 <small>만 ${m.age}세 · 월 소득 ${m.inc}만 원${m.own?' · 집 있음':''} 기준 · 코드 판정</small></div>
+    <table><tr><th style="width:22%">지원</th>${th}</tr>
+      <tr><td style="font-weight:700">국토부 청년월세</td>${H.map(h=>cell(S3[h.key].molit)).join('')}</tr>
+      <tr><td style="font-weight:700">서울시 청년월세</td>${H.map(h=>cell(S3[h.key].seoul)).join('')}</tr>
+      <tr><td style="font-weight:700">중개보수·이사비</td>${H.map(h=>cell(S3[h.key].move)).join('')}</tr>
+      <tr><td style="font-weight:700">받을 수 있는 최대 금액</td>${H.map(h=>`<td class="${S3[h.key].total===maxT&&maxT>0?'best':''}"><b class="v">${S3[h.key].total.toLocaleString()}만 원</b></td>`).join('')}</tr>
+      <tr><td style="font-weight:700">지원 받으면 한 달 실부담</td>${H.map(h=>`<td class="${after(h)===minA?'best':''}"><b class="v">${after(h)}만 원</b><span class="w">${S3[h.key].monthSup?`월세 지원 ${S3[h.key].monthSup}만 원 빼고`:'지원 없음'}</span></td>`).join('')}</tr>
+    </table>
+    <p class="s" style="margin-top:10px">1단계 답과 이 집의 보증금·월세로 코드가 판정했어요. 소득·재산은 신청할 때 서류로 확인해요. 아래 종합 추천 점수는 지원 전 금액으로 계산했어요.</p></div>`;
+}
+function step4(){
+  if(!S.homesDone) return step4Input();
+  const H=hs(), rank=scores(), top=rank[0], w=PRIO[S.prio].w;
+  if(S.easy){
+    const t=top.h, cheap=H.reduce((a,b)=>monthly(a)<=monthly(b)?a:b), wk=weakness(t);
+    return `<div class="eyebrow">3단계</div><h1>{NM}에게는<br><span style="color:var(--pri)">${t.key} 집</span>을 추천해요</h1>
+      <div class="lead">돈, 오가는 시간, 동네 생활을 모두 따져 봤어요.</div>
+      <div class="sec">${mapBox()}</div>
+      <div class="sec" style="margin-top:12px">
+        <div class="erow"><span class="ico lg">${svgIcon('receipt')}</span><div><div class="t">${t===cheap?'한 달에 드는 돈이 가장 적어요':`한 달에 ${monthly(t)}만 원이 들어요`}</div><div class="d">월세와 교통비를 합쳐 한 달 ${monthly(t)}만 원이에요.</div></div></div>
+        <div class="erow"><span class="ico lg">${svgIcon('train')}</span><div><div class="t">${DEST.name}까지 ${t.commute}분이에요</div><div class="d">${t.route==='걸어서'?'걸어서 갈 수 있어요.':'지하철 '+t.route.split(' · ')[0]+' 한 번이면 가요.'}</div></div></div>
+        ${wk?`<div class="erow"><span class="ico lg warn">${svgIcon('cart')}</span><div><div class="t">조금 먼 곳도 있어요</div><div class="d">${wk}</div></div></div>`:''}
+      </div>
+      <div class="cta"><button class="btn pri wide" onclick="set({easy:false})" data-act="일반 화면으로 자세히">자세히 비교하기</button></div>`;
+  }
+  const tag=h=>`<span class="htag"><i style="background:${h.color}">${h.key}</i>${h.label.replace(' 원룸','')}</span>`;
+  if(S.detail){
+    const h=HOMES.find(x=>x.key===S.detail.home)||H[0], sc=S.detail.scene||'sick';
+    const hc=x=>`<i style="background:${x.color}">${x.key}</i>`;
+    const fs=SCENES[sc].f, best=f=>Math.min(...H.map(x=>LIFE[x.key][f][1]));
+    return `<button class="link back" onclick="set({detail:null})" data-act="뒤로">‹ 집 비교로 돌아가기</button>
+      <div class="eyebrow" style="margin-top:20px">3단계 · 동네 생활 지도</div>
+      <h1 style="display:flex;align-items:center;gap:12px"><span class="pin" style="width:38px;height:38px;border-radius:19px;font-size:17px;background:${h.color}">${h.key}</span>${h.label} 주변</h1>
+      <div class="lead">집을 중심으로 가장 가까운 시설을 보여줘요. 상황을 고르면 그 시설이 강조돼요.</div>
+      <div class="sec"><div class="sec-t">어느 집?</div><div class="chips">${H.map(x=>`<button class="hchip" style="${x===h?`border-color:${x.color};color:${x.color}`:''}" onclick="set({detail:{home:'${x.key}',scene:'${sc}'}})" data-act="집 바꾸기">${hc(x)}${x.label}</button>`).join('')}</div></div>
+      <div class="sec" style="margin-top:20px"><div class="sec-t">어떤 상황?</div><div class="chips">${Object.entries(SCENES).map(([k,x])=>`<button class="chip ${sc===k?'on':''}" onclick="set({detail:{home:'${h.key}',scene:'${k}'}})" data-act="장면 바꾸기 → 지도 강조 변경">${x.name}</button>`).join('')}</div></div>
+      <div class="sec" style="margin-top:20px">${neighMap(h, sc)}</div>
+      <div class="sec"><div class="sec-t">${SCENES[sc].name} · 3곳 비교</div>
+        <table><tr><th style="width:22%">시설</th>${H.map(x=>`<th>${tag(x)}</th>`).join('')}</tr>
+        ${fs.map(f=>{const F=FAC.find(z=>z.k===f);return `<tr><td><div style="display:flex;align-items:center;gap:10px;font-weight:700"><span class="ico sm">${svgIcon(F.icon)}</span>${F.label}</div></td>${H.map(x=>{const v=LIFE[x.key][f];return `<td class="${v[1]===best(f)?'best':''}"><b class="v">${v[1]}분</b>${v[1]>=15?' <span class="pill warn">멀어요</span>':''}<span class="w">${v[0]}</span></td>`}).join('')}</tr>`}).join('')}
+        </table></div>
+      <div class="sec"><div class="note"><span class="ic">!</span><div><b>직접 가봐야 할 부분</b> · 지도 데이터로는 알 수 없어요<br>영업시간 · 주말·야간 진료 여부 · 역까지 경사와 계단 · 소음과 채광</div></div></div>`;
+  }
+  const th=H.map(h=>`<th>${tag(h)}</th>`).join('');
+  const minOf=f=>Math.min(...H.map(h=>LIFE[h.key][f][1]));
+  const minM=Math.min(...H.map(monthly)), minT=Math.min(...H.map(h=>h.commute));
+  const lifeSc=Object.fromEntries(rank.map(r=>[r.h.key,r.life])), maxL=Math.max(...rank.map(r=>r.life));
+  const rs=reasons(rank), wk=weakness(top.h);
+  return `<div class="eyebrow">3단계 · 집 비교</div><h1>어느 집이 나한테 맞을까?</h1>
+    <div class="lead">생활 편의, 한 달 비용, 오가는 시간을 한 번에 따져서 추천해요. 숫자는 모두 실제 주소로 계산했어요.</div>
+    <div class="sec">${mapBox()}</div>
+
+    <div class="sec"><div class="sec-t">한눈에 보기</div>
+      <div class="sumcards">${H.map(h=>{const r=rank.find(x=>x.h===h), i=rank.indexOf(r);return `<div class="sumcard" style="border-top-color:${h.color}">
+        <div>${tag(h)}${i===0?'<span class="top1">추천</span>':''}</div>
+        <div class="k">한 달 실부담</div><div class="n" style="${monthly(h)===minM?'color:#2f6bff':''}">${monthly(h)}<small>만 원</small></div>
+        <div class="k">${DEST.name}까지</div><div class="n" style="${h.commute===minT?'color:#2f6bff':''}">${h.commute}<small>분 · ${h.route.split(' · ')[0]}</small></div>
+        <div class="k">생활 편의 점수</div><div class="n" style="${lifeSc[h.key]===maxL?'color:#2f6bff':''}">${lifeSc[h.key]}<small>점</small></div>
+        <button class="maplink" style="color:${h.color};background:${h.color}1a" onclick="set({detail:{home:'${h.key}',scene:'shop'}})" data-act="동네 생활 지도 열기">동네 지도 보기 ›</button></div>`}).join('')}</div></div>
+
+    <div class="sec"><div class="sec-t"><span class="ico sm">${svgIcon('train')}</span>생활 편의 <small>가장 가까운 곳까지 걸어서</small><button class="maplink" style="margin:0 0 0 auto" onclick="set({detail:{home:'${top.h.key}',scene:'shop'}})" data-act="동네 생활 지도 열기">동네 지도로 보기 ›</button></div>
+      <table><tr><th style="width:22%">시설</th>${th}</tr>
+      ${FAC.map(f=>`<tr class="clk" onclick="set({detail:{home:'${top.h.key}',scene:'${Object.keys(SCENES).find(k=>SCENES[k].f.includes(f.k))}'}})" data-act="행 클릭 → 동네 생활 지도"><td><div style="display:flex;align-items:center;gap:10px;font-weight:700"><span class="ico sm">${svgIcon(f.icon)}</span>${f.label}<span class="go" style="margin-left:auto">지도 ›</span></div></td>${H.map(h=>{const v=LIFE[h.key][f.k];return `<td class="${v[1]===minOf(f.k)?'best':''}"><b class="v">${v[1]}분</b>${v[1]>=15?' <span class="pill warn">멀어요</span>':''}<span class="w">${v[0]}</span></td>`}).join('')}</tr>`).join('')}
+      <tr><td style="font-weight:700">생활 점수</td>${H.map(h=>`<td class="${lifeSc[h.key]===maxL?'best':''}"><b class="v">${lifeSc[h.key]}점</b></td>`).join('')}</tr></table></div>
+
+    <div class="sec"><div class="sec-t"><span class="ico sm">${svgIcon('receipt')}</span>비용 · 오가는 시간 <small>월세 + 관리비 + 교통비 = 한 달 실부담</small></div>
+      <table><tr><th style="width:22%"></th>${th}</tr>
+        <tr><td class="s">보증금</td>${H.map(h=>{const c=me().cash, d=val(h,'deposit');return `<td>${d.toLocaleString()}만 원${d>c?` <span class="pill warn">${(d-c).toLocaleString()}만 원 부족</span>`:''}</td>`}).join('')}</tr>
+        <tr><td class="s">월세</td>${H.map(h=>`<td>${val(h,'rent')}만 원</td>`).join('')}</tr>
+        <tr><td class="s">관리비</td>${H.map(h=>`<td>${val(h,'fee')?val(h,'fee')+'만 원':'<span class="s">–</span>'}</td>`).join('')}</tr>
+        <tr><td class="s">교통비 (한 달)</td>${H.map(h=>`<td>${fareMonth(h)?fareMonth(h)+'만 원':'0원 (걸어서)'}</td>`).join('')}</tr>
+        <tr><td style="font-weight:700">한 달 실부담</td>${H.map(h=>`<td class="${monthly(h)===minM?'best':''}"><b class="v">${monthly(h)}만 원</b></td>`).join('')}</tr>
+        <tr><td style="font-weight:700">${DEST.name}까지</td>${H.map(h=>`<td class="${h.commute===minT?'best':''}"><b class="v">${h.commute}분</b>${S.prof&&S.prof.time&&S.prof.time<999&&h.commute>S.prof.time?` <span class="pill warn">${S.prof.time}분 넘음</span>`:''}<span class="w">${h.route.split(' · ')[0]}</span></td>`).join('')}</tr>
+      </table>
+      <p class="s" style="margin-top:10px">교통비 = ODsay 편도 요금 × 2 × ${DAYS}일 · 관리비를 넣으면 실부담에 더해져요.${S.prof&&S.prof.cash!=null?` · 보증금은 1단계에서 말한 모아둔 돈 ${me().cash.toLocaleString()}만 원과 비교해요.`:''}</p></div>
+    ${supportSec(H, th)}
+
+    <div class="verdict" id="verdict">
+      <div class="sec-t" style="margin-bottom:12px"><span class="ico sm">${svgIcon('home')}</span>종합 추천</div>
+      <div class="vhead"><span class="pin" style="width:34px;height:34px;border-radius:17px;font-size:15px;background:${top.h.color};align-self:center">${top.h.key}</span><span class="nm">${top.h.label}을 추천해요</span><span class="sc"><b>${top.total}</b>점 / 100</span></div>
+      <p class="s" style="margin-top:6px">${PRIO[S.prio].name} 기준 · 비용 ${Math.round(w.cost*100)}% · 시간 ${Math.round(w.time*100)}% · 생활 ${Math.round(w.life*100)}%</p>
+      <div style="margin:18px 0 6px"><div style="font-weight:700;font-size:15px;margin-bottom:8px">나한테 제일 중요한 건? <span class="s" style="font-weight:400">고르면 바로 다시 계산돼요</span></div>${prioChips()}</div>
+      <div style="margin-top:18px;border-top:1px solid var(--line)">
+        ${rank.map((r,i)=>`<div class="rk"><span class="no">${i+1}위</span><span>${tag(r.h)}</span><span class="bar"><span style="width:${r.total}%;background:${r.h.color}"></span></span><span class="t">${r.total}점</span><span class="d" style="grid-column:2/5">비용 ${r.cost} · 시간 ${r.time} · 생활 ${r.life}</span></div>`).join('')}
+      </div>
+      <div style="margin-top:22px;font-weight:700">이렇게 추천했어요</div>
+      <ul class="why-list">${rs.map(t=>`<li>${t}</li>`).join('')}</ul>
+      ${wk?`<div class="note warn" style="margin-top:16px"><span class="ic">!</span><div>아쉬운 점 · ${top.h.label}은 ${wk}</div></div>`:''}
+      <details style="margin-top:14px"><summary class="s" style="cursor:pointer">점수는 이렇게 계산해요</summary><p class="s" style="margin-top:8px;line-height:1.8">비용: 가장 싼 집 100점, 월 10만 원 비쌀 때마다 −15점<br>시간: 15분 이하 100점, 그 뒤 1분마다 −2점<br>생활: 시설마다 걸어서 5분 이하 100점, 20분 이상 0점 → 8개 평균<br>점수와 숫자는 코드가 계산하고, AI는 이 근거로만 설명해요.</p></details>
+    </div>
+    <div class="hr"></div>
+    <div class="diff" style="margin-top:0"><div><h4 style="color:var(--pri)">데이터로 확인한 것</h4><p class="s">주변 시설 거리 (카카오 로컬) · 오가는 시간·요금 (ODsay)</p></div><div><h4 style="color:var(--warn)">직접 확인해야 할 것</h4><p class="s">관리비 · 건물 용도 · 소음 · 채광 · 수압과 곰팡이</p></div></div>`;
+}
+
+function render(){
+  const body=[null,step1,step3,step4][S.step]();
+  document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
+  if(document.getElementById('kmap')) drawKakao();
+}
+/* ----- 로그인 정보·1단계 조건을 화면 문구에 넣기 ----- */
+// {NM} 이름(로그인) · {AGE} 나이 · {INC} 월 소득 · {YINC} 연 소득 (1단계 대화에서 뽑은 값, 없으면 시연 인물 값)
+function fill(h){
+  const P = S.prof, age = P.age || 27, inc = P.income != null ? P.income : 230;
+  const nm = S.user ? S.user.given + '님' : '회원님';
+  return h.replace(/\{NM\}/g, nm).replace(/\{AGE\}/g, `만 ${age}세`).replace(/\{INC\}/g, `월 ${inc.toLocaleString()}만 원`).replace(/\{YINC\}/g, `${(inc*12).toLocaleString()}만 원`);
+}
+function loginModal(){
+  if(!S.loginOpen) return '';
+  return `<div class="dim" onclick="if(event.target===this)set({loginOpen:false})"><div class="sheet" style="width:420px;text-align:center">
+    <div class="sheet-h"><b style="font-size:18px">간편 로그인</b><button class="x" onclick="set({loginOpen:false})">×</button></div>
+    <p class="s" style="text-align:left">로그인하면 이름이 화면에 나오고, 결과를 저장하고 공고 알림을 받을 수 있어요.</p>
+    <label class="s" style="display:block;text-align:left;margin-top:16px">이름 (시연용 · 실제로는 카카오·네이버 계정 이름을 받아요)
+      <span class="inp" style="margin-top:6px"><input id="login-name" value="박정연"></span></label>
+    <button class="btn wide" style="margin-top:18px;background:#fee500;color:#191f28" onclick="doLogin('카카오')" data-act="카카오 로그인">카카오로 시작하기</button>
+    <button class="btn wide" style="margin-top:8px;background:#03c75a;color:#fff" onclick="doLogin('네이버')" data-act="네이버 로그인">네이버로 시작하기</button>
+  </div></div>`;
+}
+function doLogin(via){
+  const name = (document.getElementById('login-name').value || '').trim() || '사용자';
+  const given = name.length >= 3 ? name.slice(1) : name;   // 박정연 → 정연
+  set({user:{name, given, via}, loginOpen:false});
+}
+render();
+apiCheck();
+</script>
+</body>
+</html>

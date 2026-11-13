@@ -1,0 +1,303 @@
+{
+ "meta": {
+  "description": "STEP 3 시연용 지원 정책 4개 + 중복 수혜 규칙. 기본 정보는 온통청년 API, 금액·기간·한도는 공식 공고로 보완.",
+  "created": "2026-11-10",
+  "units": "금액은 만원, 날짜는 YYYY-MM-DD",
+  "demo_reference_date_note": "실제 오늘(2026-11-10) 기준으로는 모든 신청기간이 끝남. 마감 임박 기능은 '시연 기준일' 파라미터로 계산할 것 (예: 2026-08-13으로 두면 이사비 2차가 D-5).",
+  "field_status": "check='code'는 코드 필터로 판정, check='llm'은 서술형이라 LLM 추출 후 '확인 필요'로 표시"
+ },
+ "policies": [
+  {
+   "key": "seoul_youth_rent",
+   "name": "2026 서울시 청년월세 지원",
+   "org": "서울특별시 주택실",
+   "youthcenter_id": "20261021005400214208",
+   "benefit": {
+    "type": "월세 지원",
+    "monthly_max": 20,
+    "months": 12,
+    "total_max": 240,
+    "rule": "월 최대 20만원 × 최대 12개월 (240만원). 월세가 20만원 미만이면 임대차계약서의 차임금액만. 생애 1회.",
+    "source": "https://youth.seoul.go.kr/content.do?key=2310100046"
+   },
+   "apply_rounds": [
+    {
+     "round": "2026",
+     "start": "2026-05-06",
+     "end": "2026-05-19",
+     "channel": "서울주거포털 온라인",
+     "source": "https://mediahub.seoul.go.kr/archives/2018004",
+     "note": "온통청년 응답은 2026-01-01~12-31로 되어 있어 공고 기준으로 덮어씀"
+    }
+   ],
+   "eligibility": [
+    {
+     "field": "age",
+     "min": 19,
+     "max": 39,
+     "check": "code",
+     "text": "신청연도 기준 19세 이상 ~ 39세 이하 (2026년: 1986.1.1. ~ 2007.12.31. 출생). 군 복무기간을 고려해 최대 3살까지 상한 연장",
+     "military_extension_max": 3
+    },
+    {
+     "field": "region",
+     "value": "서울",
+     "check": "code",
+     "text": "서울시 주민등록 + 임차 건물 소재지에 전입"
+    },
+    {
+     "field": "homeless",
+     "value": true,
+     "check": "code",
+     "text": "무주택 월세 거주"
+    },
+    {
+     "field": "rent",
+     "deposit_max": 8000,
+     "monthly_rent_max": 60,
+     "check": "code",
+     "text": "보증금 8천만원 이하·월세 60만원 이하. 월세 60 초과여도 (보증금×5%/12 + 월세) ≤ 93만원이면 가능"
+    },
+    {
+     "field": "income",
+     "check": "llm",
+     "text": "기준 중위소득 48% 초과 ~ 150% 이하",
+     "note": "서울시 청년몽땅정보통 공고 화면으로 확인 (2026-11-12)"
+    },
+    {
+     "field": "asset",
+     "check": "llm",
+     "text": "일반재산 1억 3천만원 이하, 자동차 2,500만원 미만"
+    }
+   ],
+   "source_url": "https://youth.seoul.go.kr/content.do?key=2310100046",
+   "exclusions": [
+    "'26년 이전 서울시 청년월세 기 선정(수급)자, 국토교통부 청년월세 한시 특별지원금 수혜 중인 사람, 자치구 청년월세 수혜 중인 사람은 지원 불가"
+   ]
+  },
+  {
+   "key": "seoul_moving_brokerage",
+   "name": "2026 서울시 청년 부동산 중개보수 및 이사비 지원",
+   "org": "서울특별시",
+   "youthcenter_id": [
+    "20260614005400213232",
+    "20260618005400213241"
+   ],
+   "benefit": {
+    "type": "실비 지원",
+    "total_max": 40,
+    "rule": "실제로 지출한 부동산 중개보수 + 이사비 합산 최대 40만원 실비, 신청자 생애 1회",
+    "source": "https://youth.seoul.go.kr",
+    "scale": "4,000명 이상, 사업 예산 범위 내"
+   },
+   "apply_rounds": [
+    {
+     "round": "1차",
+     "start": "2026-04-01",
+     "end": "2026-04-14",
+     "channel": "청년몽땅정보통 온라인",
+     "source": "온통청년 20260614005400213232"
+    },
+    {
+     "round": "2차",
+     "start": "2026-08-18",
+     "end": "2026-08-31",
+     "channel": "청년몽땅정보통 온라인",
+     "source": "https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=72895",
+     "time": "2026.8.18.(화) 10:00 ~ 8.31.(월) 18:00"
+    }
+   ],
+   "eligibility": [
+    {
+     "field": "age",
+     "min": 19,
+     "max": 39,
+     "check": "code",
+     "text": "만 19~39세 청년가구"
+    },
+    {
+     "field": "region",
+     "value": "서울",
+     "check": "code",
+     "text": "2024-01-01 이후 서울시로 전입 또는 서울시 내 이사 후 전입신고 완료"
+    },
+    {
+     "field": "homeless",
+     "value": true,
+     "check": "code",
+     "text": "무주택 임차가구"
+    },
+    {
+     "field": "contract_amount",
+     "max": 20000,
+     "check": "code",
+     "text": "거래금액 2억원 이하"
+    },
+    {
+     "field": "income",
+     "check": "llm",
+     "text": "기준 중위소득 150% 이하"
+    }
+   ],
+   "source_url": "https://news.seoul.go.kr/gov/archives/576989",
+   "contact": "1877-9358"
+  },
+  {
+   "key": "seoul_deposit_interest",
+   "name": "2026 서울시 청년 임차보증금 이자지원",
+   "org": "서울특별시 주택실",
+   "youthcenter_id": "20261021005400214211",
+   "benefit": {
+    "type": "대출 이자 지원",
+    "loan_max": 20000,
+    "loan_ratio_max": 0.9,
+    "interest_support_rate": 2.0,
+    "rule": "임차보증금의 90% 이내, 최대 2억원 대출에 대해 서울시가 연 2.0% 이자 지원",
+    "period": null,
+    "period_note": "지원기간은 페이지에 없음, 서울주거포털 공고문 확인 필요",
+    "source": "https://youth.seoul.go.kr/content.do?key=2310100047"
+   },
+   "apply_rounds": [
+    {
+     "round": "상시",
+     "start": null,
+     "end": null,
+     "channel": "한도조회·대출상담 → 추천서 신청 → 대출 신청",
+     "source": "https://youth.seoul.go.kr/content.do?key=2310100047",
+     "note": "온통청년 응답은 2026-02-01~03-31. 청년몽땅정보통은 '상시'. 마감 임박 대상에서 제외 권장"
+    }
+   ],
+   "eligibility": [
+    {
+     "field": "age",
+     "min": 19,
+     "max": 39,
+     "check": "code",
+     "text": "만 19~39세"
+    },
+    {
+     "field": "homeless",
+     "value": true,
+     "check": "code",
+     "text": "무주택 세대주 (기혼은 부부 모두 무주택)"
+    },
+    {
+     "field": "income",
+     "annual_max": 4000,
+     "check": "code",
+     "text": "연소득 4천만원 이하 (기혼 부부합산 5천만원 이하)"
+    },
+    {
+     "field": "employment",
+     "check": "llm",
+     "text": "근로 중이거나, 미근로 시 과거 근로기간 합계 1년 이상 또는 부모 연소득 7천만원 이하"
+    }
+   ],
+   "source_url": "https://youth.seoul.go.kr/content.do?key=2310100047"
+  },
+  {
+   "key": "molit_youth_rent",
+   "name": "(국토부) 2026 청년월세 지원",
+   "org": "국토교통부",
+   "youthcenter_id": "20260319005400112218",
+   "benefit": {
+    "type": "월세 지원",
+    "monthly_max": 20,
+    "months": 24,
+    "total_max": 480,
+    "rule": "실제 월세 범위 내 월 최대 20만원 × 최대 24개월. 보증금·관리비 제외. 주거급여 수급자는 월차임분 차감.",
+    "source": "온통청년 20260319005400112218"
+   },
+   "apply_rounds": [
+    {
+     "round": "2026 신규",
+     "start": "2026-03-30",
+     "end": "2026-05-29",
+     "channel": "주민센터 방문 또는 복지로 온라인",
+     "source": "온통청년 20260319005400112218"
+    }
+   ],
+   "eligibility": [
+    {
+     "field": "age",
+     "min": 19,
+     "max": 34,
+     "check": "code",
+     "text": "19~34세 독립거주 무주택 청년"
+    },
+    {
+     "field": "homeless",
+     "value": true,
+     "check": "code",
+     "text": "무주택 (분양권·입주권 포함)"
+    },
+    {
+     "field": "public_rental",
+     "value": false,
+     "check": "code",
+     "text": "공공주택특별법상 공공임대 거주자 제외"
+    },
+    {
+     "field": "income",
+     "check": "llm",
+     "text": "청년가구 중위 60% 이하 AND 원가구 중위 100% 이하 (30세 이상 등은 원가구 미고려)"
+    }
+   ],
+   "demo_use": "'조건이 바뀌면? → 내년에 35살' 예시: 서울시 정책은 39세까지라 유지, 국토부는 34세 상한이라 사라짐",
+   "source_url": "https://bokjiro.go.kr"
+  }
+ ],
+ "duplicate_rules": [
+  {
+   "pair": [
+    "seoul_youth_rent",
+    "molit_youth_rent"
+   ],
+   "type": "중복 불가",
+   "text": "서울시 청년월세와 국토부 청년월세 중복 선정 시 지급중지 신청 대상. 국토부 제외대상에도 '지자체 청년월세 중복 수혜 중인 자' 명시.",
+   "sources": [
+    "https://housing.seoul.go.kr/site/main/board/notice/12682",
+    "온통청년 20260319005400112218 ptcpPrpTrgtCn"
+   ],
+   "compare_hint": "서울시는 최대 240만(12개월), 국토부는 최대 480만(24개월). 둘 다 자격이 되면 국토부가 총액상 유리.",
+   "stop_notice": {
+    "title": "2026년 서울시 청년월세 및 국토부 청년월세 지원 사업 중복 선정자 지급중지 신청 안내",
+    "url": "https://housing.seoul.go.kr/site/main/board/notice/12682",
+    "text": "중복 선정자는 2026.9.15~9.23 24시까지 서울주거포털(마이페이지 > 청년월세지원 신청 현황 > 변경신청 > 지급중지 신청)에서 지급중지를 신청. 기한까지 중지 신청을 하지 않으면 추후 서울시 청년월세 지원 사업 신청 불가(선정 및 지급 이력 남음). 지원중지 신청자는 기지급분(7월분) 환수, 환수금 미납 시에도 지급 이력이 남아 서울시 청년월세 재신청 불가. 어느 사업을 유지할지 선택 가능 여부는 공고에 없음 → 청년월세지원센터 1833-2030 문의",
+    "checked": "2026-11-12"
+   }
+  },
+  {
+   "pair": [
+    "seoul_deposit_interest",
+    "seoul_youth_rent"
+   ],
+   "type": "확인 필요",
+   "text": "이자지원은 '주거급여 등 서울시 임차보증금 관련 사업 수혜자'는 수혜 종료 후 신청 가능. 청년월세가 여기에 포함되는지는 원문에 명시 없음.",
+   "sources": [
+    "https://youth.seoul.go.kr/content.do?key=2310100047"
+   ]
+  },
+  {
+   "condition": "SH 청년안심주택(공공임대) 입주",
+   "excludes": [
+    "molit_youth_rent"
+   ],
+   "type": "중복 불가",
+   "text": "국토부 청년월세는 공공임대 거주자 제외. STEP 2 전략 C(청년주택) 선택 시 국토부 월세 지원이 사라짐.",
+   "sources": [
+    "온통청년 20260319005400112218 ptcpPrpTrgtCn"
+   ]
+  },
+  {
+   "policy": "seoul_youth_rent",
+   "type": "생애 1회",
+   "text": "서울시 청년월세는 생애 1회"
+  },
+  {
+   "policy": "seoul_moving_brokerage",
+   "type": "생애 1회",
+   "text": "중개보수·이사비 지원은 생애 1회"
+  }
+ ]
+}

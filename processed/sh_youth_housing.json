@@ -1,0 +1,1652 @@
+{
+ "meta": {
+  "source": [
+   "2026년 1차 서울시 청년안심주택(공공임대) 입주자 모집공고 (2026.03.31, SH)",
+   "2026년 2차 서울시 청년안심주택(공공임대) 입주자 모집공고 (2026.07.31, SH)"
+  ],
+  "checked_at": "2026-11-10",
+  "scope": "청년 계층(1인, 미혼) 일반형만. 신혼부부형·셰어형 제외",
+  "units": {
+   "deposit": "만원",
+   "monthly": "만원",
+   "area": "㎡ (주거전용)"
+  },
+  "rent_levels": {
+   "A": "시중시세 30% — 청년 1순위(수급자·한부모·차상위)",
+   "B": "시중시세 50% — 청년 2·3순위"
+  },
+  "warning": "단지명은 PDF 표에서 수작업 추출. 셀이 여러 행에 걸친 단지는 배치로 귀속을 추정했으니 note 있는 행은 원문 대조 권장"
+ },
+ "eligibility_youth": {
+  "age": "공고일 기준 만 19~39세, 미혼, 본인 무주택",
+  "rank": {
+   "1": {
+    "who": "생계·의료·주거급여 수급자, 보호대상 한부모, 차상위 (본인 또는 등본상 부모)",
+    "rent_level": "A"
+   },
+   "2": {
+    "who": "본인+부모 월평균소득 100% 이하",
+    "asset_max": 34500,
+    "car_max": 4542,
+    "rent_level": "B"
+   },
+   "3": {
+    "who": "1·2순위 외, 본인 월평균소득 100% 이하 (1인가구 기준)",
+    "asset_max": 25100,
+    "car_max": 4542,
+    "rent_level": "B"
+   }
+  },
+  "income_monthly_won": {
+   "basis": "전년도 도시근로자 가구원수별 월평균소득 (1인 +20%p, 2인 +10%p 가산 적용 금액)",
+   "1인": {
+    "50%": 2669354,
+    "100%": 4576036
+   },
+   "2인": {
+    "50%": 3519762,
+    "100%": 6452897
+   },
+   "3인": {
+    "50%": 4084215,
+    "100%": 8168429
+   }
+  },
+  "selection_order": "순위 → 가점 총점 → 가점 우선순위 → 전산 추첨",
+  "bonus_points": [
+   "부모 무주택 2점",
+   "소득 50% 이하(2·3순위) 3점",
+   "청약통장 24회↑ 3점 / 12~23회 2점 / 6~11회 1점",
+   "장애인 본인 2점 / 부모 1점",
+   "수급자·보호대상 한부모 3점(1순위)"
+  ]
+ },
+ "lease_terms": {
+  "period": "2년, 재계약 4회 (최장 10년)",
+  "payment": "계약금 = 보증금 20%, 입주 전 잔금 80%",
+  "conversion": {
+   "deposit_to_monthly": {
+    "max_ratio": 0.5,
+    "rate": 0.025,
+    "formula": "낮출 보증금 × 2.5% ÷ 12 = 늘어나는 월세"
+   },
+   "monthly_to_deposit": {
+    "max_ratio": 0.5,
+    "rate": 0.06,
+    "formula": "낮출 월세 × 12 ÷ 6% = 늘어나는 보증금"
+   },
+   "unit": "계약 후 100만원 단위, 전환 후 1년 내 재신청 불가"
+  },
+  "maintenance_fee": "민간사업자가 단지별로 책정 (공고에 금액 없음)",
+  "waitlist": "예비입주자 유효기간: 당첨자 발표일로부터 12개월"
+ },
+ "timeline": [
+  {
+   "notice": "2026-1차",
+   "announce": "2026-03-31",
+   "apply": "2026-04-10~04-14",
+   "winner": "2026-08-12",
+   "contract": "2026-09-02~09-04",
+   "move_in": "2026-09-28~10-27",
+   "months_announce_to_movein": 6
+  },
+  {
+   "notice": "2026-2차",
+   "announce": "2026-07-31",
+   "apply": "2026-08-11~08-13",
+   "winner": "2026-12-11",
+   "contract": "2027-01-04~01-06",
+   "move_in": "2027-02-01~03-02",
+   "months_announce_to_movein": 6
+  }
+ ],
+ "complexes": [
+  {
+   "notice": "2026-1차",
+   "complex": "리마크빌 구의",
+   "address": "광진구 구의동 683",
+   "gu": "광진구",
+   "supply": "신규",
+   "type": "19",
+   "area_m2": 19.66,
+   "units": 57,
+   "rent": {
+    "A": {
+     "deposit": 3330.0,
+     "monthly": 14.7
+    },
+    "B": {
+     "deposit": 5550.0,
+     "monthly": 24.5
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "세이지움 태릉입구역",
+   "address": "중랑구 묵동 165",
+   "gu": "중랑구",
+   "supply": "신규",
+   "type": "18A",
+   "area_m2": 18.36,
+   "units": 292,
+   "rent": {
+    "A": {
+     "deposit": 2805.0,
+     "monthly": 12.4
+    },
+    "B": {
+     "deposit": 4675.0,
+     "monthly": 20.6
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "L TOWER",
+   "address": "송파구 잠실동 208-4",
+   "gu": "송파구",
+   "supply": "재공급",
+   "type": "33B",
+   "area_m2": 33.82,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 7106.0,
+     "monthly": 23.1
+    },
+    "B": {
+     "deposit": 11844.0,
+     "monthly": 38.4
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "해링턴플레이스 노원 센트럴",
+   "address": "노원구 상계동 690",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "22",
+   "area_m2": 22.76,
+   "units": 14,
+   "rent": {
+    "A": {
+     "deposit": 3045.0,
+     "monthly": 13.4
+    },
+    "B": {
+     "deposit": 5075.0,
+     "monthly": 22.4
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "해링턴플레이스 노원 센트럴",
+   "address": "노원구 상계동 690",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "23",
+   "area_m2": 23.57,
+   "units": 30,
+   "rent": {
+    "A": {
+     "deposit": 3150.0,
+     "monthly": 13.9
+    },
+    "B": {
+     "deposit": 5250.0,
+     "monthly": 23.2
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "도림브라보",
+   "address": "영등포구 도림동 250-20",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "32",
+   "area_m2": 32.22,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 4840.0,
+     "monthly": 21.4
+    },
+    "B": {
+     "deposit": 8064.0,
+     "monthly": 35.5
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "BX201",
+   "address": "관악구 봉천동 854-3",
+   "gu": "관악구",
+   "supply": "재공급",
+   "type": "15.75",
+   "area_m2": 15.75,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2691.0,
+     "monthly": 9.5
+    },
+    "B": {
+     "deposit": 4485.0,
+     "monthly": 15.8
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "사당역 코브",
+   "address": "동작구 사당동 1044-1",
+   "gu": "동작구",
+   "supply": "재공급",
+   "type": "18A",
+   "area_m2": 18.25,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3307.0,
+     "monthly": 14.5
+    },
+    "B": {
+     "deposit": 5512.0,
+     "monthly": 24.3
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "비스타 동원",
+   "address": "영등포구 신길동 4975",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "15",
+   "area_m2": 15.37,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2205.0,
+     "monthly": 9.7
+    },
+    "B": {
+     "deposit": 3675.0,
+     "monthly": 16.2
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "비스타 동원",
+   "address": "영등포구 신길동 4975",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "29",
+   "area_m2": 29.69,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 4005.0,
+     "monthly": 17.7
+    },
+    "B": {
+     "deposit": 6675.0,
+     "monthly": 29.5
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "비바힐스 강변",
+   "address": "광진구 구의동 593-11",
+   "gu": "광진구",
+   "supply": "재공급",
+   "type": "15",
+   "area_m2": 15.87,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2797.0,
+     "monthly": 10.0
+    },
+    "B": {
+     "deposit": 4662.0,
+     "monthly": 16.8
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "와이엔타워",
+   "address": "노원구 공릉동 617-3",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "30",
+   "area_m2": 30.33,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 5155.0,
+     "monthly": 22.7
+    },
+    "B": {
+     "deposit": 8589.0,
+     "monthly": 37.9
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "종암 라온 프라이빗",
+   "address": "성북구 종암동 83-3",
+   "gu": "성북구",
+   "supply": "재공급",
+   "type": "23A",
+   "area_m2": 23.84,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3075.0,
+     "monthly": 13.6
+    },
+    "B": {
+     "deposit": 5125.0,
+     "monthly": 22.6
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "용산베르디움프렌즈",
+   "address": "용산구 한강로2가 426",
+   "gu": "용산구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.7,
+   "units": 5,
+   "rent": {
+    "A": {
+     "deposit": 2639.3,
+     "monthly": 9.0
+    },
+    "B": {
+     "deposit": 4398.8,
+     "monthly": 15.0
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "우장산역해링턴타워",
+   "address": "강서구 화곡동 1170",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "23",
+   "area_m2": 23.68,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 4112.0,
+     "monthly": 13.7
+    },
+    "B": {
+     "deposit": 6853.3,
+     "monthly": 22.8
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "길동생활B동",
+   "address": "강동구 길동 368-7",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "17B",
+   "area_m2": 17.01,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3180.0,
+     "monthly": 14.0
+    },
+    "B": {
+     "deposit": 5300.0,
+     "monthly": 23.4
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "호반베르디움 스테이원",
+   "address": "은평구 대조동 241",
+   "gu": "은평구",
+   "supply": "재공급",
+   "type": "20",
+   "area_m2": 20.23,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4116.0,
+     "monthly": 18.1
+    },
+    "B": {
+     "deposit": 6856.0,
+     "monthly": 30.2
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "어바니엘 위드 더 스타일 충정로",
+   "address": "서대문구 충정로3가 480",
+   "gu": "서대문구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.06,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 1738.8,
+     "monthly": 7.3
+    },
+    "B": {
+     "deposit": 2898.0,
+     "monthly": 12.1
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "어바니엘 위드 더 스타일 충정로",
+   "address": "서대문구 충정로3가 480",
+   "gu": "서대문구",
+   "supply": "재공급",
+   "type": "17",
+   "area_m2": 17.66,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2007.6,
+     "monthly": 8.4
+    },
+    "B": {
+     "deposit": 3346.0,
+     "monthly": 14.0
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "한화포레나 당산",
+   "address": "영등포구 당산동2가 165",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "17",
+   "area_m2": 17.66,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2835.0,
+     "monthly": 12.4
+    },
+    "B": {
+     "deposit": 4725.0,
+     "monthly": 20.8
+    }
+   }
+  },
+  {
+   "notice": "2026-1차",
+   "complex": "한화포레나 당산",
+   "address": "영등포구 당산동2가 165",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "33",
+   "area_m2": 33.09,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4788.0,
+     "monthly": 21.1
+    },
+    "B": {
+     "deposit": 7980.0,
+     "monthly": 35.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "스타팰리스 이수",
+   "address": "동작구 사당동 1008-1",
+   "gu": "동작구",
+   "supply": "신규",
+   "type": "18.08",
+   "area_m2": 18.08,
+   "units": 17,
+   "rent": {
+    "A": {
+     "deposit": 3645.0,
+     "monthly": 16.1
+    },
+    "B": {
+     "deposit": 6075.0,
+     "monthly": 26.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "스타팰리스 이수",
+   "address": "동작구 사당동 1008-1",
+   "gu": "동작구",
+   "supply": "신규",
+   "type": "19.53",
+   "area_m2": 19.53,
+   "units": 9,
+   "rent": {
+    "A": {
+     "deposit": 3900.0,
+     "monthly": 17.2
+    },
+    "B": {
+     "deposit": 6500.0,
+     "monthly": 28.7
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에이트플레이스",
+   "address": "중랑구 묵동 8",
+   "gu": "중랑구",
+   "supply": "신규",
+   "type": "18",
+   "area_m2": 18.29,
+   "units": 76,
+   "rent": {
+    "A": {
+     "deposit": 2715.0,
+     "monthly": 12.0
+    },
+    "B": {
+     "deposit": 4525.0,
+     "monthly": 20.0
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에이트플레이스",
+   "address": "중랑구 묵동 8",
+   "gu": "중랑구",
+   "supply": "신규",
+   "type": "20",
+   "area_m2": 20.46,
+   "units": 81,
+   "rent": {
+    "A": {
+     "deposit": 3000.0,
+     "monthly": 13.3
+    },
+    "B": {
+     "deposit": 5000.0,
+     "monthly": 22.1
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "호반써밋 양재",
+   "address": "서초구 양재동 산17-7",
+   "gu": "서초구",
+   "supply": "신규",
+   "type": "23",
+   "area_m2": 23.57,
+   "units": 47,
+   "rent": {
+    "A": {
+     "deposit": 4995.0,
+     "monthly": 22.1
+    },
+    "B": {
+     "deposit": 8325.0,
+     "monthly": 36.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "BX201",
+   "address": "관악구 봉천동 854-3",
+   "gu": "관악구",
+   "supply": "재공급",
+   "type": "15.75",
+   "area_m2": 15.75,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2691.0,
+     "monthly": 9.5
+    },
+    "B": {
+     "deposit": 4485.0,
+     "monthly": 15.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "골드타워",
+   "address": "동작구 신대방동 351-5",
+   "gu": "동작구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.42,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 3180.0,
+     "monthly": 14.0
+    },
+    "B": {
+     "deposit": 5300.0,
+     "monthly": 23.4
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "길동생활B동",
+   "address": "강동구 길동 368-7",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "17A",
+   "area_m2": 17.11,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3195.0,
+     "monthly": 14.1
+    },
+    "B": {
+     "deposit": 5325.0,
+     "monthly": 23.5
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "길동생활B동",
+   "address": "강동구 길동 368-7",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.11,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 2736.0,
+     "monthly": 8.9
+    },
+    "B": {
+     "deposit": 4560.0,
+     "monthly": 14.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "도림브라보",
+   "address": "영등포구 도림동 250-20",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "32",
+   "area_m2": 32.22,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4840.0,
+     "monthly": 21.4
+    },
+    "B": {
+     "deposit": 8064.0,
+     "monthly": 35.5
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "리마크빌 군자",
+   "address": "광진구 중곡동 637-5",
+   "gu": "광진구",
+   "supply": "재공급",
+   "type": "30.17",
+   "area_m2": 30.17,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4536.0,
+     "monthly": 16.2
+    },
+    "B": {
+     "deposit": 7560.0,
+     "monthly": 27.0
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "보눔하우스 화곡",
+   "address": "강서구 화곡동 401-1",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "14",
+   "area_m2": 14.35,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 1723.0,
+     "monthly": 5.6
+    },
+    "B": {
+     "deposit": 2871.6,
+     "monthly": 9.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "선릉역 마에스트로",
+   "address": "강남구 삼성동 140-32",
+   "gu": "강남구",
+   "supply": "재공급",
+   "type": "27A",
+   "area_m2": 27.0,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 7106.0,
+     "monthly": 24.8
+    },
+    "B": {
+     "deposit": 11844.0,
+     "monthly": 41.4
+    }
+   },
+   "note": "전용면적은 공고에 '27A'로만 표기 → 27㎡로 근사"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "성북 펠릭스",
+   "address": "성북구 하월곡동 88-222",
+   "gu": "성북구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.46,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2070.0,
+     "monthly": 9.1
+    },
+    "B": {
+     "deposit": 3450.0,
+     "monthly": 15.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "성북 펠릭스",
+   "address": "성북구 하월곡동 88-222",
+   "gu": "성북구",
+   "supply": "재공급",
+   "type": "20",
+   "area_m2": 20.03,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2475.0,
+     "monthly": 10.9
+    },
+    "B": {
+     "deposit": 4125.0,
+     "monthly": 18.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "세이지움 개봉",
+   "address": "구로구 개봉동 503",
+   "gu": "구로구",
+   "supply": "재공급",
+   "type": "18A",
+   "area_m2": 18.88,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2250.0,
+     "monthly": 9.9
+    },
+    "B": {
+     "deposit": 3750.0,
+     "monthly": 16.6
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "센터스퀘어 발산",
+   "address": "강서구 내발산동 767",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.96,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 2775.0,
+     "monthly": 12.3
+    },
+    "B": {
+     "deposit": 4625.0,
+     "monthly": 20.4
+    }
+   },
+   "note": "표 배치상 단지 귀속 추정, 원문 대조 권장"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "센터스퀘어 발산",
+   "address": "강서구 내발산동 767",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "22",
+   "area_m2": 22.16,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 3030.0,
+     "monthly": 13.4
+    },
+    "B": {
+     "deposit": 5050.0,
+     "monthly": 22.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "센텀힐스 한강",
+   "address": "광진구 구의동 587-62",
+   "gu": "광진구",
+   "supply": "재공급",
+   "type": "30.33",
+   "area_m2": 30.33,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4867.0,
+     "monthly": 17.4
+    },
+    "B": {
+     "deposit": 8112.0,
+     "monthly": 28.9
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "스타타워",
+   "address": "서대문구 남가좌동 269-1",
+   "gu": "서대문구",
+   "supply": "재공급",
+   "type": "30",
+   "area_m2": 30.97,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4473.0,
+     "monthly": 19.7
+    },
+    "B": {
+     "deposit": 7455.0,
+     "monthly": 32.9
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "아임2030",
+   "address": "강서구 등촌동 648-5",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "15",
+   "area_m2": 15.0,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2071.0,
+     "monthly": 6.7
+    },
+    "B": {
+     "deposit": 3451.6,
+     "monthly": 11.1
+    }
+   },
+   "note": "전용면적 '15A' 표기 → 15㎡ 근사"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에드가 개봉",
+   "address": "구로구 개봉동 179-11",
+   "gu": "구로구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.48,
+   "units": 7,
+   "rent": {
+    "A": {
+     "deposit": 1995.0,
+     "monthly": 8.8
+    },
+    "B": {
+     "deposit": 3325.0,
+     "monthly": 14.7
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에드가 개봉",
+   "address": "구로구 개봉동 179-11",
+   "gu": "구로구",
+   "supply": "재공급",
+   "type": "18",
+   "area_m2": 18.14,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 2190.0,
+     "monthly": 9.7
+    },
+    "B": {
+     "deposit": 3650.0,
+     "monthly": 16.1
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에드가 상계",
+   "address": "노원구 상계동 1049-71",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.48,
+   "units": 6,
+   "rent": {
+    "A": {
+     "deposit": 2145.0,
+     "monthly": 9.5
+    },
+    "B": {
+     "deposit": 3575.0,
+     "monthly": 15.8
+    }
+   },
+   "note": "표 배치상 단지 귀속 추정, 원문 대조 권장"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "에드가 상계",
+   "address": "노원구 상계동 1049-71",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "33",
+   "area_m2": 33.7,
+   "units": 10,
+   "rent": {
+    "A": {
+     "deposit": 4110.0,
+     "monthly": 18.2
+    },
+    "B": {
+     "deposit": 6850.0,
+     "monthly": 30.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "연신내역 루체스테이션",
+   "address": "은평구 불광동 323-21",
+   "gu": "은평구",
+   "supply": "재공급",
+   "type": "17",
+   "area_m2": 17.05,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 2630.0,
+     "monthly": 11.6
+    },
+    "B": {
+     "deposit": 4383.0,
+     "monthly": 19.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "와이엔타워",
+   "address": "노원구 공릉동 617-3",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.3,
+   "units": 6,
+   "rent": {
+    "A": {
+     "deposit": 2932.0,
+     "monthly": 10.5
+    },
+    "B": {
+     "deposit": 4887.0,
+     "monthly": 17.4
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "와이엔타워",
+   "address": "노원구 공릉동 617-3",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "30",
+   "area_m2": 30.33,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 5155.0,
+     "monthly": 22.7
+    },
+    "B": {
+     "deposit": 8589.0,
+     "monthly": 37.9
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "용산 원효 루미니",
+   "address": "용산구 원효로1가 134",
+   "gu": "용산구",
+   "supply": "재공급",
+   "type": "17",
+   "area_m2": 17.98,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 3461.0,
+     "monthly": 12.7
+    },
+    "B": {
+     "deposit": 5769.0,
+     "monthly": 21.1
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "용산베르디움프렌즈",
+   "address": "용산구 한강로2가 426",
+   "gu": "용산구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.0,
+   "units": 12,
+   "rent": {
+    "A": {
+     "deposit": 2639.3,
+     "monthly": 9.0
+    },
+    "B": {
+     "deposit": 4398.8,
+     "monthly": 15.0
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "우장산역해링턴타워",
+   "address": "강서구 화곡동 1170",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "17",
+   "area_m2": 17.74,
+   "units": 4,
+   "rent": {
+    "A": {
+     "deposit": 3159.0,
+     "monthly": 10.6
+    },
+    "B": {
+     "deposit": 5265.0,
+     "monthly": 17.6
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "우장산역해링턴타워",
+   "address": "강서구 화곡동 1170",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "23",
+   "area_m2": 23.68,
+   "units": 6,
+   "rent": {
+    "A": {
+     "deposit": 4112.0,
+     "monthly": 13.7
+    },
+    "B": {
+     "deposit": 6853.3,
+     "monthly": 22.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "유벤투스 240",
+   "address": "관악구 신림동 1644-3",
+   "gu": "관악구",
+   "supply": "재공급",
+   "type": "32",
+   "area_m2": 32.8,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 4395.0,
+     "monthly": 19.4
+    },
+    "B": {
+     "deposit": 7325.0,
+     "monthly": 19.4
+    }
+   },
+   "note": "원문에 B 월임대료가 A와 같은 194,000원 → 공고 오기 가능성, 확인 필요"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "인히어 쌍문",
+   "address": "도봉구 쌍문동 103-6",
+   "gu": "도봉구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.17,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 2826.0,
+     "monthly": 9.8
+    },
+    "B": {
+     "deposit": 4710.0,
+     "monthly": 16.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "장안동 하트리움",
+   "address": "동대문구 장안동 465-4",
+   "gu": "동대문구",
+   "supply": "재공급",
+   "type": "18D",
+   "area_m2": 18.13,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2520.0,
+     "monthly": 11.1
+    },
+    "B": {
+     "deposit": 4200.0,
+     "monthly": 18.6
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "장안동 하트리움",
+   "address": "동대문구 장안동 465-4",
+   "gu": "동대문구",
+   "supply": "재공급",
+   "type": "18B",
+   "area_m2": 18.14,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 2520.0,
+     "monthly": 11.1
+    },
+    "B": {
+     "deposit": 4200.0,
+     "monthly": 18.6
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "장안동 하트리움",
+   "address": "동대문구 장안동 465-4",
+   "gu": "동대문구",
+   "supply": "재공급",
+   "type": "20",
+   "area_m2": 20.83,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 2835.0,
+     "monthly": 12.5
+    },
+    "B": {
+     "deposit": 4725.0,
+     "monthly": 20.9
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "제이스타상봉",
+   "address": "중랑구 상봉동 109-34",
+   "gu": "중랑구",
+   "supply": "재공급",
+   "type": "31",
+   "area_m2": 31.65,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 4976.0,
+     "monthly": 17.8
+    },
+    "B": {
+     "deposit": 8293.3,
+     "monthly": 29.6
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "종암 라온 프라이빗",
+   "address": "성북구 종암동 83-3",
+   "gu": "성북구",
+   "supply": "재공급",
+   "type": "23B",
+   "area_m2": 23.3,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3000.0,
+     "monthly": 13.3
+    },
+    "B": {
+     "deposit": 5000.0,
+     "monthly": 22.1
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "준타워",
+   "address": "영등포구 신길동 173-6",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "15",
+   "area_m2": 15.54,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2730.0,
+     "monthly": 12.0
+    },
+    "B": {
+     "deposit": 4546.0,
+     "monthly": 20.0
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "준타워",
+   "address": "영등포구 신길동 173-6",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "32",
+   "area_m2": 32.35,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 5155.0,
+     "monthly": 22.7
+    },
+    "B": {
+     "deposit": 8589.0,
+     "monthly": 37.9
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "준타워",
+   "address": "영등포구 신길동 173-6",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "34",
+   "area_m2": 34.44,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 5470.0,
+     "monthly": 24.1
+    },
+    "B": {
+     "deposit": 9114.0,
+     "monthly": 40.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "천호역한강리슈빌",
+   "address": "강동구 천호동 458-3",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "14",
+   "area_m2": 14.07,
+   "units": 4,
+   "rent": {
+    "A": {
+     "deposit": 3499.0,
+     "monthly": 11.0
+    },
+    "B": {
+     "deposit": 5831.6,
+     "monthly": 18.3
+    }
+   },
+   "note": "14.07㎡ 3호 + 14.10㎡ 1호 합산"
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "천호역한강리슈빌",
+   "address": "강동구 천호동 458-3",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "19",
+   "area_m2": 19.67,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 4795.0,
+     "monthly": 15.1
+    },
+    "B": {
+     "deposit": 7991.6,
+     "monthly": 25.1
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "천호역효성해링턴타워",
+   "address": "강동구 성내동 609",
+   "gu": "강동구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.09,
+   "units": 24,
+   "rent": {
+    "A": {
+     "deposit": 2614.0,
+     "monthly": 11.5
+    },
+    "B": {
+     "deposit": 4357.0,
+     "monthly": 19.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "칼튼테라스",
+   "address": "중랑구 묵동 176-39",
+   "gu": "중랑구",
+   "supply": "재공급",
+   "type": "16",
+   "area_m2": 16.81,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 2781.0,
+     "monthly": 9.5
+    },
+    "B": {
+     "deposit": 4635.0,
+     "monthly": 15.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "태릉입구역 이니티움",
+   "address": "노원구 공릉동 684-41",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "20",
+   "area_m2": 20.01,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 2745.0,
+     "monthly": 12.1
+    },
+    "B": {
+     "deposit": 4575.0,
+     "monthly": 20.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "포르투나 블루",
+   "address": "강서구 화곡동 1073-11",
+   "gu": "강서구",
+   "supply": "재공급",
+   "type": "20",
+   "area_m2": 20.46,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 3582.0,
+     "monthly": 8.7
+    },
+    "B": {
+     "deposit": 5970.0,
+     "monthly": 14.4
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "하트리움",
+   "address": "동대문구 휘경동 380",
+   "gu": "동대문구",
+   "supply": "재공급",
+   "type": "15",
+   "area_m2": 15.89,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 3150.0,
+     "monthly": 13.9
+    },
+    "B": {
+     "deposit": 5250.0,
+     "monthly": 23.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "한영 스테이",
+   "address": "성동구 마장동 783-5",
+   "gu": "성동구",
+   "supply": "재공급",
+   "type": "18B",
+   "area_m2": 18.45,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 2625.0,
+     "monthly": 11.6
+    },
+    "B": {
+     "deposit": 4375.0,
+     "monthly": 19.3
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "한영 스테이",
+   "address": "성동구 마장동 783-5",
+   "gu": "성동구",
+   "supply": "재공급",
+   "type": "22",
+   "area_m2": 22.14,
+   "units": 2,
+   "rent": {
+    "A": {
+     "deposit": 3090.0,
+     "monthly": 13.6
+    },
+    "B": {
+     "deposit": 5150.0,
+     "monthly": 22.7
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "한화포레나 당산",
+   "address": "영등포구 당산동2가 165",
+   "gu": "영등포구",
+   "supply": "재공급",
+   "type": "33",
+   "area_m2": 33.1,
+   "units": 3,
+   "rent": {
+    "A": {
+     "deposit": 4788.0,
+     "monthly": 21.1
+    },
+    "B": {
+     "deposit": 7980.0,
+     "monthly": 35.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "해링턴플레이스 노원 센트럴",
+   "address": "노원구 상계동 690",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "22",
+   "area_m2": 22.76,
+   "units": 6,
+   "rent": {
+    "A": {
+     "deposit": 3045.0,
+     "monthly": 13.4
+    },
+    "B": {
+     "deposit": 5075.0,
+     "monthly": 22.4
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "해링턴플레이스 노원 센트럴",
+   "address": "노원구 상계동 690",
+   "gu": "노원구",
+   "supply": "재공급",
+   "type": "23",
+   "area_m2": 23.57,
+   "units": 11,
+   "rent": {
+    "A": {
+     "deposit": 3150.0,
+     "monthly": 13.9
+    },
+    "B": {
+     "deposit": 5250.0,
+     "monthly": 23.2
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "홍대크리원",
+   "address": "마포구 상수동 355-2",
+   "gu": "마포구",
+   "supply": "재공급",
+   "type": "30",
+   "area_m2": 30.07,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 6233.0,
+     "monthly": 20.3
+    },
+    "B": {
+     "deposit": 10388.3,
+     "monthly": 33.8
+    }
+   }
+  },
+  {
+   "notice": "2026-2차",
+   "complex": "홍대크리원",
+   "address": "마포구 상수동 355-2",
+   "gu": "마포구",
+   "supply": "재공급",
+   "type": "30B",
+   "area_m2": 30.81,
+   "units": 1,
+   "rent": {
+    "A": {
+     "deposit": 6401.0,
+     "monthly": 20.8
+    },
+    "B": {
+     "deposit": 10668.3,
+     "monthly": 34.6
+    }
+   },
+   "note": "같은 '30' 유형 두 번째 행"
+  }
+ ]
+}

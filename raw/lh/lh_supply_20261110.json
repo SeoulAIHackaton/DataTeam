@@ -1,0 +1,1875 @@
+{
+ "meta": {
+  "source": "https://apis.data.go.kr/B552555/lhLeaseNoticeSplInfo1/getLeaseNoticeSplInfo1",
+  "collected_at": "20261110",
+  "collected": 6
+ },
+ "items": [
+  {
+   "PAN_ID": "2015122300020807",
+   "PAN_NM": "[정정공고][정정공고] 강서염창 통합공공임대주택 최초 입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "062",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020807",
+    "UPP_AIS_TP_CD": "06",
+    "AIS_TP_CD": "48"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020807",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "062",
+       "UPP_AIS_TP_CD": "06",
+       "AIS_TP_CD": "48"
+      }
+     ]
+    },
+    {
+     "dsList01Nm": [
+      {
+       "RFE": "월임대료(원)",
+       "NOW_HSH_CNT": "금회공급 세대수",
+       "HSH_CNT": "세대수",
+       "HTY_NNA": "주택형",
+       "LS_GMY": "임대보증금(원)",
+       "SBD_LGO_NM": "단지명",
+       "DDO_AR": "전용면적(㎡)",
+       "SPL_AR": "공급면적"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042932",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList01": [
+      {
+       "RFE": "공고문 참조",
+       "NOW_HSH_CNT": "14",
+       "HSH_CNT": "14",
+       "HTY_NNA": "59A",
+       "LS_GMY": "공고문 참조",
+       "SBD_LGO_NM": "강서염창(가로주택) 통합공공임대주택",
+       "DDO_AR": "59.95",
+       "SPL_AR": "76.56"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "PAN_ID": "2015122300020753",
+   "PAN_NM": "강서염창 통합공공임대주택 최초 입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "062",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020753",
+    "UPP_AIS_TP_CD": "06",
+    "AIS_TP_CD": "48"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020753",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "062",
+       "UPP_AIS_TP_CD": "06",
+       "AIS_TP_CD": "48"
+      }
+     ]
+    },
+    {
+     "dsList01Nm": [
+      {
+       "RFE": "월임대료(원)",
+       "NOW_HSH_CNT": "금회공급 세대수",
+       "HSH_CNT": "세대수",
+       "HTY_NNA": "주택형",
+       "LS_GMY": "임대보증금(원)",
+       "SBD_LGO_NM": "단지명",
+       "DDO_AR": "전용면적(㎡)",
+       "SPL_AR": "공급면적"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042933",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList01": [
+      {
+       "RFE": "공고문 참조",
+       "NOW_HSH_CNT": "14",
+       "HSH_CNT": "14",
+       "HTY_NNA": "59A",
+       "LS_GMY": "공고문 참조",
+       "SBD_LGO_NM": "강서염창(가로주택) 통합공공임대주택",
+       "DDO_AR": "59.95",
+       "SPL_AR": "76.56"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "PAN_ID": "2015122300020843",
+   "PAN_NM": "[서울지역본부] 26년 2차 비분양전환형 든든전세주택 입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "144",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020843",
+    "UPP_AIS_TP_CD": "13",
+    "AIS_TP_CD": "26"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020843",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "144",
+       "UPP_AIS_TP_CD": "13",
+       "AIS_TP_CD": "26"
+      }
+     ]
+    },
+    {
+     "dsList01Nm": [
+      {
+       "HTY_DS_NM": "주택형",
+       "SGG_NM": "지역명",
+       "DNG_HS_ADR": "주택정보",
+       "LTR_SPL_RMNO": "공급호수",
+       "QUP_CNT": "모집인원"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042934",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList01": [
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "강동둔촌동(은슬림둔촌)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "강서방화동(마곡노블리안)",
+       "SGG_NM": "서울특별시 강서구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "강서방화동(마곡노블리안)",
+       "SGG_NM": "서울특별시 강서구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "광진자양동(갤러리하우스)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "광진중곡동(양지쉐르빌)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "광진중곡동(인화빌3)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "금천가산동(비엘하우스104)",
+       "SGG_NM": "서울특별시 금천구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "8"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "노원상계동(시온빌라트)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "노원상계동(시온빌라트)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "노원상계동(시온빌리지)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "12"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "노원상계동(시온아트빌)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "노원상계동(양지쉐르빌)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "도봉창동(미래하이츠)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "10",
+       "QUP_CNT": "40"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "도봉창동(미래하이츠)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "6",
+       "QUP_CNT": "24"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "동대문장안동(시온그랜드빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "동대문장안동(시온그랜드빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "성북보문동(위드13)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "8"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "성북석관동(아이유하임)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "12"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "성북장위동(라인캐슬)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "영등포대림동(브라이튼디엘)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "영등포대림동(브라이튼디엘)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "영등포대림동(삼화에코빌1차)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "영등포대림동(삼화에코빌1차)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "은평신사동(승윤노블리안)",
+       "SGG_NM": "서울특별시 은평구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "은평역촌동(첼라넥스빌)",
+       "SGG_NM": "서울특별시 은평구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "중랑망우동(현진스위트빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60㎡ 미만",
+       "DNG_HS_ADR": "중랑면목동(클래시하우스6차)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "60~70㎡",
+       "DNG_HS_ADR": "중랑면목동(클래시하우스6차)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "중랑면목동(클래시하우스6차)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "12"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "중랑묵동(미소드림빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "중랑묵동(파크스위트)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "중랑묵동(파크스위트)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "70~80㎡",
+       "DNG_HS_ADR": "중랑상봉동(현대캐슬)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      },
+      {
+       "HTY_DS_NM": "80㎡ 이상",
+       "DNG_HS_ADR": "중랑중화동(화인하우스)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "PAN_ID": "2015122300020759",
+   "PAN_NM": "[서울지역본부] 26년 3차 청년 매입임대주택 예비입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "131",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020759",
+    "UPP_AIS_TP_CD": "13",
+    "AIS_TP_CD": "26"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020759",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "131",
+       "UPP_AIS_TP_CD": "13",
+       "AIS_TP_CD": "26"
+      }
+     ]
+    },
+    {
+     "dsList02Nm": [
+      {
+       "SX_PP_DS_NM": "전용여부",
+       "DNG_HS_ADR": "주택정보",
+       "LTR_SPL_RMNO": "공급호수",
+       "CNP_NM": "지자체명",
+       "QUP_CNT": "모집인원"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042936",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList02": [
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "종로연지동(대보213)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "종로숭인동(시티플러스)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "종로인의동(루비온오피스텔)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "종로관철동(프라움스테이)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "종로숭인동(미래지안)",
+       "LTR_SPL_RMNO": "5",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "15"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중구오장동(오렌지카운티을지로)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중구오장동(정석그라시아)",
+       "LTR_SPL_RMNO": "7",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "21"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "용산원효로3가(클라우드나인)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성동도선동(왕십리렉스프리미엄)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성동용답동(더위일스카이70)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "광진구의동(구의에스하임4)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "광진능동(능동에스하임)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "광진중곡동(성준팰리스중곡)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "광진화양동(광진청년생활)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "광진중곡동",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문장안동(에스아이팰리스)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문장안동(진성홈타운)(여성전용)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문회기동(네스트스위트)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문제기동(케이유글로벌하우스)",
+       "LTR_SPL_RMNO": "6",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "18"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문용두동(LOFT129)",
+       "LTR_SPL_RMNO": "7",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "21"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동대문이문동(자인엠타워)",
+       "LTR_SPL_RMNO": "10",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "30"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중랑면목동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중랑묵동(그린캐슬1차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중랑상봉동(솔렌시아5)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중랑묵동",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "중랑면목동(중앙)",
+       "LTR_SPL_RMNO": "20",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "60"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북장위동(라인빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북정릉동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북정릉동(반석영우빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북정릉동(형지리버빌)(여성전용)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북동소문동7가(프레브)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "성북종암동(해밀하우스)(여성전용)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(더오페라)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(스카이드림타운)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(신화아트빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북우이동(스타빌)(여성전용)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북미아동",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(칸타빌수유팰리스)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(홍원루미에르)",
+       "LTR_SPL_RMNO": "20",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "60"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강북수유동(제이하우스수유)",
+       "LTR_SPL_RMNO": "39",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "98"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "도봉방학동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "도봉도봉동",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "도봉도봉동(허브빌)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "도봉창동",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "도봉창동(창동더큐브아레나)",
+       "LTR_SPL_RMNO": "39",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "98"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "노원상계동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평녹번동(나린하우징5차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평녹번동(동산주택)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평대조동(초원그린빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평역촌동(서경)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평역촌동(예그리나7차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평응암동(예그리나6차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "은평응암동(예그리나9차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문홍은동(형지팰리스)(여성전용)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문대현동(대현3719)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문대현동(엔트라리움#4)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문대현동(이화살림)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문창천동(스테이더디자이너스)",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문홍은동(엠케이스테이)",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서대문북아현동(비엘주택)",
+       "LTR_SPL_RMNO": "5",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "15"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "양천목동(더엘퍼스트)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "양천신정동(행복드림하우스)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "양천신정동(스타힐스)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "양천신정동(제이클래스목동)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서공항동(헬리그라프마곡에디션)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서화곡동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서화곡동(SJ라벨라)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서화곡동(레몬트리지움)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서공항동",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서염창동(범우주택)",
+       "LTR_SPL_RMNO": "19",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "57"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강서공항동(서울내집)",
+       "LTR_SPL_RMNO": "20",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "60"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "구로가리봉동(아덴하임)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "구로개봉동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "구로개봉동(진성홈타운)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "구로고척동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "금천독산동(오성드림빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "영등포대림동(대정이오스)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "영등포대림동(데에이치대림4차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "영등포영등포동1가(명남더블레스)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "영등포대림동(다이얼로그737)",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "영등포대림동(파크에비뉴)",
+       "LTR_SPL_RMNO": "4",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "12"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동작사당동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동작상도동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "동작대방동(보라매센트럴타운)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "관악남현동(도담파크빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "관악신림동(신림어반스)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "관악신림동2",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "관악봉천동(원하우스)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "관악신림동1",
+       "LTR_SPL_RMNO": "6",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "18"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서초서초동(백년빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서초서초동(아이리스예당)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "서초양재동(서원빌)",
+       "LTR_SPL_RMNO": "3",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "9"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강남개포동(T&K개포)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강남역삼동(비엔트)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파삼전동(더트라이앵글12)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파석촌동(강연빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파오금동(펠리스빌)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파가락동(리치하우스)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파오금동(더트라이앵글)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파송파동(포엠빌)",
+       "LTR_SPL_RMNO": "14",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "42"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "송파가락동(형지하이츠)",
+       "LTR_SPL_RMNO": "30",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "90"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동고덕동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동상일동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동성내동(드림팰리스7차)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동천호동",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동천호동(강동리버스시티)",
+       "LTR_SPL_RMNO": "1",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "3"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동길동(거산유팰리스2차)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동둔촌동(둔촌빌)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동성내동(르레브)",
+       "LTR_SPL_RMNO": "2",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "6"
+      },
+      {
+       "SX_PP_DS_NM": "해당없음",
+       "DNG_HS_ADR": "강동상일동(위성빌)",
+       "LTR_SPL_RMNO": "19",
+       "CNP_NM": "서울특별시",
+       "QUP_CNT": "57"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "PAN_ID": "2015122300020750",
+   "PAN_NM": "[서울지역본부] 26년 3차 신혼·신생아 매입임대Ⅰ 예비입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "132",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020750",
+    "UPP_AIS_TP_CD": "13",
+    "AIS_TP_CD": "26"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020750",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "132",
+       "UPP_AIS_TP_CD": "13",
+       "AIS_TP_CD": "26"
+      }
+     ]
+    },
+    {
+     "dsList01Nm": [
+      {
+       "SGG_NM": "지자체명",
+       "DNG_HS_ADR": "주택정보",
+       "LTR_SPL_RMNO": "공급호수",
+       "QUP_CNT": "모집인원"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042937",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList01": [
+      {
+       "DNG_HS_ADR": "종로숭인동(숭인스톤카운티)",
+       "SGG_NM": "서울특별시 종로구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "광진군자동(위드34)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "광진중곡동(더메인즈빌)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "광진중곡동(위드32)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(광진아트빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(동트리움)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(성진위드빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(시온아트빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(위드빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑망우동(한일씨티빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(삼성쉐르빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(시온그랜드빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(현대휴온아파트)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑중화동(새울센스빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북길음동(스위트휴)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북장위동(라인빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북장위동(시온)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북장위동(써미트빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북장위동(하이빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북정릉동(라임하우스)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북정릉동(형지쉐르빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북종암동(미소가)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북번동(시온그린빌)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북수유동(은행빌라)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "강북수유동(이도빌리지)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북수유동(제이스타빌)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북수유동(현영쉬크빌)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북우이동(스마트빌)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "도봉도봉동(힐스테이트도봉역웰가)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "16",
+       "QUP_CNT": "48"
+      },
+      {
+       "DNG_HS_ADR": "도봉창동(현진스위트B)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "노원상계동(뉴미소홈타운)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "노원상계동(라인빌9차)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "노원상계동(미소)",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "은평대조동(초원그린빌)",
+       "SGG_NM": "서울특별시 은평구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "은평신사동(청안파인)",
+       "SGG_NM": "서울특별시 은평구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "서대문홍제동(주함해븐빌)",
+       "SGG_NM": "서울특별시 서대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "마포망원동(한빛월드빌)",
+       "SGG_NM": "서울특별시 마포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "양천신정동(스타힐스)",
+       "SGG_NM": "서울특별시 양천구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "구로개봉동(아덴하임)",
+       "SGG_NM": "서울특별시 구로구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "금천독산동(독산파크빌)",
+       "SGG_NM": "서울특별시 금천구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "금천독산동(오성드림빌)",
+       "SGG_NM": "서울특별시 금천구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "금천시흥동(아덴하임)",
+       "SGG_NM": "서울특별시 금천구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "영등포대림동(포엠빌)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "영등포신길동(진영파인빌)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동작신대방동(심쿵하우스)",
+       "SGG_NM": "서울특별시 동작구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "관악신림동(메종570)",
+       "SGG_NM": "서울특별시 관악구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "송파잠실동(부흥주택)",
+       "SGG_NM": "서울특별시 송파구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동성내동(삼화에코빌)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동성내동(서도휴빌)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "4",
+       "QUP_CNT": "12"
+      },
+      {
+       "DNG_HS_ADR": "강동성내동(주함해븐빌)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동암사동(광채빌라)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동천호동(JK하우스)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "PAN_ID": "2015122300020749",
+   "PAN_NM": "[서울지역본부] 26년 3차 신혼·신생아매입임대주택Ⅱ(전세형) 예비입주자 모집공고",
+   "request": {
+    "SPL_INF_TP_CD": "132",
+    "CCR_CNNT_SYS_DS_CD": "03",
+    "PAN_ID": "2015122300020749",
+    "UPP_AIS_TP_CD": "13",
+    "AIS_TP_CD": "26"
+   },
+   "response": [
+    {
+     "dsSch": [
+      {
+       "PAN_ID": "2015122300020749",
+       "CCR_CNNT_SYS_DS_CD": "03",
+       "SPL_INF_TP_CD": "132",
+       "UPP_AIS_TP_CD": "13",
+       "AIS_TP_CD": "26"
+      }
+     ]
+    },
+    {
+     "dsList01Nm": [
+      {
+       "SGG_NM": "지자체명",
+       "DNG_HS_ADR": "주택정보",
+       "LTR_SPL_RMNO": "공급호수",
+       "QUP_CNT": "모집인원"
+      }
+     ],
+     "resHeader": [
+      {
+       "RS_DTTM": "20261110042938",
+       "SS_CODE": "Y"
+      }
+     ],
+     "dsList01": [
+      {
+       "DNG_HS_ADR": "광진능동(블루스카이)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "광진자양동(위너시원)",
+       "SGG_NM": "서울특별시 광진구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문답십리동(답십리 530-14 오피스텔)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문용두동(빌드아르떼)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(시온그랜드빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(월튼파크뷰)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "동대문장안동(자이팰리스)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "동대문제기동(더푸른빌)",
+       "SGG_NM": "서울특별시 동대문구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "중랑망우동(빌드아르떼)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(빌폴라리스)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(삼성빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(킴스타워)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑면목동(한울타운)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑묵동(그린캐슬)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑묵동(시온아트빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "중랑묵동(현진스위트빌)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "중랑상봉동(아스테르상봉)",
+       "SGG_NM": "서울특별시 중랑구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북돈암동(화인하우스)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "성북석관동(시온스타빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "성북정릉동(시온아트빌)",
+       "SGG_NM": "서울특별시 성북구",
+       "LTR_SPL_RMNO": "3",
+       "QUP_CNT": "9"
+      },
+      {
+       "DNG_HS_ADR": "강북미아동(청운미가)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강북미아동(프랑지파니)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "강북수유동(삼성쉐르빌)",
+       "SGG_NM": "서울특별시 강북구",
+       "LTR_SPL_RMNO": "4",
+       "QUP_CNT": "12"
+      },
+      {
+       "DNG_HS_ADR": "도봉쌍문동(스마트힐)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "도봉창동(승윤노블리안시티)",
+       "SGG_NM": "서울특별시 도봉구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "노원상계동",
+       "SGG_NM": "서울특별시 노원구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "은평역촌동(나린하우징8차)",
+       "SGG_NM": "서울특별시 은평구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "마포공덕동(공덕헤리지움)",
+       "SGG_NM": "서울특별시 마포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "마포서교동(대상데코빌)",
+       "SGG_NM": "서울특별시 마포구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "양천신월동(혜성팰리스)",
+       "SGG_NM": "서울특별시 양천구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강서화곡동(세종파크빌)",
+       "SGG_NM": "서울특별시 강서구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "구로오류동(수반애)",
+       "SGG_NM": "서울특별시 구로구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "영등포대림동(진성에코빌)",
+       "SGG_NM": "서울특별시 영등포구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "동작신대방동(나린하우징9차)",
+       "SGG_NM": "서울특별시 동작구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "서초서초동(DK밸리뷰시티)",
+       "SGG_NM": "서울특별시 서초구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "서초서초동(서초에르스떼)",
+       "SGG_NM": "서울특별시 서초구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강남세곡동(강남투엠캐슬)",
+       "SGG_NM": "서울특별시 강남구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "강남역삼동(엔트라움)",
+       "SGG_NM": "서울특별시 강남구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강남역삼동(역삼에르스떼)",
+       "SGG_NM": "서울특별시 강남구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "송파석촌동(서도휴빌)",
+       "SGG_NM": "서울특별시 송파구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "강동명일동(새움빌)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      },
+      {
+       "DNG_HS_ADR": "강동천호동(시온291)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동천호동(클래시하우스3차)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "1",
+       "QUP_CNT": "3"
+      },
+      {
+       "DNG_HS_ADR": "강동천호동(티엘하우스)",
+       "SGG_NM": "서울특별시 강동구",
+       "LTR_SPL_RMNO": "2",
+       "QUP_CNT": "6"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

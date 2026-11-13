@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>첫집 내비 · 카카오맵 테스트</title>
+<style>
+  body{margin:0;font-family:'Noto Sans KR',sans-serif;background:#f7f8fa}
+  .wrap{max-width:960px;margin:24px auto;padding:0 16px}
+  h1{font-size:20px}
+  #map{width:100%;height:520px;border-radius:14px}
+  .pin{padding:4px 10px;border-radius:14px;color:#fff;font-size:13px;font-weight:700;white-space:nowrap}
+  .dest{background:#ff9919}
+  #log{font-size:13px;color:#6b7684;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>후보 집 · 자주 가는 곳 지도</h1>
+  <div id="map"></div>
+  <div id="log">주소를 좌표로 바꾸는 중…</div>
+</div>
+
+<!-- ① 아래 JS_KEY 자리에 카카오 "JavaScript 키"를 넣으세요 (REST API 키 아님) -->
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=JS_KEY&libraries=services&autoload=false"></script>
+<script>
+// ② 지도에 올릴 주소 (나중에 recommend_result.json / homes_summary.csv 값으로 바꾸면 됨)
+const DEST  = { name:'멀티캠퍼스 역삼', addr:'서울특별시 강남구 테헤란로 212' };
+const HOMES = [
+  { key:'A', name:'성수동 원룸', addr:'서울특별시 성동구 성수동2가 333-76', color:'#191f28', info:'30분 · 2호선' },
+  { key:'B', name:'역삼동 원룸', addr:'서울특별시 강남구 역삼동 778-26',   color:'#6b7684', info:'걸어서 13분' },
+  { key:'C', name:'신림동 원룸', addr:'서울특별시 관악구 신림동 502-36',   color:'#2f6bff', info:'30분 · 2호선 · 추천' }
+];
+
+kakao.maps.load(() => {
+  const map = new kakao.maps.Map(document.getElementById('map'), { center: new kakao.maps.LatLng(37.52, 127.0), level: 8 });
+  const geocoder = new kakao.maps.services.Geocoder();
+  const bounds = new kakao.maps.LatLngBounds();
+  const log = document.getElementById('log');
+
+  // 주소 → 좌표 (카카오 주소 검색)
+  const toLatLng = addr => new Promise((ok, fail) =>
+    geocoder.addressSearch(addr, (res, status) =>
+      status === kakao.maps.services.Status.OK ? ok(new kakao.maps.LatLng(res[0].y, res[0].x)) : fail(addr)));
+
+  // 글자 라벨 마커
+  const label = (pos, html) => new kakao.maps.CustomOverlay({ map, position: pos, content: html, yAnchor: 1.6 });
+
+  (async () => {
+    try {
+      const dest = await toLatLng(DEST.addr);
+      bounds.extend(dest);
+      new kakao.maps.CustomOverlay({ map, position: dest, content: `<div class="pin dest">★ 자주 가는 곳 · ${DEST.name}</div>`, yAnchor: 2.8 });
+      new kakao.maps.Marker({ map, position: dest });
+
+      for (const h of HOMES) {
+        const p = await toLatLng(h.addr);
+        bounds.extend(p);
+        new kakao.maps.Marker({ map, position: p });
+        label(p, `<div class="pin" style="background:${h.color}">${h.key} ${h.name} · ${h.info}</div>`);
+        // 집 → 자주 가는 곳 점선 (실제 경로가 아니라 방향 표시)
+        new kakao.maps.Polyline({ map, path: [p, dest], strokeWeight: 3, strokeColor: h.color, strokeOpacity: .8, strokeStyle: 'dash' });
+        // 걸어서 10분 원 (약 500m)
+        new kakao.maps.Circle({ map, center: p, radius: 500, strokeWeight: 1, strokeColor: h.color, strokeOpacity: .5,
+          strokeStyle: 'dash', fillColor: h.color, fillOpacity: .06 });
+      }
+      map.setBounds(bounds, 80, 80, 80, 80);
+      log.textContent = '완료 · 점선 원 = 걸어서 약 10분(500m)';
+    } catch (e) {
+      log.textContent = '주소를 찾지 못했어요: ' + e;
+    }
+  })();
+});
+</script>
+</body>
+</html>

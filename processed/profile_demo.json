@@ -1,0 +1,23 @@
+{
+  "name": "정연",
+  "age": 27,
+  "household": "단독세대주",
+  "homeless": true,
+  "region": "서울",
+  "income_annual": 2760,
+  "income_monthly_won": 2300000,
+  "asset": 2000,
+  "cash": 2000,
+  "area": {
+    "gu": "관악구",
+    "dong": "신림동"
+  },
+  "frequent_place": "멀티캠퍼스 역삼",
+  "_설명": "STEP 1 대화에서 AI가 뽑은 프로필 예시. 금액은 만원(income_monthly_won만 원 단위). area는 살고 싶은 동네, cash는 보증금으로 쓸 수 있는 돈. housing_plan은 STEP 1에서 물어본 집 예산(보증금·월세 상한)과 입주 예정일. 집을 고르기 전이라 지원 판정은 이 예산 기준.",
+  "housing_plan": {
+    "type": "월세",
+    "deposit": 1000,
+    "monthly": 50,
+    "move_in": "2026-12-01"
+  }
+}
