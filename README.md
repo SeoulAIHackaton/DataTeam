@@ -1,11 +1,13 @@
 # 첫집 내비 · 데이터 패키지 (Data/AI 파트)
 
-2026 서울AI디지털배움터 청년 AI 해커톤 · 정리일 2026-11-10 · **3단계 개편 2026-11-12**
+2026 서울AI디지털배움터 청년 AI 해커톤 · 정리일 2026-11-10 · 3단계 개편 2026-11-12 · **PRD v1.2 기준 갱신 2026-11-17**
 
 > 단계 번호는 **최종 서비스 (3단계)** 기준이에요.
-> **STEP 1 내 상황** → **STEP 2 근거 있는 지원 추천 (+ AI 판정 · AI 상담 = RAG)** → **STEP 3 집 비교**
+> **STEP 1 내 상황** → **STEP 2 근거 있는 지원 추천 (+ 공고문에 물어보기 = RAG)** → **STEP 3 집 비교**
 > 예전 "STEP 2 주거 전략 + 2년 살아보기"는 빠졌어요 (코드·결과는 `archive/`에 보관).
 > 시연 기준일은 **본선 날짜 2026-11-21 (실제 날짜)** 예요. 가상 일정은 쓰지 않아요.
+>
+> 최신 기획은 [`docs/첫집내비_PRD_v1.2.md`](docs/첫집내비_PRD_v1.2.md)이고, 풀스택 문서(v1.0)와 달라진 점은 [`docs/첫집내비_서비스소개v4_변경사항.md`](docs/첫집내비_서비스소개v4_변경사항.md)에 있어요. PRD 요구사항(R1~R11)과 이 레포의 코드가 어떻게 이어지는지는 [8. PRD v1.2와 이 레포](#8-prd-v12와-이-레포)에 정리했어요.
 
 ```
 firsthome_data/
@@ -18,7 +20,7 @@ firsthome_data/
 │   └── rag/              #   RAG 검색 색인 (공고문 조각 chunks.jsonl, index.pkl)
 ├── scripts/              # 수집·가공·계산·AI 코드
 ├── web/                  # index.html (최종 화면) · kakaomap_test.html
-├── docs/                 # 기능 CRUD 명세 (엑셀) · 서비스 소개 (PDF)
+├── docs/                 # PRD v1.2 · v4 변경사항 정리 · 기능 CRUD 명세 (엑셀) · 서비스 소개 (PDF)
 └── archive/              # 지금 안 쓰는 데이터·코드 보관 (주거 전략 단계, 전월세 시세·전환율, 예전 프로토타입)
 ```
 
@@ -41,7 +43,7 @@ firsthome_data/
 
 | 단계 | 데이터 | 방식 | 상태 | 쓰는 곳 | 파일 |
 |---|---|---|---|---|---|
-| STEP 1 | 사용자 입력 | LLM 구조화 | – | 프로필 JSON (STEP 2·3에서 재사용) | `processed/profile_demo.json` |
+| STEP 1 | 사용자 입력 (챗봇 9개 질문) | 버튼 + 말하듯 입력 → 코드 정규화 | – | 프로필 (STEP 2·3에서 재사용) | `web/index.html`, `processed/profile_demo.json` |
 | 보관 | 서울시 부동산 전월세가 | 서울 열린데이터광장 API | ✅ 수집·가공 | 안 씀 (원본 없음, 가공본만 보관) | `archive/processed/rent_median_seoul.*` |
 | STEP 2 | 주택도시기금 대출 3종 | 웹 원문 | 📥 | RAG 상담 (대출 조건·한도 질문) | `processed/loan_products.json` |
 | STEP 2 | SH 청년안심주택 1·2차 공고 | PDF | 📥 | RAG 상담 (입주 자격·일정 질문) | `processed/sh_youth_housing.json` |
@@ -50,8 +52,10 @@ firsthome_data/
 | 보류 | LH 공고별 공급정보 API | 공공데이터포털 | ✅ 6건 수집 | 공고별 주택 목록·공급호수 (보증금·월세는 대부분 없음 → 공고문 PDF) | `raw/lh/` |
 | STEP 2 | 온통청년 청년정책 API | 온통청년 | ✅ 전체 3,960건 | 더 찾아본 지원 · RAG 색인 | `raw/youthcenter/`, `processed/youthcenter_seoul_housing.csv` |
 | STEP 2 | 정부24 혜택 API | 공공데이터포털 | ✅ 수집 | 더 찾아본 지원 · RAG 색인 | `raw/gov24/`, `processed/gov24_housing.*` |
-| STEP 2 | 현금 지원 4개 + 중복 규칙 | 온통청년 + 서울시 공고 | 📥 정리 완료 | 코드 판정 · 금액 합계 · 달력 · 중복 경고 | `processed/demo_policies.json` |
-| STEP 3 | 대중교통 길찾기 (ODsay) | ODsay API | ✅ 3곳 수집 | 자주 가는 곳까지 시간·요금·환승 | `processed/step3_homes/` |
+| STEP 2 | 현금 지원 4개 + 중복 규칙 | 온통청년 + 서울시 공고 | 📥 정리 완료 | 코드 판정 · 금액 합계 · 달력 · 중복 시 큰 쪽 자동 선택 | `processed/demo_policies.json` |
+| STEP 2 | 공고문 조각 (RAG 색인) | 위 데이터로 생성 | ✅ 1,233개 | 공고문에 물어보기 | `processed/rag/` |
+| STEP 2 | RAG 평가 22문항 | 공고문 원문과 대조 | ✅ 검색 22/22 · 근거 20/20 · 답 22/22 | LLM·검색 바꿀 때 다시 돌리기 | `processed/rag/eval_*.csv` |
+| STEP 3 | 대중교통 길찾기 (ODsay) | ODsay API | ✅ 3곳 수집 | 회사·학교까지 시간·요금·환승 (카카오모빌리티 자동차 길찾기는 안 씀) | `processed/step3_homes/` |
 | STEP 3 | 카카오 로컬 (주소·주변 시설 8종) | 카카오 API | ✅ 3곳 수집 | 생활 편의 표 · 지도 | `processed/step3_homes/` |
 
 ### 발급받은 API 키
@@ -62,7 +66,9 @@ firsthome_data/
 | 온통청년 API 키 | youthcenter.go.kr | 청년정책 목록 | `YOUTHCENTER_API_KEY` |
 | 카카오 | developers.kakao.com | 로컬(REST) · 지도(JavaScript 키는 HTML에) | `KAKAO_REST_API_KEY` |
 | ODsay | lab.odsay.com | 대중교통 길찾기 (서버 IP 등록 필요) | `ODSAY_API_KEY` |
-| LLM | (팀에서 정하기) | AI 설명 · RAG 답변 | `LLM_API_KEY` |
+| LLM | 미정 (개발·테스트는 OpenAI 임시) | AI 설명 · RAG 답변 | `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL` |
+
+서비스 LLM은 아직 정하지 않았어요. `.env`의 `LLM_BASE_URL`, `LLM_MODEL`만 바꾸면 OpenAI 호환 API를 쓰는 다른 모델로 코드 수정 없이 바뀌어요. `.env.example`의 `gpt-4o-mini`는 개발용 기본값일 뿐이에요. **모델을 바꾸면 `python scripts/rag_eval.py`로 22문항 평가를 다시 돌려요.**
 
 키 값은 노션 「📦 데이터 · API 정리」 DB에 있어요. **`.env`에만 넣고 깃허브에는 절대 올리지 마세요** (`.gitignore`에 들어 있음).
 
@@ -492,6 +498,7 @@ python scripts/recommend.py            # STEP 3 점수 → processed/step3_homes
 python scripts/explain.py --step 2     # AI 설명 (2 = 지원 추천, 3 = 집 비교, --easy, --priority "시간이 먼저")
 ```
 - 입력 프로필: `processed/profile_demo.json` (27세, 연소득 2,760만, 목돈 2,000만, 집 예산 `housing_plan` 월세 보증금 1,000/월 50, 12/1 입주)
+  - 화면(`web/index.html`)의 1단계는 PRD R1의 9개 질문(나이, 상황, 회사·학교, 보증금으로 쓸 돈, 월소득, 출퇴근 허용 시간, 입주 시기, 집 유무, 세대 분리)으로 받아요. `profile_demo.json`은 그 전 형식이라 집 예산(`housing_plan`) 같은 필드가 남아 있어요. 스크립트 시연용으로만 써요.
 - STEP 2와 RAG는 키 없이 돌아가요 (LLM 키가 없으면 원문 문장을 그대로 보여주는 모드). STEP 3 수집만 카카오·ODsay 키가 필요해요.
 
 ### STEP 2 · policy_match.py (코드 판정)
@@ -505,17 +512,40 @@ python scripts/explain.py --step 2     # AI 설명 (2 = 지원 추천, 3 = 집 �
 ### STEP 2 · RAG (rag_build.py → rag.py)
 | 단계 | 하는 일 |
 |---|---|
-| 색인 | 온통청년(서울·전국, **다른 지자체가 올린 정책 제외**) 110 · 정부24(주거·자립 분야 또는 이름에 주거 단어) 168 · 대출 4 · SH 1 · 현금 지원 4 → 공고문을 항목별 조각 1,360개로 |
+| 색인 | 온통청년(서울·전국, **다른 지자체가 올린 정책 제외**) 110 · 정부24(주거·자립 분야 또는 이름에 주거 단어) 168 · 대출 4 · SH 1 · 현금 지원 4 → 공고문을 항목별 조각 **1,233개**로 (`chunks.jsonl` 기준: 정부24 732 · 온통청년 447 · SH 22 · 시연 정책 18 · 주택도시기금 14) |
 | 코드 필터 | 나이(질문 속 "35살"도 읽음) · 서울/내 구 · 지난 공고 제외. **정책 이름을 콕 집어 물으면** 나이가 안 맞아도 남기고 "나이 확인(코드 판정)" 문장을 근거로 붙임 |
 | 검색 | TF-IDF(글자 2~3) + 동의어 확장(전세대출→버팀목, 1년→재직 1년 미만…) · 검증 문서 가산점 |
 | 답변 | LLM이 찾은 원문만 보고 [번호] 출처와 함께 JSON 답 → 숫자 검사 통과 못 하면 원문 문장 그대로 |
-- 화면 연결: `POST /api/ask` (정책에 물어보기 · 주거 상담), `POST /api/policies/judge` (AI 판정)
+- 화면 연결: `POST /api/ask` (공고문에 물어보기), `GET /api/health` (서버 확인) — `python scripts/server.py`로 화면과 API를 같이 띄워요 (`http://127.0.0.1:5500`). 더 찾아본 지원의 조건 판정(`/api/policies/judge`)은 아직 서버에 없어요.
+- 범위 밖: 만 19~39세 밖 질문은 AI 없이 복지로(129)·120으로 안내하고, 근거가 없으면 "찾지 못했어요" + 상담기관 안내
+- 서버가 꺼져 있으면 화면은 미리 넣어 둔 답으로 바꿔서 깨지지 않아요
+
+### STEP 2 · RAG 평가 (rag_eval.py)
+- 질문 22개(`processed/rag/eval_questions.csv`)를 공고문 원문과 대조해 만들었어요. Q21·Q22는 범위 밖 질문이라 "찾지 못했어요"로 답해야 맞아요.
+- 최근 결과(`eval_result.csv`): **검색 22/22 · 근거 20/20(범위 밖 2개 제외) · 답 22/22** (AI 답 20 · 원문 답 2). LLM 연결 전에는 답 14/22였어요.
+- LLM이나 검색 설정을 바꾸면 `python scripts/rag_eval.py`로 다시 돌려요.
 
 ### explain.py 환각 방지
 1. 프롬프트 규칙 (주어진 숫자만, 추천 바꾸지 않기, 계산하지 않기, 아쉬운 점 꼭 말하기)
 2. 숫자 검사: "숫자+단위"(만·%·분·개월…)가 입력에 없으면 답을 버림
 3. 추천 검사: 한 줄에 코드가 고른 추천이 없으면 버림
 4. 키가 없거나 오류면 템플릿 설명 → 시연이 멈추지 않음
+
+### STEP 3 · 한 달 실부담과 종합 점수 (PRD v1.2 4절)
+- **한 달 실부담 = 월세 + 관리비.** 관리비를 모르면 화면에 "–"로 두고 더하지 않아요. 보증금은 따로 보여주고, 1단계에서 말한 모아둔 돈보다 크면 "○○만 원 부족"을 붙여요.
+- 교통비(ODsay 편도 요금 × 2 × 20일)는 출퇴근 칸에 **참고로만** 보여주고 실부담·비용 점수에는 넣지 않아요. 먼 집은 시간 점수에서 이미 깎이니까 비용에서 또 깎이지 않게 하려는 거예요. (`homes_summary.csv`의 `월교통비(원)` 열에는 그대로 남아 있어요.)
+- 점수: 비용(가장 싼 집 100점, 1만 원 비쌀 때마다 −1.5점) · 시간(15분까지 100점, 그 뒤 1분마다 −2점) · 생활(시설 8종 도보 5분 100점 ~ 20분 0점의 평균)
+- 프리셋 4개 (`recommend.py`, `web/index.html` 같은 값)
+
+| 프리셋 | 비용 | 시간 | 생활 |
+|---|---:|---:|---:|
+| 균형 | 40 | 35 | 25 |
+| 돈이 먼저 | 60 | 25 | 15 |
+| 시간이 먼저 | 20 | 60 | 20 |
+| 동네 생활 | 30 | 20 | 50 |
+
+- 시연 결과 (균형): 신림 86.4 · 성수 76.2 · 역삼 68.1 → **신림 추천**. 실부담 42 / 60 / 90만 원. PRD 3.2절 표와 같아요.
+- 종합 점수는 **지원 전 금액**으로 계산하고, "지원 받으면 한 달 실부담"(예: 신림 42만 → 22만)은 집별 지원 표에만 보여줘요.
 
 ### STEP 3 주의
 - 카카오 로컬 응답 원본(`processed/step3_homes/cache.json`)은 시연용 로컬 캐시라 `.gitignore`에 넣었어요.
@@ -530,9 +560,41 @@ firsthome_data/
 ├── processed/        데이터 + 단계별 결과 (step2_support · step3_homes · rag)
 ├── scripts/          수집·가공·계산·AI 코드
 ├── web/              index.html (최종 화면) · kakaomap_test.html (카카오 지도 테스트)
-├── docs/             기능 CRUD 명세(엑셀, 3단계 번호) · 서비스 소개(PDF) · archive/ 예전 작업 정리
+├── docs/             PRD v1.2 · 서비스 소개 v4 변경사항 정리 · 기능 CRUD 명세(엑셀, 3단계 번호) · 서비스 소개(PDF) · archive/ 예전 작업 정리
 ├── archive/          안 쓰는 것 보관: 주거 전략 단계 (strategy.py, 결과, 전환율) · 전월세 시세 · 예전 4단계 프로토타입
 └── raw/              원본 (용량이 커서 압축본에는 빠져 있음 → 기존 raw 폴더를 그대로 옮겨 넣기)
 ```
 - 이 정리본에는 **키가 하나도 들어 있지 않아요.** 키는 `.env`(REST·ODsay·AI)와 `web/index.html`의 `JS_KEY` 자리(카카오 JavaScript 키)에만 넣어요.
 - 카카오 지도는 VS Code에서 `web` 폴더를 열고 Live Server(`http://127.0.0.1:5500`)로 열어야 떠요. 키가 없으면 그림 지도로 보여요.
+
+---
+
+## 8. PRD v1.2와 이 레포
+
+PRD v1.2(2026-11-16)의 요구사항이 이 레포 어디에 있는지 정리했어요. 상태는 PRD 표기를 따르고, "레포"는 2026-11-17 기준으로 이 레포에 실제로 들어 있는지예요.
+
+| ID | 요구사항 | PRD 상태 | 레포 |
+|---|---|---|---|
+| R1 | 1단계 9개 질문 대화 · 정리 카드 | 구현 | `web/index.html` |
+| R2 | 지원 판정 · 총액(최대 520만 원) · 중복 시 큰 쪽 자동 선택 | 구현 | `scripts/policy_match.py`, `web/index.html`, `processed/demo_policies.json` |
+| R3 | 조건 변경 재계산 (27세 520만 → 35세 280만) | 구현 | `policy_match.py`(`what_if`), `web/index.html` |
+| R4 | 공고문에 물어보기 (RAG) · 22문항 평가 | 구현 | `rag_build.py` → `rag.py` → `server.py`, `rag_eval.py`, `processed/rag/` |
+| R5 | 후보 집 넣기 (카카오 주소·장소 검색) | 구현 | `web/index.html`, `collect_homes.py` |
+| R5-a | 매물 정보 자동 입력 (OCR + LLM) | 시간 남으면 | 없음 |
+| R6 | 집 비교 (ODsay 출퇴근, 실부담 = 월세 + 관리비, 보증금 부족, 집별 지원) | 구현 | `web/index.html`, `collect_homes.py`, `recommend.py` |
+| R7 | 종합 추천 (프리셋 4개 · 말한 우선순위 → 가중치) | 프리셋 구현 · AI 가중치 구현 예정 | 프리셋만 (`recommend.py`, `web/index.html`) |
+| R8 | AI 추천 보조 (시설 고르기 · 추천 이유 · "왜 신림이야?") | 구현 예정 | 추천 이유는 `explain.py`(LLM + 숫자·추천 검사, 키 없으면 템플릿)만 있고 화면 연결 전. 시설 고르기·후속 질문은 없음 |
+| R9 | 디지털 포용 (듣기, 큰 글씨·고대비, 말로 답하기, 음성 모드) | 시간 남으면 | "쉬운 화면"만 있음 |
+| R10 | 자체 사이트 로그인 | 시간 남으면 | 없음 (시연은 이름 입력) |
+| R11 | 다음 단계 (axe-core, "예산에 맞는 동네" 등) | 미구현 | 실거래 데이터는 `archive/`에 보관 |
+
+**이번에 PRD에 맞춰 고친 것 (2026-11-17)**
+- 한 달 실부담에서 교통비를 뺐어요 (`web/index.html`, `collect_homes.py`, `homes_summary.csv` 재계산 → `recommend_result.json`·`explain_result.json` 다시 생성). 균형 기준 결과가 PRD 3.2절(86.4 / 76.2 / 68.1)과 같아졌어요. 교통비는 참고 표시로 남겼어요.
+- README를 PRD v1.2 기준으로 맞췄어요 (RAG 조각 수 1,233개, 평가 결과, LLM 교체 방법, 서버 API, 프리셋 값).
+- `docs/`에 PRD v1.2와 서비스 소개 v4 변경사항 정리를 넣었어요.
+
+**팀에서 정할 것 (PRD 7절)과 이 레포에 걸리는 부분**
+- 서버 구조: 지금 시연본은 Python(`server.py`, `rag.py`). Spring Boot와 합치는 방법을 정하면 여기 `scripts/`의 역할이 바뀌어요.
+- 지원 반영 실부담: 지금은 월 지원액(월세 지원 20만 원)만 빼요. 1회성 지원(이사비) 처리는 정하면 `web/index.html`의 `after()`를 고쳐요.
+- 교통비 참고 표시: 지금은 편도 요금 × 2 × 20일 고정(`DAYS`, `COMMUTE_DAYS`).
+- 서비스 LLM: 정하면 `.env`만 바꾸고 `rag_eval.py`를 다시 돌려요.
