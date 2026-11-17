@@ -10,6 +10,7 @@
 - POST /api/compare {"question": "...", "facts": {...}}  → 3단계 비교 결과 설명 (검색 없음)
 - POST /api/ask  {"question": "...", "profile": {"age": 27}}
   → {"answer", "citations", "found", "mode", "sources": [{n, name, section, text, url}], "policies"}
+- GET /api/config  브라우저용 키 (.env 의 KAKAO_JS_KEY, ODSAY_WEB_KEY) → 화면이 지도·길찾기에 써요
 - GET /api/place?q=판교   1단계 '자주 가는 곳' 검색 (카카오 로컬 장소 검색 + 주소 검색, .env 의 KAKAO_REST_API_KEY)
   → {"places": [{name, address, query}]}  · 키가 없으면 503 {"error": "no_key"} → 화면은 미리 정한 후보 목록으로 바꿔요
 """
@@ -88,6 +89,8 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_header("Location", "/web/index.html")
             self.end_headers()
             return
+        if self.path == "/api/config":   # 브라우저용 키만 (카카오 JavaScript 키 · ODsay 웹 키). 원래 브라우저에 보이는 키라 도메인 등록으로 막아요. REST·LLM 키는 절대 안 내보내요
+            return self._json(200, {"kakaoJsKey": os.environ.get("KAKAO_JS_KEY", ""), "odsayWebKey": os.environ.get("ODSAY_WEB_KEY", "")})
         if self.path == "/api/health":
             return self._json(200, {"ok": True, "ai": bool(os.environ.get("LLM_API_KEY")), "place": bool(os.environ.get("KAKAO_REST_API_KEY"))})
         if self.path.startswith("/api/place"):
