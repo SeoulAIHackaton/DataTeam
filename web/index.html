@@ -172,13 +172,6 @@ tr.clk:hover td{background:#fbfcfd}
 .f1h h1{font-size:30px}
 .f1ex{margin-left:auto;font-size:13px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:#fff}
 .f1ex:hover{border-color:var(--pri);color:var(--pri)}
-.f1ai{border:1.5px solid #d9cffc;background:#fbf9ff;border-radius:16px;padding:16px 18px;margin-bottom:20px}
-.f1ai .t{display:block;font-size:15px;font-weight:800;color:var(--purple)}
-.f1ai .f1airow{display:flex;gap:10px;margin-top:10px}
-.f1ai textarea{flex:1;background:#fff;border:1.5px solid #d9cffc;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.5;resize:vertical;outline:0}
-.f1ai textarea:focus{border-color:var(--purple)}
-.f1ai .go{background:var(--purple);color:#fff;border-radius:12px;padding:0 18px;font-size:15px;font-weight:700;white-space:nowrap}
-.f1ai .go[disabled]{opacity:.45;cursor:default}
 .f1card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 22px}
 .f1{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);align-items:flex-start;scroll-margin:120px;transition:background .3s}
 .f1:last-child{border-bottom:0}
@@ -1057,7 +1050,7 @@ const QS1 = [
    저장 형식은 예전과 같아요 (2·3단계가 그대로 읽어요)
      S.prof {age 만 나이, birthYear, bday 'after'|'before'|null, job, place, placeOk, cash 만 원, income 만 원(세전 월),
              incomeInput {mode '월'|'연', amount}, time 분(상관없음 999), when} · S.own · S.sep '네'|'아니요'|'모름' · setDest(name, query)
-   S.d1 = 입력 중인 글자(숫자칸·검색칸·한 번에 말하기) · S.hl = [받을 수 있는 지원 보기]를 눌렀을 때 강조할 빈 항목 */
+   S.d1 = 입력 중인 글자(숫자칸·검색칸) · S.hl = [받을 수 있는 지원 보기]를 눌렀을 때 강조할 빈 항목 */
 const W1 = SR.FIELDS, F1K = Object.fromEntries(W1.map(f => [f.k, f])), NOW_Y = +TODAY1.slice(0,4);
 const YEARS1 = (([a,b]) => Array.from({length:b-a+1}, (_,i) => b-i))(F1K.age.years);   // 2010 → 1960
 const INC_LIMIT = MED1 * 1.5;   // 지원 소득 기준 안내 (판정 아님) · judge()의 inc150 과 같은 값
@@ -1197,7 +1190,7 @@ function go1(){ if(all1()) return go(2); const f = W1.find(f => !done1(f.k)); to
 function demo1(){   // 시연·테스트용: 시연 인물 값으로 9개 채우기
   setDest('멀티캠퍼스 역삼', '서울 강남구 테헤란로 212');
   S.prof = {birthYear:1999, age:27, bday:null, job:'직장인', place:'멀티캠퍼스 역삼', placeOk:true, cash:2000, income:230, incomeInput:{mode:'월', amount:230}, time:45, when:'다음 달'};
-  S.own = '없어요'; S.sep = '네'; S.d1 = {ai: D1().ai}; render(); }
+  S.own = '없어요'; S.sep = '네'; S.d1 = {}; render(); }
 
 function page1(){
   const P = S.prof || {}, d = D1();
@@ -1221,8 +1214,6 @@ function page1(){
   ctl.job = chips('job', P.job); ctl.time = chips('time', P.time); ctl.when = chips('when', P.when); ctl.own = chips('own', S.own); ctl.sep = chips('sep', S.sep);
   return `<div class="eyebrow">1단계 · 내 상황</div>
     <div class="f1h"><h1>내 상황을 알려 주세요</h1><button class="f1ex" onclick="demo1()" data-act="예시로 채우기">예시로 채우기</button></div>
-    <div class="f1ai"><label class="t" for="f1-ai">한 번에 말하기</label>
-      <div class="f1airow"><textarea id="f1-ai" rows="2" placeholder="예: 99년생 직장인이고 회사는 역삼이에요" oninput="D1().ai=this.value">${esc(d.ai || '')}</textarea><button class="go" disabled data-act="AI로 채우기 (B에서 연결)">AI로 채우기</button></div></div>
     <div class="f1card">${W1.map(f => row(f, ctl[f.k])).join('')}</div>`;
 }
 /* 오른쪽: 내 조건 패널(누르면 그 항목으로) · 세대 분리 한 줄 · [받을 수 있는 지원 보기] */
