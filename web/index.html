@@ -166,6 +166,60 @@ tr.clk:hover td{background:#fbfcfd}
 .sheet-h{display:flex;align-items:center;margin-bottom:18px}
 .x{margin-left:auto;font-size:22px;color:var(--sub)}
 
+/* ===== 1단계 한 화면 선택형 입력 (2026-11-17 · 시안 step1_page.html) ===== */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.f1h{display:flex;align-items:flex-end;margin-bottom:20px}
+.f1h h1{font-size:30px}
+.f1ex{margin-left:auto;font-size:13px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:#fff}
+.f1ex:hover{border-color:var(--pri);color:var(--pri)}
+.f1ai{border:1.5px solid #d9cffc;background:#fbf9ff;border-radius:16px;padding:16px 18px;margin-bottom:20px}
+.f1ai .t{display:block;font-size:15px;font-weight:800;color:var(--purple)}
+.f1ai .f1airow{display:flex;gap:10px;margin-top:10px}
+.f1ai textarea{flex:1;background:#fff;border:1.5px solid #d9cffc;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.5;resize:vertical;outline:0}
+.f1ai textarea:focus{border-color:var(--purple)}
+.f1ai .go{background:var(--purple);color:#fff;border-radius:12px;padding:0 18px;font-size:15px;font-weight:700;white-space:nowrap}
+.f1ai .go[disabled]{opacity:.45;cursor:default}
+.f1card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 22px}
+.f1{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);align-items:flex-start;scroll-margin:120px;transition:background .3s}
+.f1:last-child{border-bottom:0}
+.f1.hl{background:var(--orange-s);margin:0 -22px;padding:18px 22px;border-radius:12px}
+.f1 .lab{width:160px;flex-shrink:0;padding-top:9px}
+.f1 .lab b{display:block;font-size:16px;font-weight:700}.f1 .lab small{display:block;font-size:12.5px;color:var(--sub);margin-top:3px}
+.f1 .ctl{flex:1;min-width:0}
+.f1 .chips{align-items:center}
+.f1 .chip{height:auto;line-height:1.3;border:1.5px solid var(--line);border-radius:999px;padding:9px 16px;font-size:15px;font-weight:600;color:#4e5968}
+.f1 .chip.sm{padding:7px 13px;font-size:14px}
+.f1 .chip.on{border-color:var(--pri);background:var(--pri-s);color:var(--pri)}
+.f1 .mt{margin-top:10px}
+.f1line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.f1sel{width:180px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:18px;font-weight:800;background:#fff;color:var(--ink)}
+.f1sel:focus{border-color:var(--pri);outline:0}
+.f1age{font-size:15px;color:var(--sub)}.f1age b{color:var(--ink);font-size:16px}
+.f1bd{font-size:14px;font-weight:700;color:#a8460a}
+.f1pick,.f1search{display:flex;align-items:center;gap:10px;border:1.5px solid var(--pri);border-radius:12px;padding:10px 14px}
+.f1pick .q{flex:1}.f1pick .q b{display:block;font-size:16px}.f1pick .q small{font-size:13px;color:var(--sub)}
+.f1search input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:16px;font-weight:600}
+.f1pl small{display:block;font-size:11.5px;color:var(--mute);font-weight:400}
+.f1num{display:inline-flex;align-items:baseline;gap:6px;border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;min-width:180px;background:#fff}
+.f1num:focus-within{border-color:var(--pri)}
+.f1num input{width:110px;flex:1;border:0;outline:0;font:inherit;font-size:20px;font-weight:800;min-width:0}
+.f1num span:not(.sr){font-size:14px;color:var(--sub);font-weight:600;white-space:nowrap}
+.f1tog{display:inline-flex;background:#f2f4f6;border-radius:10px;padding:3px}
+.f1tog button{padding:7px 14px;font-size:14px;font-weight:700;color:var(--sub);border-radius:8px}.f1tog button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.f1conv{font-size:14px;color:var(--sub)}.f1conv b{color:var(--ink)}
+.f1ok{display:inline-block;margin-top:10px;background:var(--green-s);color:#0b7a5a;border-radius:8px;padding:5px 10px;font-size:13px;font-weight:700}
+.f1ok.over{background:var(--orange-s);color:#a8460a}
+.f1over{margin-top:8px;font-size:13px;color:var(--warn)}
+.f1cnt{margin-left:auto;font-size:13px;color:var(--pri);font-weight:700}
+.f1panel .prog{height:6px;margin:0 0 6px}
+.f1kv{width:100%;text-align:left;border-bottom:1px solid #f1f3f5}
+.f1kv:hover span{color:var(--pri)}
+.f1kv b.nil{color:#c4cad1;font-weight:400}
+.f1note{font-size:13px;color:#a8460a;background:var(--orange-s);border-radius:12px;padding:12px 14px}
+.btn.off{opacity:.45}
+#p1side{display:contents}
+.f1card button:focus-visible,.f1panel button:focus-visible,#f1go:focus-visible,.f1ex:focus-visible,.f1card select:focus-visible{outline:3px solid #9db8ff;outline-offset:2px}
+
 /* ===== EASY MODE ===== */
 .easy .col{width:720px}
 .easy h1{font-size:38px;line-height:1.35}
@@ -810,7 +864,7 @@ function profilePanel(){
     ${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b class="${r[1]?'':'q'}">${r[1]||'확인 중'}</b></div>`).join('')}</div>`;
 }
 function aside(){
-  if(S.step===1) return profilePanel()+`<div class="panel soft"><div class="panel-t">이렇게 적어도 돼요</div><p class="s">누르면 입력창에 들어가요</p>${['학교는 신촌이고 알바로 한 달 80 벌어요','보증금은 500까지, 월세는 50 아래로요','3월에 이사하고 싶어요'].map(t=>`<button class="ex" onclick="document.querySelector('.compose input').value='${t}'" data-act="예시 문장 넣기">“${t}”</button>`).join('')}</div>`;
+  if(S.step===1) return S.easy ? profilePanel() : `<div id="p1side">${side1()}</div>`;   // 예전 '이렇게 적어도 돼요' 예시 문장은 글자 입력이 없어져서 뺐어요
   if(false){ const st=STRAT[S.strategy]; return `<div class="panel"><div class="panel-t"><span class="ico sm">${svgIcon(st.icon)}</span>선택한 전략</div><div class="name" style="font-size:17px;font-weight:800">${st.name}</div><div class="big-amt">월 ${st.month}만 원</div><p class="s">2년 총비용 ${st.total?st.total+'만 원':'당첨 시 결정'} · 보증금 위험 ${st.risk}</p></div>`+profilePanel(); }
   if (S.step === 2) {
     const al = POL.filter(p => S.alarm.includes(p.id));
@@ -843,6 +897,10 @@ function step1(){
       <div class="big-q">${q.a.map((a,i)=>`<button class="btn ${i===0?'pri':'ghost'} wide" onclick="set({${q.k}:'${a}',easyQ:${S.easyQ+1}})" data-act="답 선택 → 다음 질문">${a}</button>`).join('')}</div>
       <p class="s" style="text-align:center;margin-top:28px">글로 쓰기 어렵다면 말로 해도 돼요</p>`;
   }
+  return page1();   // 한 화면 선택형 입력 (아래 '1단계 한 화면 선택형 입력')
+}
+/* 선택형으로 대체(2026-11-17) · 예전 채팅형 1단계 화면 (쓰지 않아요) */
+function step1Chat(){
   const P=S.prof, qi=S.qi||0, Q=QS1[qi], done=qi>=QS1.length;
   const ans=QS1.slice(0,qi).map(q=>`<div class="who">첫집 내비</div><div class="bub ai">${q.q}</div><div class="bub me">${q.show(P)}</div>`).join('');
   const tiles=[['나이',P.age?`만 ${P.age}세`:null,'user'],['상황',P.job,'building'],['자주 가는 곳',P.place,'train'],['보증금으로 쓸 돈',P.cash!=null?won(P.cash):null,'bank'],['한 달 수입',P.income!=null?won(P.income):null,'receipt'],['출퇴근 시간',P.time?(P.time>=999?'상관없음':`${P.time}분 이내`):null,'clock'],['입주 시기',P.when,'home'],['내 집',S.own?(S.own==='없어요'?'무주택':'있음'):null,'home'],['주소',S.sep?(S.sep==='네'?'부모님과 같음':S.sep==='모름'?'모름':'따로 전입'):null,'home']].map(t=>[...t,(S.expl||{})[{'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'}[t[0]]]]).filter(t=>t[1]);
@@ -868,6 +926,8 @@ const SR = window.Step1Rules, TODAY1 = SR.TODAY;              // 날짜 판단 �
 const F1 = Object.fromEntries(SR.FIELDS.map(f => [f.k, f]));
 const placeVal = v => v && typeof v === 'object' ? v.name + '|' + v.query : v;   // 장소 버튼 값은 'name|query'
 const opts1 = k => F1[k].opts.map(o => [o[0], k === 'place' ? placeVal(o[1]) : o[1]]);
+/* 선택형으로 대체(2026-11-17): QS1 · answer1 · typed1 · pick1 · redo1 · alertSoft1 · alertSoft · prof1 · apply1 · extra1 · pickU · parseMsg · sendMsg · pickPlace
+   글자 입력 화면(step1Chat)에서만 쓰던 것들이라 지금은 쓰이지 않아요. 지울지는 PR에서 정해요. */
 const QS1 = [
   {k:'age', q:F1.age.q, h:F1.age.h, ph:F1.age.ph, opts:()=>opts1('age'), set:v=>({age:+v}), show:P=>`만 ${P.age}세`},
   {k:'job', q:F1.job.q, h:F1.job.h, ph:F1.job.ph, opts:()=>opts1('job'), set:v=>({job:v}), show:P=>P.job},
@@ -882,14 +942,14 @@ const QS1 = [
   {k:'sep', q:F1.sep.q, h:F1.sep.h, ph:F1.sep.ph, opts:()=>opts1('sep'),     // '잘 모르겠어요' → '모름' (예전엔 '네'로 저장)
    set:v=>{S.sep=v;return {}}, show:()=>SR.display('sep', S.sep)}
 ];
-function answer1(v, expl){
+/* 선택형으로 대체(2026-11-17) */ function answer1(v, expl){
   const q=QS1[S.qi||0], prof={...S.prof, ...q.set(v)}, ex={...(S.expl||{})};
   if(expl) ex[q.k]=expl; else delete ex[q.k];                 // 정리 카드에 작게 보여줄 설명 (예: 연봉 3,600만 원 ÷ 12)
   const next = q.k==='place'&&!prof.placeOk ? (S.qi||0) : (S.redo!=null ? QS1.length : (S.qi||0)+1);
   set({prof, qi: next, redo:null, miss:[], expl:ex});
   setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();}},0);
 }
-function typed1(t){
+/* 선택형으로 대체(2026-11-17) */ function typed1(t){
   t=(t||'').trim(); if(!t) return;
   const q=QS1[S.qi||0], r=SR.interpretAnswer(q.k, t, {today:TODAY1});
   if(r.status==='ok') return answer1(q.k==='place'?placeVal(r.value):r.value, r.explain);
@@ -897,22 +957,22 @@ function typed1(t){
   if(q.k==='place'&&r.vague) return set({prof:{...S.prof, place:r.evidence, placeOk:false}, miss:[]});   // 넓은 지명 → 후보 버튼
   alertSoft1(t, esc(r.ask));
 }
-function pick1(i,j){   // 확인 말풍선의 버튼: 값이면 저장하고 다음 질문, [다시 입력]이면 같은 질문에 머물러요
+/* 선택형으로 대체(2026-11-17) */ function pick1(i,j){   // 확인 말풍선의 버튼: 값이면 저장하고 다음 질문, [다시 입력]이면 같은 질문에 머물러요
   const m=(S.miss||[])[i]; if(!m||!m.opts) return; const v=m.opts[j][1];
   if(v==null){ m.opts=null; m.m+='<div class="s" style="margin-top:6px">알겠어요. 다시 적어 주세요.</div>'; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e) e.focus();},0); return; }
   const lbl=m.opts[j][0]; answer1(v, [m.expl, lbl!=='맞아요'?lbl:''].filter(Boolean).join(' · ')||null);   // 예: 1990년생 · 생일 지났어요
 }
-function redo1(label){ const map={'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'};
+/* 선택형으로 대체(2026-11-17) */ function redo1(label){ const map={'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'};
   set({qi: QS1.findIndex(q=>q.k===map[label]), redo:true, miss:[]}); }
-function alertSoft1(t,m,opts,expl){ S.miss=[...(S.miss||[]).map(x=>({...x,opts:null})),{t:esc(t),m,opts:opts||null,expl}]; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();} const c=document.querySelector('.chat'); if(c) c.lastElementChild.scrollIntoView({block:'nearest'});},0); }
-function alertSoft(m){ const e=document.getElementById('msgin'); if(e){ e.value=''; e.placeholder=m; } }
-const prof1 = () => ({...S.prof, own:S.own, sep:S.sep});
-function apply1(prof, k, v){   // 끝난 뒤 바뀐 값 저장 (집 유무·세대 분리는 S.own·S.sep 에 따로)
+/* 선택형으로 대체(2026-11-17) */ function alertSoft1(t,m,opts,expl){ S.miss=[...(S.miss||[]).map(x=>({...x,opts:null})),{t:esc(t),m,opts:opts||null,expl}]; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();} const c=document.querySelector('.chat'); if(c) c.lastElementChild.scrollIntoView({block:'nearest'});},0); }
+/* 선택형으로 대체(2026-11-17) */ function alertSoft(m){ const e=document.getElementById('msgin'); if(e){ e.value=''; e.placeholder=m; } }
+/* 선택형으로 대체(2026-11-17) */ const prof1 = () => ({...S.prof, own:S.own, sep:S.sep});
+/* 선택형으로 대체(2026-11-17) */ function apply1(prof, k, v){   // 끝난 뒤 바뀐 값 저장 (집 유무·세대 분리는 S.own·S.sep 에 따로)
   if(k==='own') S.own=v; else if(k==='sep') S.sep=v;
   else if(k==='place'){ prof.place=v.name; prof.placeOk=true; setDest(v.name, v.query); }
   else prof[k]=v;
 }
-function extra1(t){
+/* 선택형으로 대체(2026-11-17) */ function extra1(t){
   t=(t||'').trim(); if(!t) return;
   const u=SR.interpretUpdate(t, prof1(), {today:TODAY1});   // 질문이면 조건은 안 바꾸고 답만
   let a, opts=null;
@@ -932,24 +992,205 @@ function extra1(t){
   else { const k=matchQ(t); a = k!=='none' ? QA[k].a.replace(/\[\d\]/g,'') + ` <span class="s">(2단계 공고문에 물어보기에서 근거 원문을 볼 수 있어요)</span>` : '그 내용은 2단계 지원 추천이나 3단계 집 비교에서 다룰게요. 다음 단계로 넘어가 볼까요?'; }
   set({extra:[...(S.extra||[]).map(x=>({...x,opts:null})), {q:t.replace(/[<>&]/g,''), a, opts}]});
 }
-function pickU(i,j){   // 끝난 뒤 확인·후보 버튼
+/* 선택형으로 대체(2026-11-17) */ function pickU(i,j){   // 끝난 뒤 확인·후보 버튼
   const e=(S.extra||[])[i]; if(!e||!e.opts) return; const [lbl,k,v,expl]=e.opts[j]; e.opts=null;
   if(v==null){ e.a+='<div class="s" style="margin-top:6px">알겠어요. 다시 적어 주세요.</div>'; render(); return; }
   const prof={...S.prof}; apply1(prof,k,v); S.prof=prof; S.expl={...(S.expl||{}), [k]:expl||undefined};
   e.a+=`<div class="s" style="margin-top:6px">✓ ${esc(F1[k].label)}: ${esc(SR.josa(SR.display(k,v),'으로'))} 반영했어요</div>`; render();
 }
 
+/* ===== 1단계 한 화면 선택형 입력 (2026-11-17 · 시안 step1_page.html) =====
+   9개 항목을 한 화면에 두고, 항목마다 맞는 입력 도구로 골라요. 글자 해석(typed1 등)은 쓰지 않아요.
+   항목 정의(이름·보조 문구·버튼 값)는 web/step1_rules.js 의 FIELDS 예요. 고르는 즉시 저장해요.
+   저장 형식은 예전과 같아요 (2·3단계가 그대로 읽어요)
+     S.prof {age 만 나이, birthYear, bday 'after'|'before'|null, job, place, placeOk, cash 만 원, income 만 원(세전 월),
+             incomeInput {mode '월'|'연', amount}, time 분(상관없음 999), when} · S.own · S.sep '네'|'아니요'|'모름' · setDest(name, query)
+   S.d1 = 입력 중인 글자(숫자칸·검색칸·한 번에 말하기) · S.hl = [받을 수 있는 지원 보기]를 눌렀을 때 강조할 빈 항목 */
+const W1 = SR.FIELDS, F1K = Object.fromEntries(W1.map(f => [f.k, f])), NOW_Y = +TODAY1.slice(0,4);
+const YEARS1 = (([a,b]) => Array.from({length:b-a+1}, (_,i) => b-i))(F1K.age.years);   // 2010 → 1960
+const INC_LIMIT = MED1 * 1.5;   // 지원 소득 기준 안내 (판정 아님) · judge()의 inc150 과 같은 값
+const PLACES1 = (() => {        // 카카오 키가 없을 때 고를 수 있는 후보 (FIELDS 버튼 + KNOWN_PLACES)
+  const m = new Map();
+  F1K.place.opts.forEach(([n, v]) => m.set(n, {name:n, query:v.query, area:''}));
+  Object.entries(SR.KNOWN_PLACES).forEach(([a, l]) => l.forEach(([n, q]) => m.has(n) ? (m.get(n).area = a) : m.set(n, {name:n, query:q, area:a})));
+  return [...m.values()];
+})();
+const D1 = () => S.d1 || (S.d1 = {});
+
+function done1(k){ const P = S.prof || {};
+  return k==='own' ? !!S.own : k==='sep' ? !!S.sep : k==='place' ? !!(P.place && P.placeOk) : (k==='job'||k==='when') ? !!P[k] : P[k] != null; }
+const lbl1 = (k, v) => (F1K[k].opts.find(o => o[1]===v) || [v])[0];
+function val1(k){
+  if(!done1(k)) return null; const P = S.prof;
+  switch(k){
+    case 'age': return P.birthYear ? `${P.birthYear}년생 (만 ${P.age}세)` : `만 ${P.age}세`;
+    case 'place': return P.place;
+    case 'cash': return won(P.cash);
+    case 'income': return `월 ${won(P.income)}`;
+    case 'time': return P.time >= 999 ? '상관없어요' : `${lbl1('time', P.time)} 이내`;
+    case 'own': return S.own;
+    case 'sep': return S.sep;
+    default: return lbl1(k, P[k]);
+  }
+}
+const all1 = () => W1.every(f => done1(f.k));
+
+/* 출생연도 → 만 나이: 생일 전후로 판정이 갈리는 연도만 생일을 물어요.
+   경계는 하드코딩하지 않고 judge()·moreJ()를 (나머지는 예시 값으로) 두 나이로 돌려서 결과가 다른지로 정해요.
+   2026-11-21 기준이면 2007·1991·1986년생 (만 18/19 · 34/35 · 39/40) */
+const AGE_SPLIT1 = {};
+function ageSplit(y){
+  if(y in AGE_SPLIT1) return AGE_SPLIT1[y];
+  const a = NOW_Y - y, keep = {prof:S.prof, own:S.own, sep:S.sep};
+  const sig = age => { S.prof = {age}; S.own = null; S.sep = null; return JSON.stringify([judge().list.map(p => p.st), moreJ().map(r => r.j || '')]); };
+  let r; try { r = sig(a) !== sig(a - 1); } finally { Object.assign(S, keep); }
+  return AGE_SPLIT1[y] = r;
+}
+
+function focusId(id){ const e = typeof id === 'string' ? document.getElementById(id) : id; if(e) e.focus({preventScroll:true}); }
+function year1(v){ const y = +v || null, P = {...S.prof};
+  if(!y){ delete P.birthYear; delete P.age; delete P.bday; }
+  else { P.birthYear = y; P.bday = null; P.age = ageSplit(y) ? null : NOW_Y - y; }   // 경계 연도는 생일을 고를 때까지 빈 항목
+  S.prof = P; render(); focusId('f1-year'); }
+function bd1(v){ const y = S.prof.birthYear; S.prof = {...S.prof, bday:v, age: NOW_Y - y - (v==='before' ? 1 : 0)}; render(); focusId('f1-bd-' + v); }
+function choose1(k, j){ const v = F1K[k].opts[j][1];
+  if(k==='own') S.own = v; else if(k==='sep') S.sep = v; else S.prof = {...S.prof, [k]: v};
+  render(); focusId(`f1-${k}-${j}`); }
+
+/* 자주 가는 곳 · 실제 장소 검색: 카카오 JS 키가 있으면 브라우저에서, 없으면 서버 /api/place (.env 의 REST 키, 키는 브라우저에 안 둬요)
+   서버가 꺼져 있거나 키가 없으면 PLACES1 후보를 검색어로 걸러요 */
+const srvPlace = () => location.protocol.startsWith('http') && !window._psfail;
+const liveOn1 = () => kakaoOn() || srvPlace();
+function placeHits(q){ const n = s => String(s || '').replace(/\s+/g, '').toLowerCase(), k = n(q), tk = String(q || '').split(/\s+/).filter(Boolean).map(n);
+  if(!k) return PLACES1;
+  return PLACES1.filter(p => { const all = n(p.name + p.area + p.query); return tk.every(t => all.includes(t)) || k.includes(n(p.name)); }); }
+const placeList1 = () => { const d = D1(), q = d.pq || '';   // 검색 결과가 있으면 맞는 후보(역삼 → 멀티캠퍼스 역삼·역삼역)를 앞에, 카카오 결과를 뒤에
+  if(!(liveOn1() && q.trim() && d.kres)) return placeHits(q);
+  const seen = new Set(); return [...placeHits(q), ...d.kres].filter(p => !seen.has(p.name) && seen.add(p.name)).slice(0, 12); };
+let _ptimer = null;
+function placeIn(v){ D1().pq = v;
+  if(liveOn1() && v.trim()){ clearTimeout(_ptimer); _ptimer = setTimeout(() => kakaoOn() ? kakaoPlaces(v) : srvPlaces(v), 250); }
+  const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); }
+function srvPlaces(q){
+  fetch('/api/place?q=' + encodeURIComponent(q)).then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(j => { if(D1().pq !== q) return; D1().kres = (j.places || []).map(p => ({name:p.name, query:p.query, area:p.address, live:true})); })
+    .catch(() => { window._psfail = true; })      // 서버 꺼짐·키 없음 → 후보 목록으로
+    .finally(() => { const e = document.getElementById('f1-plist'); if(e){ e.innerHTML = placeItems(); roving1(); } });
+}
+function kakaoPlaces(q){
+  loadKakao().then(() => new kakao.maps.services.Places().keywordSearch(q, (r, st) => { if(D1().pq !== q) return;
+      D1().kres = st === kakao.maps.services.Status.OK ? r.slice(0, 8).map(x => ({name:x.place_name, query:x.road_address_name || x.address_name || x.place_name, area:x.road_address_name || x.address_name, live:true})) : [];
+      const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); }, {size:8}))
+    .catch(() => { window._kfail = true; const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); });
+}
+function pickPlace1(j){ const p = placeList1()[j]; if(!p) return;
+  setDest(p.name, p.query); S.prof = {...S.prof, place:p.name, placeOk:true}; Object.assign(D1(), {pedit:false, pq:'', kres:null});
+  render(); focusId('f1-place-chg'); }
+function placeChange(){ D1().pedit = true; render(); focusId('f1-pin'); }
+function placeKey(e){
+  if(e.key==='Escape' && done1('place')){ D1().pedit = false; render(); return focusId('f1-place-chg'); }
+  if(e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); if(placeList1().length) pickPlace1(0); }
+function placeItems(){ const L = placeList1(), cur = done1('place') ? S.prof.place : null;
+  if(!L.length) return `<p class="s">검색 결과가 없어요</p>`;
+  return L.map((p, j) => `<button role="radio" aria-checked="${cur===p.name}" class="chip sm f1pl ${cur===p.name?'on':''}" onclick="pickPlace1(${j})" data-act="장소 고르기">${esc(p.name)}${p.live && p.area ? `<small>${esc(p.area)}</small>` : ''}</button>`).join(''); }
+
+/* 보증금 · 한 달 수입: 숫자 입력(만 원) + 빠른 선택 · 값이 맞으면 바로 저장, 비우거나 범위를 넘으면 빈 항목 */
+const digits1 = s => String(s || '').replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '').slice(0, 6);
+function numStr1(k){ const d = D1(), P = S.prof || {};
+  if(k==='cash') return d.cashV != null ? d.cashV : P.cash != null ? String(P.cash) : '';
+  return d.incV != null ? d.incV : P.incomeInput ? String(P.incomeInput.amount) : P.income != null ? String(P.income) : ''; }
+const incMode1 = () => D1().incMode || (S.prof.incomeInput || {}).mode || '월';
+const monthly1 = () => { const v = numStr1('income'); return v === '' ? null : incMode1()==='연' ? Math.round(+v / 12) : +v; };
+function save1n(k){ const P = {...S.prof}, v = numStr1(k);
+  if(k==='cash'){ const ok = v !== '' && +v <= F1K.cash.range[1]; if(ok) P.cash = +v; else delete P.cash; }
+  else { const m = monthly1(), ok = m != null && m <= F1K.income.range[1];
+    if(ok){ P.income = m; P.incomeInput = {mode: incMode1(), amount: +v}; } else { delete P.income; delete P.incomeInput; } }
+  S.prof = P; }
+function num1(k, el){ const v = digits1(el.value); D1()[k==='cash' ? 'cashV' : 'incV'] = v; el.value = v ? (+v).toLocaleString() : ''; save1n(k); refresh1(k); }
+function quick1(k, j){ const v = String(quickList1(k)[j][1]); D1()[k==='cash' ? 'cashV' : 'incV'] = v; save1n(k); render(); focusId(`f1-${k}-q${j}`); }
+function mode1(m){ if(incMode1() === m) return; D1().incMode = m; save1n('income'); render(); focusId('f1-mode-' + m); }
+const quickList1 = k => k==='income' && incMode1()==='연' ? F1K.income.optsYear : F1K[k].opts;
+function quickItems(k){ const v = numStr1(k);
+  return quickList1(k).map((o, j) => { const on = v !== '' && +v === o[1];
+    return `<button role="radio" aria-checked="${on}" class="chip sm ${on?'on':''}" id="f1-${k}-q${j}" onclick="quick1('${k}',${j})" data-act="빠른 선택">${o[0]}</button>`; }).join(''); }
+function conv1(){ const m = monthly1(); return incMode1()==='연' && m != null ? `= 월 <b>${won(m)}</b>` : ''; }
+function note1(k){
+  const v = numStr1(k), f = F1K[k];
+  if(k==='cash') return v !== '' && +v > f.range[1] ? `<div class="f1over">${won(f.range[1])}까지</div>` : '';
+  const m = monthly1(); if(m == null) return '';
+  if(m > f.range[1]) return `<div class="f1over">월 ${won(f.range[1])}까지</div>`;
+  const lim = Math.round(INC_LIMIT);
+  return m <= INC_LIMIT ? `<div class="f1ok" data-inc="in">✓ 지원 소득 기준(${lim}만 원) 안</div>` : `<div class="f1ok over" data-inc="over">지원 소득 기준(${lim}만 원) 넘음</div>`;
+}
+function refresh1(k){   // 숫자를 치는 동안은 화면 전체를 다시 그리지 않고 바뀌는 곳만 (입력 커서 유지)
+  const put = (id, h) => { const e = document.getElementById(id); if(e) e.innerHTML = h; };
+  put(`f1-${k}-c`, quickItems(k)); put(`f1-${k}-x`, note1(k)); if(k==='income') put('f1-inc-v', conv1());
+  put('p1side', side1()); roving1();
+}
+
+/* 버튼 그룹(role=radiogroup)은 Tab 한 번에 한 그룹(고른 버튼 또는 첫 버튼만 Tab 자리), 그룹 안에서는 화살표로 옮겨 다녀요 */
+function roving1(){ document.querySelectorAll('#root [role="radiogroup"]').forEach(g => { const rs = [...g.querySelectorAll('[role="radio"]')];
+  const c = rs.find(r => r.getAttribute('aria-checked') === 'true') || rs[0]; rs.forEach(r => { r.tabIndex = r === c ? 0 : -1; }); }); }
+document.addEventListener('keydown', e => { const t = e.target; if(!t || !t.getAttribute || t.getAttribute('role') !== 'radio') return;
+  const g = t.closest('[role="radiogroup"]'), d = {ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1}[e.key]; if(!g || !d) return;
+  e.preventDefault(); const rs = [...g.querySelectorAll('[role="radio"]')]; rs[(rs.indexOf(t) + d + rs.length) % rs.length].focus(); });
+
+function first1(k){   // 그 항목의 첫 입력 도구
+  const r = document.getElementById('f1-' + k); if(!r) return null;
+  return r.querySelector('[aria-checked="true"]') || r.querySelector('select, input, button'); }
+function to1(k, hl){ const r = document.getElementById('f1-' + k); if(!r) return;
+  if(hl){ r.classList.add('hl'); setTimeout(() => r.classList.remove('hl'), 2500); }
+  r.scrollIntoView({behavior:'smooth', block:'center'}); focusId(first1(k)); }
+function go1(){ if(all1()) return go(2); const f = W1.find(f => !done1(f.k)); to1(f.k, true); }
+function demo1(){   // 시연·테스트용: 시연 인물 값으로 9개 채우기
+  setDest('멀티캠퍼스 역삼', '서울 강남구 테헤란로 212');
+  S.prof = {birthYear:1999, age:27, bday:null, job:'직장인', place:'멀티캠퍼스 역삼', placeOk:true, cash:2000, income:230, incomeInput:{mode:'월', amount:230}, time:45, when:'다음 달'};
+  S.own = '없어요'; S.sep = '네'; S.d1 = {ai: D1().ai}; render(); }
+
+function page1(){
+  const P = S.prof || {}, d = D1();
+  const row = (f, ctl) => `<div class="f1" id="f1-${f.k}" role="group" aria-labelledby="f1l-${f.k}"><div class="lab"><b id="f1l-${f.k}">${f.panel}</b>${f.h ? `<small>${f.h}</small>` : ''}</div><div class="ctl">${ctl}</div></div>`;
+  const chips = (k, cur, sm) => `<div class="chips" role="radiogroup" aria-labelledby="f1l-${k}">${F1K[k].opts.map((o, j) => `<button role="radio" aria-checked="${cur===o[1]}" id="f1-${k}-${j}" class="chip ${sm?'sm':''} ${cur===o[1]?'on':''}" onclick="choose1('${k}',${j})" data-act="고르기">${o[0]}</button>`).join('')}</div>`;
+  const ctl = {};
+  { const y = P.birthYear, split = y && ageSplit(y);
+    ctl.age = `<div class="f1line"><label class="sr" for="f1-year">출생연도</label><select id="f1-year" class="f1sel" onchange="year1(this.value)"><option value="">선택</option>${YEARS1.map(v => `<option value="${v}" ${v===y?'selected':''}>${v}년</option>`).join('')}</select>
+      ${!y ? '' : split ? `<span class="f1bd" id="f1-bdq">올해 생일 지났어요?</span><span class="chips" role="radiogroup" aria-labelledby="f1-bdq">${[['after', `지났어요 · 만 ${NOW_Y-y}세`], ['before', `아직이에요 · 만 ${NOW_Y-y-1}세`]].map(([v, t]) => `<button role="radio" aria-checked="${P.bday===v}" id="f1-bd-${v}" class="chip sm ${P.bday===v?'on':''}" onclick="bd1('${v}')" data-act="생일 고르기">${t}</button>`).join('')}</span>`
+                      : `<span class="f1age">만 <b>${P.age}세</b></span>`}</div>`; }
+  ctl.place = done1('place') && !d.pedit
+    ? `<div class="f1pick"><span class="ico sm">${svgIcon('train')}</span><div class="q"><b>${esc(P.place)}</b><small>${esc(DEST.addr)}</small></div><button id="f1-place-chg" class="link" onclick="placeChange()" data-act="장소 바꾸기">바꾸기</button></div>`
+    : `<label class="sr" for="f1-pin">자주 가는 곳 검색</label><div class="f1search"><span class="ico sm">${svgIcon('train')}</span><input id="f1-pin" type="search" autocomplete="off" placeholder="역·회사·학교 이름" value="${esc(d.pq || '')}" oninput="placeIn(this.value)" onkeydown="placeKey(event)"></div>
+       <div class="chips mt" id="f1-plist" role="radiogroup" aria-label="장소 후보">${placeItems()}</div>`;
+  const numBox = (k, unit) => { const v = numStr1(k); return `<label class="f1num"><span class="sr">${F1K[k].panel} (만 원)</span><input id="f1-${k}-n" inputmode="numeric" autocomplete="off" placeholder="0" value="${v ? (+v).toLocaleString() : ''}" oninput="num1('${k}',this)"><span id="f1-${k}-u">${unit}</span></label>`; };
+  ctl.cash = `${numBox('cash', '만 원')}<div class="chips mt" id="f1-cash-c" role="radiogroup" aria-label="보증금 빠른 선택">${quickItems('cash')}</div><div id="f1-cash-x">${note1('cash')}</div>`;
+  const md = incMode1();
+  ctl.income = `<div class="f1line"><div class="f1tog" role="radiogroup" aria-label="월급 또는 연봉">${[['월', '월급'], ['연', '연봉']].map(([m, t]) => `<button role="radio" aria-checked="${md===m}" id="f1-mode-${m}" class="${md===m?'on':''}" onclick="mode1('${m}')" data-act="월급·연봉 전환">${t}</button>`).join('')}</div>
+      ${numBox('income', md==='연' ? '만 원 / 년' : '만 원 / 월')}<span class="f1conv" id="f1-inc-v">${conv1()}</span></div>
+    <div class="chips mt" id="f1-income-c" role="radiogroup" aria-label="수입 빠른 선택">${quickItems('income')}</div><div id="f1-income-x">${note1('income')}</div>`;
+  ctl.job = chips('job', P.job); ctl.time = chips('time', P.time); ctl.when = chips('when', P.when); ctl.own = chips('own', S.own); ctl.sep = chips('sep', S.sep);
+  return `<div class="eyebrow">1단계 · 내 상황</div>
+    <div class="f1h"><h1>내 상황을 알려 주세요</h1><button class="f1ex" onclick="demo1()" data-act="예시로 채우기">예시로 채우기</button></div>
+    <div class="f1ai"><label class="t" for="f1-ai">한 번에 말하기</label>
+      <div class="f1airow"><textarea id="f1-ai" rows="2" placeholder="예: 99년생 직장인이고 회사는 역삼이에요" oninput="D1().ai=this.value">${esc(d.ai || '')}</textarea><button class="go" disabled data-act="AI로 채우기 (B에서 연결)">AI로 채우기</button></div></div>
+    <div class="f1card">${W1.map(f => row(f, ctl[f.k])).join('')}</div>`;
+}
+/* 오른쪽: 내 조건 패널(누르면 그 항목으로) · 세대 분리 한 줄 · [받을 수 있는 지원 보기] */
+function side1(){
+  const n = W1.filter(f => done1(f.k)).length, ok = n === W1.length;
+  return `<div class="panel f1panel"><div class="panel-t">내 조건<span class="f1cnt">${n} / ${W1.length}</span></div><div class="prog"><span style="width:${n / W1.length * 100}%"></span></div>
+      ${W1.map(f => { const v = val1(f.k); return `<button class="kv f1kv" onclick="to1('${f.k}')" data-act="그 항목으로"><span>${f.panel}</span><b class="${v ? '' : 'nil'}">${v ? esc(v) : '—'}</b></button>`; }).join('')}</div>
+    ${S.sep==='네' ? `<div class="f1note">세대 분리 후 전입신고가 필요할 수 있어요</div>` : ''}
+    <button id="f1go" class="btn pri wide ${ok ? '' : 'off'}" aria-disabled="${!ok}" onclick="go1()" data-act="다음 단계">받을 수 있는 지원 보기</button>`;
+}
+
 /* ----- 1단계가 덜 끝난 채 2·3단계로 가면 예시 값 배너 (me()가 빈 값을 예시 값으로 채우니까) ----- */
 function banner1(){
-  if(S.step===1||S.easy) return '';
-  const P=S.prof||{}, miss=QS1.filter(q=>q.k==='own'?!S.own:q.k==='sep'?!S.sep:q.k==='place'?!P.place:P[q.k]==null);
-  if(!miss.length) return '';
-  return `<div class="sec" data-banner="step1"><div class="note warn"><span class="ic">!</span><div>아직 답하지 않은 항목은 예시 값(27세·월 230만 원·2,000만 원)으로 보고 있어요 · <button class="link" onclick="go(1)" data-act="1단계로">1단계로</button><div class="s" style="margin-top:4px">안 한 답: ${miss.map(q=>F1[q.k].label).join(', ')}</div></div></div></div>`;
+  if(S.step===1||S.easy||all1()) return '';
+  return `<div class="sec" data-banner="step1"><div class="note warn"><span class="ic">!</span><div>아직 안 채운 항목은 예시 값으로 보고 있어요 · <button class="link" onclick="go(1)" data-act="1단계로">1단계로</button></div></div></div>`;
 }
 
 /* ----- 1단계 문장 → 조건 (Step1Rules 규칙. LLM 안 씀) ----- */
 const won = SR.won, money = SR.money, KNOWN_PLACES = SR.KNOWN_PLACES, placeOpts = SR.placeOpts;
-function parseMsg(t){   // 예전 함수 이름 유지 (sendMsg 용): Step1Rules.interpretUpdate 결과 중 바로 저장할 값만
+/* 선택형으로 대체(2026-11-17) */ function parseMsg(t){   // 예전 함수 이름 유지 (sendMsg 용): Step1Rules.interpretUpdate 결과 중 바로 저장할 값만
   const u = SR.interpretUpdate(t, prof1(), {today:TODAY1}), P = {}, hit = [];
   if (u.kind === 'change') u.changes.filter(c => c.status === 'ok').forEach(c => {
     if (c.field === 'own') S.own = c.value; else if (c.field === 'sep') S.sep = c.value;
@@ -957,7 +1198,7 @@ function parseMsg(t){   // 예전 함수 이름 유지 (sendMsg 용): Step1Rules
     if (c.evidence) hit.push(String(c.evidence).trim()); });
   return {P, hit};
 }
-function sendMsg(t){
+/* 선택형으로 대체(2026-11-17) */ function sendMsg(t){
   t = (t || '').trim(); if (!t) return;
   const {P, hit} = parseMsg(t);
   let html = t.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
@@ -966,7 +1207,7 @@ function sendMsg(t){
   if (P.place) { const exact = /역$|대학교|캠퍼스|로\s*\d|길\s*\d|빌딩|타워/.test(P.place) && !KNOWN_PLACES[P.place]; prof.placeOk = exact; if (exact) setDest(P.place, P.place); }
   set({msgs: [...S.msgs, {html, n: Object.keys(P).length}], prof});
 }
-function pickPlace(name, q){ setDest(name, q); set({prof: {...S.prof, place: name, placeOk: true}}); }
+/* 선택형으로 대체(2026-11-17) */ function pickPlace(name, q){ setDest(name, q); set({prof: {...S.prof, place: name, placeOk: true}}); }
 function setDest(name, q){ DEST.name = name; DEST.addr = q; }
 
 /* ---------- STEP 2 ---------- */
@@ -1558,6 +1799,7 @@ function render(){
   const body=[null,step1,step3,step4][S.step]();
   document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${banner1()}${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
   if(document.getElementById('kmap')) drawKakao();
+  roving1();   // 버튼 그룹은 Tab 한 번에 한 그룹씩
 }
 /* ----- 로그인 정보·1단계 조건을 화면 문구에 넣기 ----- */
 // {NM} 이름(로그인) · {AGE} 나이 · {INC} 월 소득 · {YINC} 연 소득 (1단계 대화에서 뽑은 값, 없으면 시연 인물 값)
