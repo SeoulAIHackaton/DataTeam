@@ -43,7 +43,7 @@ firsthome_data/
 
 | 단계 | 데이터 | 방식 | 상태 | 쓰는 곳 | 파일 |
 |---|---|---|---|---|---|
-| STEP 1 | 사용자 입력 (챗봇 9개 질문) | 버튼 + 말하듯 입력 → 코드 정규화 | – | 프로필 (STEP 2·3에서 재사용) | `web/index.html`, `processed/profile_demo.json` |
+| STEP 1 | 사용자 입력 (챗봇 9개 질문) | 버튼 + 말하듯 입력 → 규칙으로 해석 (LLM 안 씀) | ✅ 평가 119/119 | 프로필 (STEP 2·3에서 재사용) | `web/step1_rules.js`, `web/index.html`, `processed/step1/` |
 | 보관 | 서울시 부동산 전월세가 | 서울 열린데이터광장 API | ✅ 수집·가공 | 안 씀 (원본 없음, 가공본만 보관) | `archive/processed/rent_median_seoul.*` |
 | STEP 2 | 주택도시기금 대출 3종 | 웹 원문 | 📥 | RAG 상담 (대출 조건·한도 질문) | `processed/loan_products.json` |
 | STEP 2 | SH 청년안심주택 1·2차 공고 | PDF | 📥 | RAG 상담 (입주 자격·일정 질문) | `processed/sh_youth_housing.json` |
@@ -490,6 +490,7 @@ python scripts/collect_lh.py --no-supply           # 공급정보 API 활용신�
 
 ### 실행 순서
 ```bash
+node scripts/step1_rules_eval.mjs      # STEP 1 입력 규칙 평가 (Node만, npm 패키지 없음) → processed/step1/eval_result.csv
 python scripts/policy_match.py         # STEP 2 지원 추천 → processed/step2_support/policy_result.json
 python scripts/rag_build.py            # STEP 2 RAG 색인 → processed/rag/ (raw/ 필요, 한 번만)
 python scripts/rag.py "35살인데 국토부 청년월세 받을 수 있어요?"   # RAG 답변 테스트
@@ -500,6 +501,37 @@ python scripts/explain.py --step 2     # AI 설명 (2 = 지원 추천, 3 = 집 �
 - 입력 프로필: `processed/profile_demo.json` (27세, 연소득 2,760만, 목돈 2,000만, 집 예산 `housing_plan` 월세 보증금 1,000/월 50, 12/1 입주)
   - 화면(`web/index.html`)의 1단계는 PRD R1의 9개 질문(나이, 상황, 회사·학교, 보증금으로 쓸 돈, 월소득, 출퇴근 허용 시간, 입주 시기, 집 유무, 세대 분리)으로 받아요. `profile_demo.json`은 그 전 형식이라 집 예산(`housing_plan`) 같은 필드가 남아 있어요. 스크립트 시연용으로만 써요.
 - STEP 2와 RAG는 키 없이 돌아가요 (LLM 키가 없으면 원문 문장을 그대로 보여주는 모드). STEP 3 수집만 카카오·ODsay 키가 필요해요.
+
+### STEP 1 · 1단계 입력 규칙 (web/step1_rules.js)
+PRD 3.4 #2(1단계 대화 이해)는 **팀 결정으로 LLM 없이 규칙으로** 해요. LLM은 공고문 RAG(`/api/ask`)와 3단계 후속 질문에만 써요.
+- 사용자가 직접 적은 문장만 이 규칙을 거쳐요. 버튼으로 고른 값은 바로 저장해요.
+- DOM·화면 상태(`S`) 없는 순수 함수라 브라우저(`<script src="step1_rules.js">` → `window.Step1Rules`)와 Node·React(`require`/`import`)에서 같이 써요.
+
+```js
+Step1Rules.interpretAnswer('income', '연봉 3600', {today: '2026-11-21'})
+// → {field:'income', status:'confirm', value:300, display:'월 300만 원', explain:'연봉 3,600만 원 ÷ 12',
+//    ask:'연봉 3,600만 원을 월 300만 원으로 이해했어요. 맞아요?', options:[['맞아요',300],['다시 입력',null]], evidence:'연봉 3600'}
+Step1Rules.interpretUpdate('집을 샀어요', profile, {today: '2026-11-21'})   // 9개 질문이 끝난 뒤
+// → {kind:'change'|'question'|'none', changes:[...interpretAnswer 형식...], message:'내 집을 있어요로 바꿨어요'}
+Step1Rules.FIELDS · money(text) · KNOWN_PLACES · placeOpts(name)
+```
+- `status`: **ok** 바로 저장 · **confirm** `ask`와 `options` 버튼을 보여주고 고른 값 저장([다시 입력]이면 같은 질문) · **ask_back** 저장하지 않고 `ask`로 다시 묻거나 `options` 후보 제시("강남" → 강남역·역삼역·선릉역·멀티캠퍼스 역삼)
+- `kind`(끝난 뒤): **question**은 조건을 안 바꾸고 `/api/ask`로 보내요("35살인데 받을 수 있어요?", "월급이 250이면 달라져요?" 같은 가정 포함) · **change**는 바뀐 항목만 · **none**은 "그 내용은 3단계에서 집별로 볼게요"
+- 값 형식: 나이 만 나이 · 상황 '직장인'·'대학생'·'취업 준비'·'기타' · 장소 `{name, query}`(query = 카카오 검색어) · 보증금·소득 만 원(소득은 세전 월) · 출퇴근 분(상관없음 999) · 입주 '이번 달'·'다음 달'·'N월'·'3개월 안'·'아직 몰라요' · 집 '없어요'·'있어요'(본인 명의만) · 세대 '네'·'아니요'·**'모름'(새 값)**
+- 단위 변환과 계산은 규칙이 해요: 출생연도 → 생일 전후 두 값 confirm, 연봉 ÷ 12 confirm, 원 단위(단위 없이 범위를 넘는 큰 숫자) ÷ 10,000 confirm, "1억 5천"·"3천5백"·"오백만원"·"스물일곱"·"이백삼십" 같은 한글 수사, "1시간 30분"·"1.5시간", "2주 뒤"·"6개월 뒤"(기준일 2026-11-21)
+- 범위: 나이 14~99 · 보증금 0~10억(5억 넘으면 confirm) · 월소득 0~2,000만(1,000만 넘으면 confirm) · 출퇴근 5~180분 · 밖이면 ask_back
+- 화면 연결(`web/index.html`): `QS1`·`typed1`·`extra1`·`parseMsg`·`money`·`KNOWN_PLACES`가 `Step1Rules`를 써요. confirm은 채팅 말풍선 + 선택 버튼, 정리 카드에 `explain`을 작게 보여줘요(예: "월 300만 원 · 연봉 3,600만 원 ÷ 12").
+- 2·3단계 연결: 1단계를 다 안 끝내고 넘어가면 "아직 답하지 않은 항목은 예시 값(27세·월 230만 원·2,000만 원)으로 보고 있어요" 배너가 떠요. 세대 분리 '모름'은 `me()`에서 '네'처럼 다뤄 국토부 독립거주가 '확인 필요'가 돼요. 2단계 근거의 "12월 서울 입주"는 1단계 입주 시기로 바뀌어요(다음 달 → 12월, 판정은 그대로).
+
+**평가** (`node scripts/step1_rules_eval.mjs`, 평가셋 `processed/step1/eval_cases.csv` 119개 = 9개 질문 답 105 + 끝난 뒤 대화 14)
+
+| | 정답 | 조용한 오답 (ok로 저장했는데 틀림) | value | confirm | ask_back | question·none |
+|---|---|---|---|---|---|---|
+| 지금 규칙 (main의 index.html) | 75/119 (63.0%) | 30개 | 65/95 | 0/9 | 7/11 | 3/4 |
+| **보강 규칙 (`step1_rules.js`)** | **119/119 (100%)** | **0개** | 95/95 | 9/9 | 11/11 | 4/4 |
+
+- 평가셋을 보면서 규칙을 짰기 때문에 100%는 실제보다 높게 나온 값이에요. 평가셋 밖 입력으로 따로 점검해서 "4천이에요"·"250이면"의 조사 '이'를 숫자로 읽는 버그를 고쳤어요. 새 표현을 찾으면 평가셋에 한 줄 넣고 다시 돌려요.
+- **화면 연결 시나리오 13개**(`python scripts/step1_ui_check.py`, 서버를 켜 둔 채로. 확인용이라 Playwright 필요): 기본 520만 원·신림 86.4점, 35살 280만 원, 1990년생 → 36세, 연봉 3600 → 월 300, 2300000 → 월 230, 부모님 집 → 무주택, 아니 같아요 → 같음, 잘 모르겠어요 → 모름·확인 필요, 1시간 30분 → 90분, 3천5백 → 3,500만 원, 끝난 뒤 집을 샀어요 → 0원, 35살인데 받을 수 있어요? → 27세 그대로, 1단계 중간에 2단계 → 배너. **13/13 통과 · 페이지 오류 0개**
 
 ### STEP 2 · policy_match.py (코드 판정)
 - 대상: 사람이 정리한 현금 지원 4개 (`demo_policies.json`) — 금액이 정해져 있어 합계·달력·중복 계산에 들어가요
@@ -557,9 +589,9 @@ python scripts/explain.py --step 2     # AI 설명 (2 = 지원 추천, 3 = 집 �
 ## 7. 폴더 안내
 ```
 firsthome_data/
-├── processed/        데이터 + 단계별 결과 (step2_support · step3_homes · rag)
+├── processed/        데이터 + 단계별 결과 (step1 평가셋 · step2_support · step3_homes · rag)
 ├── scripts/          수집·가공·계산·AI 코드
-├── web/              index.html (최종 화면) · kakaomap_test.html (카카오 지도 테스트)
+├── web/              index.html (최종 화면) · step1_rules.js (1단계 입력 규칙) · kakaomap_test.html (카카오 지도 테스트)
 ├── docs/             PRD v1.2 · 서비스 소개 v4 변경사항 정리 · 기능 CRUD 명세(엑셀, 3단계 번호) · 서비스 소개(PDF) · archive/ 예전 작업 정리
 ├── archive/          안 쓰는 것 보관: 주거 전략 단계 (strategy.py, 결과, 전환율) · 전월세 시세 · 예전 4단계 프로토타입
 └── raw/              원본 (용량이 커서 압축본에는 빠져 있음 → 기존 raw 폴더를 그대로 옮겨 넣기)
@@ -575,7 +607,7 @@ PRD v1.2(2026-11-16)의 요구사항이 이 레포 어디에 있는지 정리했
 
 | ID | 요구사항 | PRD 상태 | 레포 |
 |---|---|---|---|
-| R1 | 1단계 9개 질문 대화 · 정리 카드 | 구현 | `web/index.html` |
+| R1 | 1단계 9개 질문 대화 · 정리 카드 | 구현 | `web/step1_rules.js`(문장 해석 규칙, LLM 안 씀 — PRD 3.4 #2는 규칙 기반으로 구현) → `web/index.html`, 평가 `scripts/step1_rules_eval.mjs`·`step1_ui_check.py`, `processed/step1/` |
 | R2 | 지원 판정 · 총액(최대 520만 원) · 중복 시 큰 쪽 자동 선택 | 구현 | `scripts/policy_match.py`, `web/index.html`, `processed/demo_policies.json` |
 | R3 | 조건 변경 재계산 (27세 520만 → 35세 280만) | 구현 | `policy_match.py`(`what_if`), `web/index.html` |
 | R4 | 공고문에 물어보기 (RAG) · 22문항 평가 | 구현 | `rag_build.py` → `rag.py` → `server.py`, `rag_eval.py`, `processed/rag/` |
@@ -592,6 +624,11 @@ PRD v1.2(2026-11-16)의 요구사항이 이 레포 어디에 있는지 정리했
 - 한 달 실부담에서 교통비를 뺐어요 (`web/index.html`, `collect_homes.py`, `homes_summary.csv` 재계산 → `recommend_result.json`·`explain_result.json` 다시 생성). 균형 기준 결과가 PRD 3.2절(86.4 / 76.2 / 68.1)과 같아졌어요. 교통비는 참고 표시로 남겼어요.
 - README를 PRD v1.2 기준으로 맞췄어요 (RAG 조각 수 1,233개, 평가 결과, LLM 교체 방법, 서버 API, 프리셋 값).
 - `docs/`에 PRD v1.2와 서비스 소개 v4 변경사항 정리를 넣었어요.
+
+**1단계 규칙 보강 (2026-11-17, `feat/step1-rules`)**
+- 1단계 규칙을 `web/index.html`에서 `web/step1_rules.js`로 떼어내고 보강했어요. 평가 119개에서 지금 규칙 75 → 119, 조용한 오답 30 → 0개.
+- 팀 결정으로 PRD 3.4 #2(1단계 대화 이해)는 LLM 없이 규칙으로 해요.
+- 세대 분리 '잘 모르겠어요'는 이제 '모름'으로 저장하고 국토부 독립거주를 '확인 필요'로 봐요(예전엔 '네'로 저장).
 
 **팀에서 정할 것 (PRD 7절)과 이 레포에 걸리는 부분**
 - 서버 구조: 지금 시연본은 Python(`server.py`, `rag.py`). Spring Boot와 합치는 방법을 정하면 여기 `scripts/`의 역할이 바뀌어요.
