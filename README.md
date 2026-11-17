@@ -32,24 +32,61 @@ firsthome_data/
 
 화면(`web/index.html`)과 API를 `scripts/server.py` 하나로 같이 띄워요. **API 키가 없어도 화면은 끝까지 돌아가요.**
 
-### 1. 처음 한 번만
+파이썬 3가 있어야 해요. 서버에 필요한 패키지는 `numpy`, `scikit-learn` 두 개예요 (`requirements.txt`). 가상환경(`.venv`)에 설치해서 써요. 쓰는 터미널에 맞는 것을 골라요.
+
+### 1. 처음 한 번만 (가상환경 만들기)
+
+**윈도우 (cmd · PowerShell)**
+
+```bat
+git clone https://github.com/SeoulAIHackaton/DataTeam.git
+cd DataTeam
+py -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+```
+
+**윈도우 Git Bash**
 
 ```bash
 git clone https://github.com/SeoulAIHackaton/DataTeam.git
 cd DataTeam
-pip install numpy                 # 서버(공고문 검색)에 필요한 유일한 패키지
-copy .env.example .env            # (선택) 키가 있을 때만 · 맥은 cp .env.example .env
+python -m venv .venv              # 안 되면 py -m venv .venv
+source .venv/Scripts/activate
+pip install -r requirements.txt
+cp .env.example .env
 ```
 
-- 파이썬 3가 있어야 해요. 윈도우에서 `python`이 안 되면 `py`로 바꿔서 실행해요.
-
-### 2. 서버 켜기
+**맥 (터미널)**
 
 ```bash
-python scripts/server.py
+git clone https://github.com/SeoulAIHackaton/DataTeam.git
+cd DataTeam
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
 ```
 
-브라우저에서 **http://127.0.0.1:5500** 을 열어요 (`/web/index.html`로 바로 넘어가요). 끌 때는 터미널에서 `Ctrl+C`를 눌러요.
+- `.env`는 키가 있을 때만 채워요. 비워 둬도 화면은 돌아가요 → [3. 키가 없을 때와 있을 때](#3-키가-없을-때와-있을-때)
+- 줄 앞에 `(.venv)`가 붙으면 가상환경이 켜진 거예요. `.venv` 폴더는 깃허브에 안 올라가요 (`.gitignore`).
+
+### 2. 서버 켜기 (매번)
+
+가상환경을 켜고 서버를 실행해요.
+
+| 터미널 | 가상환경 켜기 | 서버 켜기 |
+|---|---|---|
+| 윈도우 cmd · PowerShell | `.venv\Scripts\activate` | `python scripts\server.py` |
+| 윈도우 Git Bash | `source .venv/Scripts/activate` | `python scripts/server.py` |
+| 맥 | `source .venv/bin/activate` | `python scripts/server.py` |
+
+브라우저에서 **http://127.0.0.1:5500** 을 열어요 (`/web/index.html`로 바로 넘어가요). 서버는 `Ctrl+C`로 끄고, 가상환경은 `deactivate`로 꺼요.
+
+- **PowerShell에서 "스크립트를 실행할 수 없습니다"**: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`를 한 번 실행하고 다시 켜요. 아니면 cmd를 써요.
+- **Git Bash에서 `python`을 쳤는데 반응 없이 멈추면**: `winpty python scripts/server.py`로 실행하거나 `py`를 써요.
+- **VS Code**: 오른쪽 아래 파이썬 버전을 눌러 `.venv`를 고르면 새 터미널마다 가상환경이 자동으로 켜져요.
 
 이렇게 나오면 잘 켜진 거예요.
 
@@ -80,7 +117,7 @@ python scripts/server.py
 ### 자주 막히는 것
 
 - **`포트 5500이 이미 쓰이고 있어요`**: VS Code Live Server가 켜져 있으면 꺼요 (같은 포트예요). 다른 포트로 켜려면 `PORT=8000 python scripts/server.py` (윈도우 cmd는 `set PORT=8000` 다음 줄에 실행)인데, 카카오 지도 키가 `http://127.0.0.1:5500`에 등록돼 있어서 **지도는 5500에서만 떠요.**
-- **`ModuleNotFoundError: No module named 'numpy'`**: `pip install numpy`를 해요.
+- **`ModuleNotFoundError: No module named 'numpy'` 또는 `'sklearn'`**: 가상환경이 꺼져 있거나 설치를 안 한 거예요. 가상환경을 켜고(줄 앞 `(.venv)` 확인) `pip install -r requirements.txt`를 해요.
 - **`index.html`을 더블클릭해서 열면**: 화면은 보이지만 서버가 없어서 공고문에 물어보기 · 장소 검색 · 비교 질문이 안 돼요. 꼭 서버를 켜고 위 주소로 열어요.
 - **`localhost:5500`으로 열면** 카카오 지도가 안 뜰 수 있어요. 등록된 주소인 `127.0.0.1:5500`으로 열어요.
 
@@ -477,7 +514,7 @@ supportConditions 구조
 ## 4. 수집하는 법
 
 **처음 받은 컴퓨터에서 준비**
-- 수집 스크립트는 파이썬 3 표준 라이브러리만 써요 (`pip install` 필요 없음). 화면 서버(`server.py`·`rag.py`)는 `numpy`가 필요해요 → [실행하기](#실행하기-화면-띄우기). `python`이 안 되면 `py`로 실행해요.
+- 수집 스크립트는 파이썬 3 표준 라이브러리만 써요 (`pip install` 필요 없음). 화면 서버(`server.py`·`rag.py`)는 `numpy`, `scikit-learn`이 필요해요 → [실행하기](#실행하기-화면-띄우기). `python`이 안 되면 `py`로 실행해요.
 - zip에는 보안상 `.env`가 없어요 → `.env.example`을 복사해서 키를 채워요 (키 값은 노션 DB).
 
 폴더 맨 위(`firsthome_data/`)에서 순서대로 실행해요.
