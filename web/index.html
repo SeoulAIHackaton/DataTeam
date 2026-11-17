@@ -660,7 +660,7 @@ function svgIcon(n){return `<svg viewBox="0 0 24 24" fill="none" stroke="current
 const S = {
   step:1, easy:false,
   own:null, sep:null,          // STEP1 answers
-  msgs:[], prof:{}, placeAsk:null, user:null, loginOpen:false, qi:0, redo:null, extra:[], // STEP1 대화 (입력한 문장 · 뽑은 조건)
+  msgs:[], prof:{}, placeAsk:null, qi:0, redo:null, extra:[], // STEP1 대화 (입력한 문장 · 뽑은 조건)
   easyQ:0,                     // STEP1 easy question index
   strategy:'B', easyMore:false,// STEP2
   open:'rent', cmp:[], showCmp:false, whatif:null, // STEP3
@@ -899,7 +899,7 @@ function header(){
   const desc=['조건 정리','근거 있는 지원 · AI 상담','후보 집 종합 비교'];
   return `<header class="gnb"><div class="wrap">
       <button class="logo" onclick="set({home:true})" data-act="홈으로">첫집 <b>내비</b></button>
-      <div class="gnb-r"><button class="toggle" onclick="set({easy:!S.easy})" data-act="쉬운 화면 켜기/끄기">쉬운 화면 <span class="sw ${S.easy?'on':''}"></span></button>${S.user?`<span class="s" style="font-weight:700;color:var(--ink)">${S.user.name}님</span><button class="btn-sm" onclick="set({user:null})" data-act="로그아웃">로그아웃</button>`:`<button class="btn-sm" onclick="set({loginOpen:true})" data-act="로그인 창 (0-1)">로그인</button>`}</div>
+      <div class="gnb-r"><button class="toggle" onclick="set({easy:!S.easy})" data-act="쉬운 화면 켜기/끄기">쉬운 화면 <span class="sw ${S.easy?'on':''}"></span></button></div>
     </div></header>
     <div class="stepbar"><div class="wrap">${(S.easy?ez:names).map((n,i)=>`<button class="sb ${S.step===i+1?'on':S.step>i+1?'done':''}" onclick="go(${i+1})" data-act="단계 ${i+1} 이동"><i>${S.step>i+1?'✓':i+1}</i><span class="sl"><b>${n}</b>${S.easy?'':`<small>${desc[i]}</small>`}</span></button>`).join('')}</div></div>`;
 }
@@ -2023,32 +2023,16 @@ function homeInit() {      // 오른쪽 예시 카드 애니메이션 (홈 원�
 function render(){
   if (S.home) { document.getElementById('root').innerHTML = homePage(); homeInit(); return; }
   const body=[null,step1,step3,step4][S.step]();
-  document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${banner1()}${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
+  document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${banner1()}${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>`);
   if(document.getElementById('kmap')) drawKakao();
   roving1();   // 버튼 그룹은 Tab 한 번에 한 그룹씩
 }
-/* ----- 로그인 정보·1단계 조건을 화면 문구에 넣기 ----- */
-// {NM} 이름(로그인) · {AGE} 나이 · {INC} 월 소득 · {YINC} 연 소득 (1단계 대화에서 뽑은 값, 없으면 시연 인물 값)
+/* ----- 1단계 조건을 화면 문구에 넣기 ----- */
+// {NM} 호칭(회원님) · {AGE} 나이 · {INC} 월 소득 · {YINC} 연 소득 (1단계 대화에서 뽑은 값, 없으면 시연 인물 값)
 function fill(h){
   const P = S.prof, age = P.age || 27, inc = P.income != null ? P.income : 230;
-  const nm = S.user ? S.user.given + '님' : '회원님';
+  const nm = '회원님';
   return h.replace(/\{NM\}/g, nm).replace(/\{AGE\}/g, `만 ${age}세`).replace(/\{INC\}/g, `월 ${inc.toLocaleString()}만 원`).replace(/\{YINC\}/g, `${(inc*12).toLocaleString()}만 원`);
-}
-function loginModal(){
-  if(!S.loginOpen) return '';
-  return `<div class="dim" onclick="if(event.target===this)set({loginOpen:false})"><div class="sheet" style="width:420px;text-align:center">
-    <div class="sheet-h"><b style="font-size:18px">간편 로그인</b><button class="x" onclick="set({loginOpen:false})">×</button></div>
-    <p class="s" style="text-align:left">로그인하면 이름이 화면에 나오고, 결과를 저장하고 공고 알림을 받을 수 있어요.</p>
-    <label class="s" style="display:block;text-align:left;margin-top:16px">이름 (시연용 · 실제로는 카카오·네이버 계정 이름을 받아요)
-      <span class="inp" style="margin-top:6px"><input id="login-name" value="박정연"></span></label>
-    <button class="btn wide" style="margin-top:18px;background:#fee500;color:#191f28" onclick="doLogin('카카오')" data-act="카카오 로그인">카카오로 시작하기</button>
-    <button class="btn wide" style="margin-top:8px;background:#03c75a;color:#fff" onclick="doLogin('네이버')" data-act="네이버 로그인">네이버로 시작하기</button>
-  </div></div>`;
-}
-function doLogin(via){
-  const name = (document.getElementById('login-name').value || '').trim() || '사용자';
-  const given = name.length >= 3 ? name.slice(1) : name;   // 박정연 → 정연
-  set({user:{name, given, via}, loginOpen:false});
 }
 if (new URLSearchParams(location.search).get('easy') === '1') S.easy = true;   // ?easy=1 → 홈 건너뛰고 쉬운 화면으로 시작
 S.home = !S.easy;                                                              // 처음 들어오면 홈
