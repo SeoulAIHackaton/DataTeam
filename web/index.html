@@ -1057,18 +1057,29 @@ function choose1(k, j){ const v = F1K[k].opts[j][1];
   if(k==='own') S.own = v; else if(k==='sep') S.sep = v; else S.prof = {...S.prof, [k]: v};
   render(); focusId(`f1-${k}-${j}`); }
 
-/* 자주 가는 곳 · 카카오 키가 있으면 장소 검색, 없으면 PLACES1 후보를 검색어로 걸러요 */
+/* 자주 가는 곳 · 실제 장소 검색: 카카오 JS 키가 있으면 브라우저에서, 없으면 서버 /api/place (.env 의 REST 키, 키는 브라우저에 안 둬요)
+   서버가 꺼져 있거나 키가 없으면 PLACES1 후보를 검색어로 걸러요 */
+const srvPlace = () => location.protocol.startsWith('http') && !window._psfail;
+const liveOn1 = () => kakaoOn() || srvPlace();
 function placeHits(q){ const n = s => String(s || '').replace(/\s+/g, '').toLowerCase(), k = n(q), tk = String(q || '').split(/\s+/).filter(Boolean).map(n);
   if(!k) return PLACES1;
   return PLACES1.filter(p => { const all = n(p.name + p.area + p.query); return tk.every(t => all.includes(t)) || k.includes(n(p.name)); }); }
-const placeList1 = () => { const d = D1(), q = d.pq || ''; return kakaoOn() && q.trim() && d.kres ? d.kres : placeHits(q); };
+const placeList1 = () => { const d = D1(), q = d.pq || '';   // 검색 결과가 있으면 맞는 후보(역삼 → 멀티캠퍼스 역삼·역삼역)를 앞에, 카카오 결과를 뒤에
+  if(!(liveOn1() && q.trim() && d.kres)) return placeHits(q);
+  const seen = new Set(); return [...placeHits(q), ...d.kres].filter(p => !seen.has(p.name) && seen.add(p.name)).slice(0, 12); };
 let _ptimer = null;
 function placeIn(v){ D1().pq = v;
-  if(kakaoOn() && v.trim()){ clearTimeout(_ptimer); _ptimer = setTimeout(() => kakaoPlaces(v), 250); }
+  if(liveOn1() && v.trim()){ clearTimeout(_ptimer); _ptimer = setTimeout(() => kakaoOn() ? kakaoPlaces(v) : srvPlaces(v), 250); }
   const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); }
+function srvPlaces(q){
+  fetch('/api/place?q=' + encodeURIComponent(q)).then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(j => { if(D1().pq !== q) return; D1().kres = (j.places || []).map(p => ({name:p.name, query:p.query, area:p.address, live:true})); })
+    .catch(() => { window._psfail = true; })      // 서버 꺼짐·키 없음 → 후보 목록으로
+    .finally(() => { const e = document.getElementById('f1-plist'); if(e){ e.innerHTML = placeItems(); roving1(); } });
+}
 function kakaoPlaces(q){
   loadKakao().then(() => new kakao.maps.services.Places().keywordSearch(q, (r, st) => { if(D1().pq !== q) return;
-      D1().kres = st === kakao.maps.services.Status.OK ? r.slice(0, 8).map(x => ({name:x.place_name, query:x.road_address_name || x.address_name || x.place_name, area:x.address_name})) : [];
+      D1().kres = st === kakao.maps.services.Status.OK ? r.slice(0, 8).map(x => ({name:x.place_name, query:x.road_address_name || x.address_name || x.place_name, area:x.road_address_name || x.address_name, live:true})) : [];
       const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); }, {size:8}))
     .catch(() => { window._kfail = true; const e = document.getElementById('f1-plist'); if(e) e.innerHTML = placeItems(); roving1(); });
 }
@@ -1081,7 +1092,7 @@ function placeKey(e){
   if(e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); if(placeList1().length) pickPlace1(0); }
 function placeItems(){ const L = placeList1(), cur = done1('place') ? S.prof.place : null;
   if(!L.length) return `<p class="s">검색 결과가 없어요</p>`;
-  return L.map((p, j) => `<button role="radio" aria-checked="${cur===p.name}" class="chip sm f1pl ${cur===p.name?'on':''}" onclick="pickPlace1(${j})" data-act="장소 고르기">${esc(p.name)}${p.area && kakaoOn() ? `<small>${esc(p.area)}</small>` : ''}</button>`).join(''); }
+  return L.map((p, j) => `<button role="radio" aria-checked="${cur===p.name}" class="chip sm f1pl ${cur===p.name?'on':''}" onclick="pickPlace1(${j})" data-act="장소 고르기">${esc(p.name)}${p.live && p.area ? `<small>${esc(p.area)}</small>` : ''}</button>`).join(''); }
 
 /* 보증금 · 한 달 수입: 숫자 입력(만 원) + 빠른 선택 · 값이 맞으면 바로 저장, 비우거나 범위를 넘으면 빈 항목 */
 const digits1 = s => String(s || '').replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '').slice(0, 6);

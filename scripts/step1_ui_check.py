@@ -1,4 +1,4 @@
-"""1단계 한 화면 선택형 입력 확인 시나리오 15개를 실제 화면(web/index.html)에서 돌려요.
+"""1단계 한 화면 선택형 입력 확인 시나리오(요청 15개 + 장소 검색 2개)를 실제 화면(web/index.html)에서 돌려요.
 
     python scripts/server.py              # 다른 터미널에서 서버를 켜 둔 채로
     python scripts/step1_ui_check.py      # [--shots 폴더]  빈 상태 · 다 채운 상태 · 생일 질문 상태 스크린샷 저장
@@ -186,13 +186,31 @@ with sync_playwright() as p:
            f"· {s['n']}/9 · 만 {s['prof'].get('age')}세 · {s['prof'].get('job')} · {s['prof'].get('place')} · {s['prof'].get('cash')} · {s['prof'].get('income')} · {s['prof'].get('time')}분 · {s['prof'].get('when')} · {s['own']} · {s['sep']}")
     pg.close()
 
-    # 15) 카카오 키 없이 자주 가는 곳
-    pg = new(); pg.fill("#f1-pin", "판교"); wait(pg)
-    cands = pg.locator("#f1-plist [role=radio]").all_inner_texts()
-    pg.locator("#f1-plist [role=radio]", has_text="판교역").click(); wait(pg)
+    # 15) 카카오 JS 키 없이 자주 가는 곳 (맞는 후보가 검색 결과보다 앞)
+    pg = new(); pg.fill("#f1-pin", "판교"); wait(pg, 1500)
+    cands = [c.splitlines()[0] for c in pg.locator("#f1-plist [role=radio]").all_inner_texts()]
+    pg.locator("#f1-plist [role=radio]").first.click(); wait(pg)
     dest = pg.evaluate("[S.prof.place, S.prof.placeOk, DEST.name, DEST.addr]"); shown = pg.inner_text(".f1pick")
-    report("카카오 키 없이 자주 가는 곳", pg.evaluate("kakaoOn()") is False and "판교역" in cands and dest == ["판교역", True, "판교역", "판교역 신분당선"] and "바꾸기" in shown,
-           f"· '판교' 후보 {cands} · 저장 {dest} · 표시 '{' '.join(shown.split())}'"); pg.close()
+    report("카카오 JS 키 없이 자주 가는 곳", pg.evaluate("kakaoOn()") is False and cands[:2] == ["판교역", "판교테크노밸리"] and dest == ["판교역", True, "판교역", "판교역 신분당선"] and "바꾸기" in shown,
+           f"· '판교' 후보 {len(cands)}개 {cands[:4]}… · 저장 {dest}"); pg.close()
+
+    # 16) 실제 장소 검색 (서버 /api/place · .env 카카오 키) → 목록에 없는 곳도 고르기
+    pg = new(); live = pg.evaluate("fetch('/api/health').then(r => r.json()).then(j => !!j.place)")
+    if live:
+        pg.fill("#f1-pin", "을지로입구역"); wait(pg, 1500)
+        items = [c.splitlines()[0] for c in pg.locator("#f1-plist [role=radio]").all_inner_texts()]
+        pg.locator("#f1-plist [role=radio]", has_text="을지로입구역 2호선").first.click(); wait(pg)
+        dest = pg.evaluate("[S.prof.place, S.prof.placeOk, DEST.addr]")
+        report("실제 장소 검색 (서버 /api/place)", dest[0] == "을지로입구역 2호선" and dest[1] and "을지로" in dest[2],
+               f"· 결과 {len(items)}개 {items[:3]}… · 저장 {dest}")
+    else:
+        print("- 실제 장소 검색: 서버에 카카오 키가 없어서 건너뛰어요")
+    pg.close()
+
+    # 17) 장소 검색을 못 쓸 때 (서버 꺼짐·키 없음) → 후보 목록으로
+    pg = new(); pg.evaluate("window._psfail = true"); pg.fill("#f1-pin", "신촌"); wait(pg, 600)
+    items = pg.locator("#f1-plist [role=radio]").all_inner_texts()
+    report("장소 검색 못 쓸 때 후보 목록", items == ["신촌역", "연세대학교"], f"· '신촌' → {items}"); pg.close()
 
     br.close()
 

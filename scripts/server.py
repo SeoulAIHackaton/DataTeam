@@ -9,11 +9,15 @@
 - LLM 키는 .env 에만 있고 서버에서만 써요. 브라우저(html)에는 키가 들어가지 않아요.
 - POST /api/ask  {"question": "...", "profile": {"age": 27}}
   → {"answer", "citations", "found", "mode", "sources": [{n, name, section, text, url}], "policies"}
+- GET /api/place?q=판교   1단계 '자주 가는 곳' 검색 (카카오 로컬 장소 검색 + 주소 검색, .env 의 KAKAO_REST_API_KEY)
+  → {"places": [{name, address, query}]}  · 키가 없으면 503 {"error": "no_key"} → 화면은 미리 정한 후보 목록으로 바꿔요
 """
 import json
 import os
 import sys
 import time
+import urllib.parse
+import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -24,6 +28,40 @@ HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "5500"))
 
 print("검색 데이터 불러오는 중…")
 RAG = Rag()
+KAKAO_LOCAL = "https://dapi.kakao.com/v2/local/search"
+PLACE_CACHE = {}
+
+
+def kakao_get(kind, q, size):
+    key = os.environ.get("KAKAO_REST_API_KEY", "")
+    url = f"{KAKAO_LOCAL}/{kind}.json?" + urllib.parse.urlencode({"query": q, "size": size})
+    # .env 키가 JavaScript 키면 카카오가 등록된 웹 주소(origin)를 KA 헤더로 요구해요. REST 키면 이 헤더는 무시돼요.
+    ka = f"os/javascript origin/{os.environ.get('KAKAO_ORIGIN', f'http://127.0.0.1:{PORT}')}"
+    req = urllib.request.Request(url, headers={"Authorization": f"KakaoAK {key}", "KA": ka})
+    with urllib.request.urlopen(req, timeout=5) as r:
+        return json.loads(r.read().decode("utf-8")).get("documents", [])
+
+
+def search_place(q):
+    """자주 가는 곳 검색: 이름(장소 검색) 먼저, 도로명·지번이면 주소 검색 결과를 뒤에 붙여요. query = 3단계 출퇴근 계산에 쓸 주소"""
+    if q in PLACE_CACHE:
+        return PLACE_CACHE[q]
+    out, seen = [], set()
+    for d in kakao_get("keyword", q, 8):
+        addr = d.get("road_address_name") or d.get("address_name") or ""
+        out.append({"name": d.get("place_name", ""), "address": addr, "query": addr or d.get("place_name", "")})
+    for d in kakao_get("address", q, 5):
+        addr = (d.get("road_address") or {}).get("address_name") or d.get("address_name", "")
+        out.append({"name": addr, "address": d.get("address_name", "") if addr != d.get("address_name") else "", "query": addr})
+    res = []
+    for p in out:
+        if p["name"] and p["name"] not in seen:
+            seen.add(p["name"]); res.append(p)
+    PLACE_CACHE[q] = res[:10]
+    return PLACE_CACHE[q]
+
+
+print(f"장소 검색 {'켜짐 (카카오 로컬)' if os.environ.get('KAKAO_REST_API_KEY') else '꺼짐 → 미리 정한 후보 목록'}")
 print(f"준비 완료 · AI 답변 {'켜짐 (' + os.environ.get('LLM_MODEL', 'gpt-4o-mini') + ')' if os.environ.get('LLM_API_KEY') else '꺼짐 → 공고문 원문으로 답해요'}")
 
 
@@ -49,7 +87,18 @@ class Handler(SimpleHTTPRequestHandler):
             self.end_headers()
             return
         if self.path == "/api/health":
-            return self._json(200, {"ok": True, "ai": bool(os.environ.get("LLM_API_KEY"))})
+            return self._json(200, {"ok": True, "ai": bool(os.environ.get("LLM_API_KEY")), "place": bool(os.environ.get("KAKAO_REST_API_KEY"))})
+        if self.path.startswith("/api/place"):
+            q = (urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("q") or [""])[0].strip()[:50]
+            if not q:
+                return self._json(400, {"error": "q 가 비어 있어요"})
+            if not os.environ.get("KAKAO_REST_API_KEY"):
+                return self._json(503, {"error": "no_key"})
+            try:
+                return self._json(200, {"places": search_place(q)})
+            except Exception as e:               # 키 값은 로그에 남기지 않아요
+                print(f"[장소 검색 오류] {type(e).__name__}")
+                return self._json(502, {"error": "kakao_unavailable"})
         # 키·원본 데이터는 내보내지 않아요
         if self.path.startswith(("/.env", "/raw/", "/scripts/")) or self.path.endswith((".env", ".pkl")):
             return self._json(404, {"error": "not found"})
