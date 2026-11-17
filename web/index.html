@@ -533,6 +533,7 @@ h1{font-size:32px}
 </head>
 <body>
 <div id="root"></div>
+<script src="step1_rules.js"></script>
 <script>
 const ICONS={
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
@@ -589,7 +590,11 @@ const WHATIF = {
    코드가 확실히 판정: 나이 · 무주택 · 연소득(이자지원·대출보증)
    추정 판정: 서울시 소득 48%~150% (세전 월급으로 추정, 실제는 건보료 기준) · 국토부 소득은 계산식이 복잡해 '확인 필요' */
 const MED1 = 256.4;
-function me(o){ const P=S.prof||{}; return {age:P.age||27, inc:P.income!=null?P.income:230, own:(S.own||P.own)==='있어요', sep:(S.sep||P.sep)==='네', cash:P.cash!=null?P.cash:2000, job:P.job||'직장인', ...(o||{})}; }
+function me(o){ const P=S.prof||{}, sp=S.sep||P.sep; return {age:P.age||27, inc:P.income!=null?P.income:230, own:(S.own||P.own)==='있어요', sep:sp==='네'||sp==='모름', sepQ:sp==='모름', cash:P.cash!=null?P.cash:2000, job:P.job||'직장인', ...(o||{})}; }   // sep '모름'은 '네'와 같이 다뤄요 → 국토부 독립거주 '확인 필요'
+/* 2단계 근거 '○월 서울 입주' 문구 = 1단계 입주 시기 (판정에는 안 써요) */
+function moveIn(){ const w=(S.prof||{}).when, m=+TODAY1.slice(5,7);
+  if(!w||w==='다음 달') return `${m%12+1}월 서울 입주`; if(w==='이번 달') return `${m}월 서울 입주`;
+  if(/^\d{1,2}월$/.test(w)) return `${w} 서울 입주`; if(w==='3개월 안') return '3개월 안 서울 입주'; return '서울 입주 (시기 미정)'; }
 function judge(o){
   const m=me(o), pct=Math.round(m.inc/MED1*100), yinc=m.inc*12;
   const age=(lo,hi)=>[`만 ${m.age}세`,`만 ${lo}~${hi}세`, m.age>=lo&&m.age<=hi?'ok':'no', `만 ${lo}~${hi}세 대상 (지금 만 ${m.age}세)`];
@@ -597,8 +602,8 @@ function judge(o){
   const incK=`월 ${m.inc}만 원 (중위 ${pct}%)`;
   const inc150=lo=>[incK, `기준 중위소득 ${lo?'48% 초과 ~ ':''}150% 이하`, m.inc>MED1*1.5||(lo&&m.inc<=MED1*.48)?'no':'q', m.inc>MED1*1.5?`소득이 중위 150%를 넘어요 (지금 약 ${pct}%)`:`소득이 중위 48% 이하예요 (지금 약 ${pct}%) · 주거급여 대상일 수 있어요`];
   const ev={
-    molit:[age(19,34), home('무주택'), m.sep?['부모님과 같은 주소','독립거주 (이사하며 세대 분리하면 충족)','q']:['부모님과 따로 살아요','독립거주','ok'], ['공공임대 아님','공공임대 거주자 제외','ok'], [incK,'청년가구 중위 60% · 원가구 중위 100% 이하','q']],
-    move:[age(19,39), ['12월 서울 입주','서울 전입 후 전입신고','ok'], home('무주택 임차가구'), [`보증금 ${m.cash.toLocaleString()}만 원 예산`,'거래금액 2억 원 이하', m.cash<=15000?'ok':'q'], inc150(false)],
+    molit:[age(19,34), home('무주택'), m.sep?[m.sepQ?'부모님과 같은 주소인지 모름':'부모님과 같은 주소','독립거주 (이사하며 세대 분리하면 충족)','q']:['부모님과 따로 살아요','독립거주','ok'], ['공공임대 아님','공공임대 거주자 제외','ok'], [incK,'청년가구 중위 60% · 원가구 중위 100% 이하','q']],
+    move:[age(19,39), [moveIn(),'서울 전입 후 전입신고','ok'], home('무주택 임차가구'), [`보증금 ${m.cash.toLocaleString()}만 원 예산`,'거래금액 2억 원 이하', m.cash<=15000?'ok':'q'], inc150(false)],
     seoul:[age(19,39), ['서울 입주','서울시 주민등록 + 임차 건물 전입','ok'], home('무주택 월세 거주'), ['아직 집 안 정함','보증금 8천만 원 · 월세 60만 원 이하','q'], inc150(true)]
   };
   const AMT={molit:480, move:40, seoul:240};
@@ -797,7 +802,7 @@ function footer(){
 }
 function profilePanel(){
   const own = S.own ? (S.own==='없어요'?'무주택':'주택 있음') : null;
-  const sep = S.sep ? (S.sep.startsWith('네')?'부모님과 같은 주소':'세대 분리됨') : null;
+  const sep = S.sep ? (S.sep==='모름'?'모름 (확인 필요)':S.sep.startsWith('네')?'부모님과 같은 주소':'세대 분리됨') : null;
   const P=S.prof, rows=[['나이',P.age?`만 ${P.age}세`:null],['구분',P.job],['자주 가는 곳',P.placeOk?P.place:null],['모아둔 돈',P.cash!=null?won(P.cash):null],['월 소득',P.income!=null?won(P.income):null],['내 집',own],['주소',sep]];
   const filled=rows.filter(r=>r[1]).length;
   return `<div class="panel"><div class="panel-t"><span class="ico sm">${svgIcon('home')}</span>내 조건${S.step>1?`<button class="link" onclick="go(1)">수정</button>`:`<span class="s" style="margin-left:auto;font-weight:600">${filled}/${rows.length}</span>`}</div>
@@ -840,101 +845,116 @@ function step1(){
   }
   const P=S.prof, qi=S.qi||0, Q=QS1[qi], done=qi>=QS1.length;
   const ans=QS1.slice(0,qi).map(q=>`<div class="who">첫집 내비</div><div class="bub ai">${q.q}</div><div class="bub me">${q.show(P)}</div>`).join('');
-  const tiles=[['나이',P.age?`만 ${P.age}세`:null,'user'],['상황',P.job,'building'],['자주 가는 곳',P.place,'train'],['보증금으로 쓸 돈',P.cash!=null?won(P.cash):null,'bank'],['한 달 수입',P.income!=null?won(P.income):null,'receipt'],['출퇴근 시간',P.time?(P.time>=999?'상관없음':`${P.time}분 이내`):null,'clock'],['입주 시기',P.when,'home'],['내 집',S.own?(S.own==='없어요'?'무주택':'있음'):null,'home'],['주소',S.sep?(S.sep==='네'?'부모님과 같음':'따로 전입'):null,'home']].filter(t=>t[1]);
+  const tiles=[['나이',P.age?`만 ${P.age}세`:null,'user'],['상황',P.job,'building'],['자주 가는 곳',P.place,'train'],['보증금으로 쓸 돈',P.cash!=null?won(P.cash):null,'bank'],['한 달 수입',P.income!=null?won(P.income):null,'receipt'],['출퇴근 시간',P.time?(P.time>=999?'상관없음':`${P.time}분 이내`):null,'clock'],['입주 시기',P.when,'home'],['내 집',S.own?(S.own==='없어요'?'무주택':'있음'):null,'home'],['주소',S.sep?(S.sep==='네'?'부모님과 같음':S.sep==='모름'?'모름':'따로 전입'):null,'home']].map(t=>[...t,(S.expl||{})[{'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'}[t[0]]]]).filter(t=>t[1]);
   return `<div class="eyebrow">1단계</div><h1>어떤 상황인지 알려 주세요</h1>
     <div class="lead">질문에 하나씩 답해 주세요. 버튼을 눌러도 되고 직접 적어도 돼요. 마지막에 더 궁금한 걸 물어볼 수 있어요.</div>
     <div class="chatpanel"><div class="chat">
       <div class="who">첫집 내비</div><div class="bub ai">안녕하세요! 집 구하기에 필요한 것만 ${QS1.length}가지 여쭤볼게요.</div>
       ${ans}
       ${!done?`${Q.k==='place'&&P.place&&!P.placeOk?`<div class="who">첫집 내비</div><div class="bub ai">${Q.q}</div><div class="bub me">${P.place}</div>`:''}<div class="who">첫집 내비 · ${qi+1}/${QS1.length}</div><div class="bub ai">${Q.k==='place'&&P.place&&!P.placeOk?`${P.place}는 넓어서 출퇴근 시간을 정확히 계산하기 어려워요. <b>어디쯤인지</b> 골라 주시거나 역·건물 이름을 적어 주세요.`:Q.q}${Q.h&&!(Q.k==='place'&&P.place&&!P.placeOk)?`<div class="s" style="margin-top:4px">${Q.h}</div>`:''}
-        ${Q.opts&&Q.opts(P).length?`<div class="chips" style="margin-top:12px">${Q.opts(P).map(o=>`<button class="chip" onclick="answer1(${JSON.stringify(o[1]).replace(/"/g,'&quot;')})" data-act="답 고르기">${o[0]}</button>`).join('')}</div>`:''}</div>${(S.miss||[]).map(m=>`<div class="bub me">${m.t}</div><div class="who">첫집 내비</div><div class="bub ai">${m.m}</div>`).join('')}`
+        ${Q.opts&&Q.opts(P).length?`<div class="chips" style="margin-top:12px">${Q.opts(P).map(o=>`<button class="chip" onclick="answer1(${JSON.stringify(o[1]).replace(/"/g,'&quot;')})" data-act="답 고르기">${o[0]}</button>`).join('')}</div>`:''}</div>${(S.miss||[]).map((m,i)=>`<div class="bub me">${m.t}</div><div class="who">첫집 내비</div><div class="bub ai">${m.m}${m.opts?`<div class="chips" style="margin-top:12px">${m.opts.map((o,j)=>`<button class="chip" onclick="pick1(${i},${j})" data-act="확인 고르기">${o[0]}</button>`).join('')}</div>`:''}</div>`).join('')}`
       :`<div class="who">첫집 내비</div><div class="bub ai">고마워요! 이렇게 정리했어요. 틀린 게 있으면 눌러서 다시 답해 주세요.
-        <div class="prof">${tiles.map(r=>`<button onclick="redo1('${r[0]}')" data-act="다시 답하기"><span class="pi">${svgIcon(r[2])}</span><span>${r[0]}<b>${r[1]}</b></span></button>`).join('')}</div></div>
+        <div class="prof">${tiles.map(r=>`<button onclick="redo1('${r[0]}')" data-act="다시 답하기"><span class="pi">${svgIcon(r[2])}</span><span>${r[0]}<b>${r[1]}</b>${r[3]?`<small class="s" style="display:block;font-weight:400;margin-top:2px">${esc(r[3])}</small>`:''}</span></button>`).join('')}</div></div>
         ${S.sep==='네'?`<div class="bub ai">부모님과 주소가 같으면 <b>세대 분리 후 전입신고</b>를 해야 받을 수 있는 지원이 있어요. 2단계에서 자세히 알려드릴게요.</div>`:''}
-        ${(S.extra||[]).map(m=>`<div class="bub me">${m.q}</div><div class="who">첫집 내비</div><div class="bub ai">${m.a}</div>`).join('')}
+        ${(S.extra||[]).map((m,i)=>`<div class="bub me">${m.q}</div><div class="who">첫집 내비</div><div class="bub ai">${m.a}${m.opts?`<div class="chips" style="margin-top:12px">${m.opts.map((o,j)=>`<button class="chip" onclick="pickU(${i},${j})" data-act="확인 고르기">${o[0]}</button>`).join('')}</div>`:''}</div>`).join('')}
         <div class="bub ai">더 궁금한 게 있거나 덧붙일 내용이 있으면 아래에 적어 주세요. 없으면 다음 단계로 넘어가요.</div>`}
     </div>
     <div class="compose"><input id="msgin" placeholder="${done?'예: 반려동물 키워도 돼요? / 회사가 판교로 바뀌었어요':Q.ph}" onkeyup="if(event.key==='Enter'&&!event.isComposing)${done?'extra1':'typed1'}(this.value)"><button class="send" onclick="${done?'extra1':'typed1'}(document.getElementById('msgin').value)" data-act="보내기">↑</button></div></div>
     <div class="cta"><button class="btn pri wide" ${done?'':'style="opacity:.4;pointer-events:none"'} onclick="go(2)" data-act="다음 단계">${done?'받을 수 있는 지원 보기':`질문에 답하면 다음으로 넘어가요 (${qi}/${QS1.length})`}</button></div>`;
 }
 
-/* ----- 1단계 질문 (하나씩) ----- */
+/* ----- 1단계 질문 (하나씩) · 문장 해석 규칙은 web/step1_rules.js (Step1Rules, DOM 없는 순수 함수) ----- */
+const SR = window.Step1Rules, TODAY1 = SR.TODAY;              // 날짜 판단 기준 = 본선 시연일 2026-11-21
+const F1 = Object.fromEntries(SR.FIELDS.map(f => [f.k, f]));
+const placeVal = v => v && typeof v === 'object' ? v.name + '|' + v.query : v;   // 장소 버튼 값은 'name|query'
+const opts1 = k => F1[k].opts.map(o => [o[0], k === 'place' ? placeVal(o[1]) : o[1]]);
 const QS1 = [
-  {k:'age', q:'나이가 어떻게 되세요?', h:'만 나이로 알려 주세요. 청년 지원은 나이 조건이 있어요.', ph:'예: 27', opts:()=>[],
-   set:v=>({age:+v}), parse:t=>{const m=t.match(/\d{2}/);return m&&+m[0]>=14&&+m[0]<=99?+m[0]:null}, show:P=>`만 ${P.age}세`},
-  {k:'job', q:'지금 어떤 상황이에요?', ph:'예: 직장인', opts:()=>[['직장인','직장인'],['대학생','대학생'],['취업 준비','취업 준비'],['기타','기타']],
-   set:v=>({job:v}), parse:t=>/직장|회사|근무|재직|사원|직원|공무원|정규|계약직|프리랜서|일해|다녀/.test(t)?'직장인':/대학|학생|휴학|졸업반/.test(t)?'대학생':/취준|취업|구직|준비|쉬고|백수/.test(t)?'취업 준비':/^[가-힣 ]{2,}$/.test(t.trim())?t.trim():null, show:P=>P.job},
-  {k:'place', q:'회사나 학교는 어디예요?', h:'오가는 시간을 계산할 곳이에요. 역 이름이나 건물 이름이면 더 정확해요.', ph:'예: 역삼역 멀티캠퍼스',
-   opts:P=>P.place&&!P.placeOk?placeOpts(P.place).map(o=>[o[0],o[0]+'|'+o[1]]):[['멀티캠퍼스 역삼','멀티캠퍼스 역삼|서울 강남구 테헤란로 212'],['강남역','강남역|강남역 2호선'],['홍대입구역','홍대입구역|홍대입구역 2호선'],['판교역','판교역|판교역 신분당선']],
-   set:v=>{const [n,q]=String(v).split('|');const vague=!q&&KNOWN_PLACES[n.replace(/역$/,'')]&&!/역$/.test(n);if(!vague)setDest(n,q||n);return {place:n,placeOk:!vague}}, parse:t=>/^[가-힣A-Za-z0-9 ]{2,}$/.test(t.trim())?t.trim():null, show:P=>P.place},
-  {k:'cash', q:'보증금으로 쓸 수 있는 돈은 얼마예요?', h:'모아둔 돈이나 부모님 도움을 합쳐서요.', ph:'예: 2천만 원', opts:()=>[['500만 원',500],['1,000만 원',1000],['2,000만 원',2000],['3,000만 원 이상',3000]],
-   set:v=>({cash:+v}), parse:t=>money(t), show:P=>won(P.cash)},
-  {k:'income', q:'한 달 수입은 얼마예요?', h:'세금 떼기 전 월급, 알바비를 합쳐서요. 지원 자격을 볼 때 써요.', ph:'예: 230', opts:()=>[['100만 원 이하',100],['150만 원',150],['230만 원',230],['300만 원 이상',300]],
-   set:v=>({income:+v}), parse:t=>money(t), show:P=>won(P.income)},
-  {k:'time', q:'출퇴근은 몇 분까지 괜찮아요?', ph:'예: 40분', opts:()=>[['30분',30],['45분',45],['1시간',60],['상관없어요',999]],
-   set:v=>({time:+v}), parse:t=>{if(/상관|아무|괜찮/.test(t))return 999;const h=t.match(/(\d+)\s*시간/),m=t.match(/(\d+)/);return h?+h[1]*60+(/반/.test(t)?30:0):/한 ?시간/.test(t)?60+(/반/.test(t)?30:0):m?+m[1]:null}, show:P=>P.time>=999?'상관없어요':`${P.time}분까지`},
-  {k:'when', q:'언제쯤 이사하고 싶어요?', ph:'예: 다음 달', opts:()=>[['이번 달','이번 달'],['다음 달','다음 달'],['3개월 안','3개월 안'],['아직 몰라요','아직 몰라요']],
-   set:v=>({when:v}), parse:t=>/이번 ?달|당장|바로|빨리|지금/.test(t)?'이번 달':/다음 ?달|한 ?달 ?(뒤|후)/.test(t)?'다음 달':/(\d{1,2})\s*월/.test(t)?t.match(/(\d{1,2})\s*월/)[1]+'월':/(\d)\s*개월|석 ?달|분기/.test(t)?'3개월 안':/모르|미정|아직|글쎄/.test(t)?'아직 몰라요':null, show:P=>P.when},
-  {k:'own', q:'지금 본인 명의로 된 집이 있나요?', h:'대부분의 청년 주거 지원은 무주택이어야 받을 수 있어요.', ph:'없어요 / 있어요', opts:()=>[['없어요','없어요'],['있어요','있어요']],
-   set:v=>{S.own=v;return {}}, parse:t=>/없|무주택|아니/.test(t)?'없어요':/있/.test(t)?'있어요':null, show:()=>S.own},
-  {k:'sep', q:'지금 부모님과 같은 주소에 전입되어 있나요?', h:'주민등록 주소 기준이에요. 같으면 세대 분리가 필요할 수 있어요.', ph:'네 / 아니요', opts:()=>[['네, 같아요','네'],['아니요','아니요'],['잘 모르겠어요','네']],
-   set:v=>{S.sep=v;return {}}, parse:t=>/아니|따로|분리/.test(t)?'아니요':/네|같|응/.test(t)?'네':null, show:()=>S.sep==='네'?'네, 같아요':'아니요'}
+  {k:'age', q:F1.age.q, h:F1.age.h, ph:F1.age.ph, opts:()=>opts1('age'), set:v=>({age:+v}), show:P=>`만 ${P.age}세`},
+  {k:'job', q:F1.job.q, h:F1.job.h, ph:F1.job.ph, opts:()=>opts1('job'), set:v=>({job:v}), show:P=>P.job},
+  {k:'place', q:F1.place.q, h:F1.place.h, ph:F1.place.ph,
+   opts:P=>P.place&&!P.placeOk?placeOpts(P.place).map(o=>[o[0],o[0]+'|'+o[1]]):opts1('place'),
+   set:v=>{const [n,q]=String(v).split('|');const vague=!q&&KNOWN_PLACES[n.replace(/역$/,'')]&&!/역$/.test(n);if(!vague)setDest(n,q||n);return {place:n,placeOk:!vague}}, show:P=>P.place},
+  {k:'cash', q:F1.cash.q, h:F1.cash.h, ph:F1.cash.ph, opts:()=>opts1('cash'), set:v=>({cash:+v}), show:P=>won(P.cash)},
+  {k:'income', q:F1.income.q, h:F1.income.h, ph:F1.income.ph, opts:()=>opts1('income'), set:v=>({income:+v}), show:P=>won(P.income)},
+  {k:'time', q:F1.time.q, h:F1.time.h, ph:F1.time.ph, opts:()=>opts1('time'), set:v=>({time:+v}), show:P=>P.time>=999?'상관없어요':`${P.time}분까지`},
+  {k:'when', q:F1.when.q, h:F1.when.h, ph:F1.when.ph, opts:()=>opts1('when'), set:v=>({when:v}), show:P=>P.when},
+  {k:'own', q:F1.own.q, h:F1.own.h, ph:F1.own.ph, opts:()=>opts1('own'), set:v=>{S.own=v;return {}}, show:()=>S.own},
+  {k:'sep', q:F1.sep.q, h:F1.sep.h, ph:F1.sep.ph, opts:()=>opts1('sep'),     // '잘 모르겠어요' → '모름' (예전엔 '네'로 저장)
+   set:v=>{S.sep=v;return {}}, show:()=>SR.display('sep', S.sep)}
 ];
-function answer1(v){
-  const q=QS1[S.qi||0], prof={...S.prof, ...q.set(v)};
+function answer1(v, expl){
+  const q=QS1[S.qi||0], prof={...S.prof, ...q.set(v)}, ex={...(S.expl||{})};
+  if(expl) ex[q.k]=expl; else delete ex[q.k];                 // 정리 카드에 작게 보여줄 설명 (예: 연봉 3,600만 원 ÷ 12)
   const next = q.k==='place'&&!prof.placeOk ? (S.qi||0) : (S.redo!=null ? QS1.length : (S.qi||0)+1);
-  set({prof, qi: next, redo:null, miss:[]});
+  set({prof, qi: next, redo:null, miss:[], expl:ex});
   setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();}},0);
 }
-function typed1(t){ t=(t||'').trim(); if(!t) return; if(/^[a-z]{2,}$/.test(t) && !['age','cash','income','time'].includes(QS1[S.qi||0].k)) return alertSoft1(t,'영어로 입력됐어요. 한/영 키를 바꿔서 다시 적어 주세요'); const v=QS1[S.qi||0].parse(t); if(/[ㄱ-ㅎㅏ-ㅣ]/.test(t)||v==null||Number.isNaN(v)) return alertSoft1(t,`잘 못 알아들었어요. "${QS1[S.qi||0].ph.replace(/^예:\s*/,'')}"처럼 적거나 위 버튼을 눌러 주세요`); answer1(v); }
+function typed1(t){
+  t=(t||'').trim(); if(!t) return;
+  const q=QS1[S.qi||0], r=SR.interpretAnswer(q.k, t, {today:TODAY1});
+  if(r.status==='ok') return answer1(q.k==='place'?placeVal(r.value):r.value, r.explain);
+  if(r.status==='confirm') return alertSoft1(t, esc(r.ask), r.options.map(o=>[o[0], q.k==='place'?placeVal(o[1]):o[1]]), r.explain);
+  if(q.k==='place'&&r.vague) return set({prof:{...S.prof, place:r.evidence, placeOk:false}, miss:[]});   // 넓은 지명 → 후보 버튼
+  alertSoft1(t, esc(r.ask));
+}
+function pick1(i,j){   // 확인 말풍선의 버튼: 값이면 저장하고 다음 질문, [다시 입력]이면 같은 질문에 머물러요
+  const m=(S.miss||[])[i]; if(!m||!m.opts) return; const v=m.opts[j][1];
+  if(v==null){ m.opts=null; m.m+='<div class="s" style="margin-top:6px">알겠어요. 다시 적어 주세요.</div>'; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e) e.focus();},0); return; }
+  const lbl=m.opts[j][0]; answer1(v, [m.expl, lbl!=='맞아요'?lbl:''].filter(Boolean).join(' · ')||null);   // 예: 1990년생 · 생일 지났어요
+}
 function redo1(label){ const map={'나이':'age','상황':'job','자주 가는 곳':'place','보증금으로 쓸 돈':'cash','한 달 수입':'income','출퇴근 시간':'time','입주 시기':'when','내 집':'own','주소':'sep'};
   set({qi: QS1.findIndex(q=>q.k===map[label]), redo:true, miss:[]}); }
-function alertSoft1(t,m){ S.miss=[...(S.miss||[]),{t:esc(t),m}]; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();} const c=document.querySelector('.chat'); if(c) c.lastElementChild.scrollIntoView({block:'nearest'});},0); }
+function alertSoft1(t,m,opts,expl){ S.miss=[...(S.miss||[]).map(x=>({...x,opts:null})),{t:esc(t),m,opts:opts||null,expl}]; render(); setTimeout(()=>{const e=document.getElementById('msgin'); if(e){e.value=''; e.focus();} const c=document.querySelector('.chat'); if(c) c.lastElementChild.scrollIntoView({block:'nearest'});},0); }
 function alertSoft(m){ const e=document.getElementById('msgin'); if(e){ e.value=''; e.placeholder=m; } }
+const prof1 = () => ({...S.prof, own:S.own, sep:S.sep});
+function apply1(prof, k, v){   // 끝난 뒤 바뀐 값 저장 (집 유무·세대 분리는 S.own·S.sep 에 따로)
+  if(k==='own') S.own=v; else if(k==='sep') S.sep=v;
+  else if(k==='place'){ prof.place=v.name; prof.placeOk=true; setDest(v.name, v.query); }
+  else prof[k]=v;
+}
 function extra1(t){
   t=(t||'').trim(); if(!t) return;
-  const isQ=/[?？]\s*$|(나요|까요|되나|있나)\s*$/.test(t);   // 질문이면 조건은 안 바꾸고 답만
-  const {P}=isQ?{P:{}}:parseMsg(t); const keys=Object.keys(P);
-  let a;
-  if(keys.length){ const prof={...S.prof,...P}; if(P.place){ prof.placeOk=/역$|대학교|캠퍼스|빌딩|타워/.test(P.place); if(prof.placeOk) setDest(P.place,P.place); } S.prof=prof;
-    a=`알겠어요, <b>${keys.map(k=>({age:'나이',job:'상황',place:'자주 가는 곳',cash:'보증금',income:'한 달 수입',time:'출퇴근 시간',when:'입주 시기'})[k]).filter(Boolean).join(', ')}</b>을 바꿨어요. 위 정리에 반영했어요.`; }
+  const u=SR.interpretUpdate(t, prof1(), {today:TODAY1});   // 질문이면 조건은 안 바꾸고 답만
+  let a, opts=null;
+  if(u.kind==='change'){
+    const prof={...S.prof}, ex={...(S.expl||{})}, done=[], ask=u.changes.filter(c=>c.status!=='ok');
+    u.changes.filter(c=>c.status==='ok').forEach(c=>{ apply1(prof,c.field,c.value); if(c.explain) ex[c.field]=c.explain; else delete ex[c.field]; done.push(F1[c.field].label); });
+    S.prof=prof; S.expl=ex;
+    a = done.length ? `알겠어요, <b>${done.join(', ')}</b>을 바꿨어요. 위 정리에 반영했어요.` : '';
+    if(ask.length){ const c=ask[0]; a += (a?'<br>':'') + esc(c.ask); if(c.options.length) opts=c.options.map(o=>[o[0], c.field, o[1], c.explain]); }
+  }
+  else if(u.kind==='none') a = esc(u.message);
   else if(location.protocol.startsWith('http')){ const i=(S.extra||[]).length; set({extra:[...(S.extra||[]), {q:t.replace(/[<>&]/g,''), a:'<span class="s">공고문에서 찾는 중…</span>'}]});
     apiAsk(t).then(r=>{ API_OK=!!r; const e=S.extra[i]; if(!e) return;
       e.a = r ? esc(r.answer).replace(/\s*\[\d+\]/g,'').replace(/\n/g,'<br>') + (r.sources.length?` <span class="s">(근거: ${[...new Set(r.sources.map(x=>esc(x.name)))].slice(0,2).join(', ')})</span>`:'')
               : (()=>{const k=matchQ(t); return k!=='none'?QA[k].a.replace(/\[\d\]/g,''):'지금은 답을 찾지 못했어요. 2단계 공고문에 물어보기에서 다시 물어봐 주세요.';})();
       render(); }); return; }
   else { const k=matchQ(t); a = k!=='none' ? QA[k].a.replace(/\[\d\]/g,'') + ` <span class="s">(2단계 공고문에 물어보기에서 근거 원문을 볼 수 있어요)</span>` : '그 내용은 2단계 지원 추천이나 3단계 집 비교에서 다룰게요. 다음 단계로 넘어가 볼까요?'; }
-  set({extra:[...(S.extra||[]), {q:t.replace(/[<>&]/g,''), a}]});
+  set({extra:[...(S.extra||[]).map(x=>({...x,opts:null})), {q:t.replace(/[<>&]/g,''), a, opts}]});
+}
+function pickU(i,j){   // 끝난 뒤 확인·후보 버튼
+  const e=(S.extra||[])[i]; if(!e||!e.opts) return; const [lbl,k,v,expl]=e.opts[j]; e.opts=null;
+  if(v==null){ e.a+='<div class="s" style="margin-top:6px">알겠어요. 다시 적어 주세요.</div>'; render(); return; }
+  const prof={...S.prof}; apply1(prof,k,v); S.prof=prof; S.expl={...(S.expl||{}), [k]:expl||undefined};
+  e.a+=`<div class="s" style="margin-top:6px">✓ ${esc(F1[k].label)}: ${esc(SR.josa(SR.display(k,v),'으로'))} 반영했어요</div>`; render();
 }
 
-/* ----- 1단계 문장 → 조건 (브라우저 규칙 버전. 서버를 켜면 LLM 버전으로 바꿀 자리: POST /api/profile) ----- */
-const won = v => v >= 10000 ? `${Math.floor(v/10000)}억${v%10000?' '+(v%10000).toLocaleString()+'만':''} 원` : `${v.toLocaleString()}만 원`;
-function money(t){   // "2천" "2천만" "2,000만" "1억 5천" "230" → 만 원
-  t = t.replace(/,/g,''); let m, v = 0;
-  if ((m = t.match(/(\d+(?:\.\d+)?)\s*억/))) v += parseFloat(m[1]) * 10000;
-  if ((m = t.match(/(\d+(?:\.\d+)?)\s*천/))) v += parseFloat(m[1]) * 1000;
-  if (!v && (m = t.match(/(\d+(?:\.\d+)?)\s*(만|만원|만 원)?/))) v = parseFloat(m[1]);
-  return v ? Math.round(v) : null;
+/* ----- 1단계가 덜 끝난 채 2·3단계로 가면 예시 값 배너 (me()가 빈 값을 예시 값으로 채우니까) ----- */
+function banner1(){
+  if(S.step===1||S.easy) return '';
+  const P=S.prof||{}, miss=QS1.filter(q=>q.k==='own'?!S.own:q.k==='sep'?!S.sep:q.k==='place'?!P.place:P[q.k]==null);
+  if(!miss.length) return '';
+  return `<div class="sec" data-banner="step1"><div class="note warn"><span class="ic">!</span><div>아직 답하지 않은 항목은 예시 값(27세·월 230만 원·2,000만 원)으로 보고 있어요 · <button class="link" onclick="go(1)" data-act="1단계로">1단계로</button><div class="s" style="margin-top:4px">안 한 답: ${miss.map(q=>F1[q.k].label).join(', ')}</div></div></div></div>`;
 }
-const KNOWN_PLACES = {'강남':[['강남역','강남역 2호선'],['역삼역','역삼역 2호선'],['선릉역','선릉역 2호선'],['멀티캠퍼스 역삼','서울 강남구 테헤란로 212']],
-  '홍대':[['홍대입구역','홍대입구역 2호선'],['홍익대학교','홍익대학교 서울캠퍼스']], '신촌':[['신촌역','신촌역 2호선'],['연세대학교','연세대학교 신촌캠퍼스']],
-  '판교':[['판교역','판교역 신분당선'],['판교테크노밸리','판교테크노밸리']], '여의도':[['여의도역','여의도역 5호선'],['국회의사당역','국회의사당역 9호선']],
-  '종로':[['종각역','종각역 1호선'],['광화문역','광화문역 5호선']], '성수':[['성수역','성수역 2호선'],['뚝섬역','뚝섬역 2호선']]};
-function placeOpts(p){ const k = Object.keys(KNOWN_PLACES).find(k => p.includes(k)); return k ? KNOWN_PLACES[k] : [[p + '역', p + '역']]; }
-function parseMsg(t){
-  const P = {}, hit = [];
-  const mark = re => t.match(re), put = v => { if (v) hit.push(String(v).trim()); };
-  let m;
-  if ((m = mark(/(만\s*)?(\d{2})\s*(살|세)/))) { P.age = +m[2]; put(m[0]); }
-  if ((m = mark(/직장인|회사원|회사|직장|출근|월급/))) P.job = '직장인'; else if ((m = mark(/대학생|학생|학교|대학|등교/))) { P.job = '대학생'; put(m[0]); }
-  if ((m = mark(/(회사|직장|학교|대학교|일하는 곳|사무실|출근|등교)(은|는|가|이|하는 곳은)\s*([가-힣A-Za-z0-9 ]{2,20}?)(이고|이에요|예요|이라|라서|에 있|쪽|근처|,|\.|$)/))) { P.place = m[3].trim().replace(/\s*(에|에서)$/,''); put(P.place); }
-  else if ((m = mark(/([가-힣]{2,10}역)/))) { P.place = m[1]; put(m[1]); }
-  if ((m = mark(/(모아둔 돈|모은 돈|목돈|보증금으로 쓸 수 있는 돈|보증금)\s*(은|는|이|으로)?\s*([0-9][0-9,.\s]*(억|천|만)?[0-9,.\s]*(천|만)?)/))) { P.cash = money(m[3]); put(m[3]); }
-  if ((m = mark(/(월급|월 소득|한 달 수입|한 달에|월)\s*(은|는|이)?\s*([0-9][0-9,]*\s*만?)\s*(원|정도)?/))) { P.income = money(m[3]); put(m[3]); }
-  if ((m = mark(/(\d+)\s*시간/))) { P.time = +m[1] * 60; put(m[0]); } else if ((m = mark(/(\d+)\s*분\s*(안|이내|이하)?/))) { P.time = +m[1]; put(m[0]); }
-  if ((m = mark(/다음\s*달|이번\s*달|(\d{1,2})\s*월에/))) { P.when = m[1] ? `${m[1]}월` : m[0]; put(m[0].replace(/에$/,'')); }
-  if (/집\s*(이|은)?\s*없|무주택/.test(t)) S.own = '없어요';
-  if (/세대\s*분리|혼자\s*전입|따로\s*전입/.test(t)) S.sep = '아니요';
+
+/* ----- 1단계 문장 → 조건 (Step1Rules 규칙. LLM 안 씀) ----- */
+const won = SR.won, money = SR.money, KNOWN_PLACES = SR.KNOWN_PLACES, placeOpts = SR.placeOpts;
+function parseMsg(t){   // 예전 함수 이름 유지 (sendMsg 용): Step1Rules.interpretUpdate 결과 중 바로 저장할 값만
+  const u = SR.interpretUpdate(t, prof1(), {today:TODAY1}), P = {}, hit = [];
+  if (u.kind === 'change') u.changes.filter(c => c.status === 'ok').forEach(c => {
+    if (c.field === 'own') S.own = c.value; else if (c.field === 'sep') S.sep = c.value;
+    else P[c.field] = c.field === 'place' ? c.value.name : c.value;
+    if (c.evidence) hit.push(String(c.evidence).trim()); });
   return {P, hit};
 }
 function sendMsg(t){
@@ -1536,7 +1556,7 @@ function step4(){
 
 function render(){
   const body=[null,step1,step3,step4][S.step]();
-  document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
+  document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${banner1()}${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
   if(document.getElementById('kmap')) drawKakao();
 }
 /* ----- 로그인 정보·1단계 조건을 화면 문구에 넣기 ----- */

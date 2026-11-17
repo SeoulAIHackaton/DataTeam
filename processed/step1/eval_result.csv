@@ -1,0 +1,120 @@
+﻿id,mode,field,input,expect_type,expected,note,old_ok,old_silent,old_result,new_ok,new_silent,new_result,new_display,new_explain,new_ask
+S001,answer,age,27,value,27,,O,,ok 27,O,,ok 27,만 27세,,
+S002,answer,age,27살,value,27,,O,,ok 27,O,,ok 27,만 27세,,
+S003,answer,age,만 27세,value,27,,O,,ok 27,O,,ok 27,만 27세,,
+S004,answer,age,27살이요,value,27,,O,,ok 27,O,,ok 27,만 27세,,
+S005,answer,age,스물일곱,value,27,,X,,ask_back,O,,ok 27,만 27세,,
+S006,answer,age,서른,value,30,,X,,ask_back,O,,ok 30,만 30세,,
+S007,answer,age,35,value,35,,O,,ok 35,O,,ok 35,만 35세,,
+S008,answer,age,1999년생,confirm,26|27,"출생연도 → 기준일 2026-11-21 기준 생일 전이면 26, 지났으면 27. 생일 지났는지 확인",X,!,ok 19,O,,confirm 27 opts=27/26,만 27세,1999년생,1999년생이면 올해 생일이 지났는지에 따라 만 27세 또는 만 26세예요. 올해 생일 지났어요?
+S009,answer,age,99년생,confirm,26|27,위와 같음,X,!,ok 99,O,,confirm 27 opts=27/26,만 27세,1999년생,1999년생이면 올해 생일이 지났는지에 따라 만 27세 또는 만 26세예요. 올해 생일 지났어요?
+S010,answer,age,1990년생,confirm,35|36,현재 규칙은 19로 저장하는 버그,X,!,ok 19,O,,confirm 36 opts=36/35,만 36세,1990년생,1990년생이면 올해 생일이 지났는지에 따라 만 36세 또는 만 35세예요. 올해 생일 지났어요?
+S011,answer,age,13,ask_back,,14~99 밖은 다시 묻기 (현재 동작 유지),O,,ask_back,O,,ask_back,,13세는 범위(14~99) 밖,만 나이를 숫자로 다시 알려 주세요 (예: 27).
+S012,answer,age,120,ask_back,,14~99 밖은 다시 묻기 (현재 동작 유지),O,,ask_back,O,,ask_back,,120세는 범위(14~99) 밖,만 나이를 숫자로 다시 알려 주세요 (예: 27).
+S013,answer,age,2,ask_back,,14~99 밖은 다시 묻기 (현재 동작 유지),O,,ask_back,O,,ask_back,,2세는 범위(14~99) 밖,만 나이를 숫자로 다시 알려 주세요 (예: 27).
+S014,answer,job,회사 다녀요,value,직장인,,O,,ok 직장인,O,,ok 직장인,직장인,'회사 다녀요' → 직장인,
+S015,answer,job,직장인,value,직장인,,O,,ok 직장인,O,,ok 직장인,직장인,,
+S016,answer,job,대학원생,value,대학생,,O,,ok 대학생,O,,ok 대학생,대학생,'대학원생' → 대학생,
+S017,answer,job,취준생,value,취업 준비,,O,,ok 취업 준비,O,,ok 취업 준비,취업 준비,'취준생' → 취업 준비,
+S018,answer,job,프리랜서,value,직장인,,O,,ok 직장인,O,,ok 직장인,직장인,'프리랜서' → 직장인,
+S019,answer,job,간호사,value,직장인,,X,!,ok 간호사,O,,ok 직장인,직장인,'간호사' → 직장인,
+S020,answer,job,개발자,value,직장인,,X,!,ok 개발자,O,,ok 직장인,직장인,'개발자' → 직장인,
+S021,answer,job,자영업,value,직장인,,X,!,ok 자영업,O,,ok 직장인,직장인,'자영업' → 직장인,
+S022,answer,job,학생인데 알바도 해요,value,대학생,,O,,ok 대학생,O,,ok 대학생,대학생,'학생인데 알바도 해요' → 대학생,
+S023,answer,job,쉬고 있어요,value,취업 준비,,O,,ok 취업 준비,O,,ok 취업 준비,취업 준비,'쉬고 있어요' → 취업 준비,
+S024,answer,job,백수,value,취업 준비,,O,,ok 취업 준비,O,,ok 취업 준비,취업 준비,'백수' → 취업 준비,
+S025,answer,job,군인,value,기타,,X,!,ok 군인,O,,ok 기타,기타,'군인' → 기타,
+S026,answer,job,대학 졸업하고 취업 준비 중,value,취업 준비,,X,!,ok 대학생,O,,ok 취업 준비,취업 준비,'대학 졸업하고 취업 준비 중' → 취업 준비,
+S027,answer,job,회사 그만두고 쉬는 중,value,취업 준비,,X,!,ok 직장인,O,,ok 취업 준비,취업 준비,'회사 그만두고 쉬는 중' → 취업 준비,
+S028,answer,job,알바해요,value,기타,,X,!,ok 알바해요,O,,ok 기타,기타,'알바해요' → 기타,
+S029,answer,job,몰라요,ask_back,,현재는 아무 한글 2글자 이상을 상황으로 저장함,X,!,ok 몰라요,O,,ask_back,,,지금 상황을 아래 버튼에서 골라 주세요.
+S030,answer,place,멀티캠퍼스 역삼,value,멀티캠퍼스 역삼,,O,,ok 멀티캠퍼스 역삼,O,,ok 멀티캠퍼스 역삼,멀티캠퍼스 역삼,,
+S031,answer,place,역삼역,value,역삼역,,O,,ok 역삼역,O,,ok 역삼역,역삼역,,
+S032,answer,place,서울대,value,서울대|서울대학교,,O,,ok 서울대,O,,ok 서울대,서울대,,
+S033,answer,place,테헤란로 212,value,테헤란로 212,,O,,ok 테헤란로 212,O,,ok 테헤란로 212,테헤란로 212,,
+S034,answer,place,강남역 근처 회사,value,강남역,,X,!,ok 강남역 근처 회사,O,,ok 강남역,강남역,'강남역 근처 회사' → 강남역,
+S035,answer,place,삼성동 코엑스,value,삼성동 코엑스|코엑스,카카오 검색어로 쓰이니 둘 다 맞음,O,,ok 삼성동 코엑스,O,,ok 코엑스,코엑스,'삼성동 코엑스' → 코엑스,
+S036,answer,place,강남,ask_back,,넓은 지명 → 후보 제시 (KNOWN_PLACES),O,,ask_back,O,,ask_back,,넓은 지명 → 후보 제시,강남는 넓어서 출퇴근 시간을 정확히 계산하기 어려워요. 어디쯤인지 골라 주시거나 역·건물 이름을 적어 주세요.
+S037,answer,place,판교,ask_back,,넓은 지명 → 후보 제시 (KNOWN_PLACES),O,,ask_back,O,,ask_back,,넓은 지명 → 후보 제시,판교는 넓어서 출퇴근 시간을 정확히 계산하기 어려워요. 어디쯤인지 골라 주시거나 역·건물 이름을 적어 주세요.
+S038,answer,place,재택이에요,ask_back,,재택이면 자주 가는 곳이 있는지 다시 묻기,X,!,ok 재택이에요,O,,ask_back,,재택 근무,재택이시군요. 그래도 주로 가는 곳(사무실·학교·자주 가는 역)이 있나요? 없으면 자주 가는 동네를 적어 주세요.
+S039,answer,place,sk,ask_back,,,O,,ask_back,O,,ask_back,,한/영 전환 실수로 보임,영어로 입력됐어요. 한/영 키를 바꿔서 다시 적어 주세요
+S040,answer,cash,2천,value,2000,,O,,ok 2000,O,,ok 2000,"2,000만 원",,
+S041,answer,cash,2천만 원,value,2000,,O,,ok 2000,O,,ok 2000,"2,000만 원",,
+S042,answer,cash,"2,000만",value,2000,,O,,ok 2000,O,,ok 2000,"2,000만 원",,
+S043,answer,cash,1억 5천,value,15000,,O,,ok 15000,O,,ok 15000,"1억 5,000만 원",,
+S044,answer,cash,1억5천만원,value,15000,,O,,ok 15000,O,,ok 15000,"1억 5,000만 원",,
+S045,answer,cash,500,value,500,,O,,ok 500,O,,ok 500,500만 원,,
+S046,answer,cash,오백만원,value,500,,X,,ask_back,O,,ok 500,500만 원,,
+S047,answer,cash,천만원,value,1000,,X,,ask_back,O,,ok 1000,"1,000만 원",,
+S048,answer,cash,3천5백,value,3500,,X,!,ok 3000,O,,ok 3500,"3,500만 원",,
+S049,answer,cash,3500만원,value,3500,,O,,ok 3500,O,,ok 3500,"3,500만 원",,
+S050,answer,cash,없어요,value,0,,X,,ask_back,O,,ok 0,0만 원,,
+S051,answer,cash,2억,value,20000,,O,,ok 20000,O,,ok 20000,2억 원,,
+S052,answer,cash,2000만원 정도,value,2000,,O,,ok 2000,O,,ok 2000,"2,000만 원",,
+S053,answer,cash,1.5억,value,15000,,O,,ok 15000,O,,ok 15000,"1억 5,000만 원",,
+S054,answer,cash,20000000,confirm,2000,단위 없는 큰 숫자 → 원 단위로 보고 만 원으로 바꾼 뒤 확인,X,!,ok 20000000,O,,confirm 2000 opts=2000,"2,000만 원","20,000,000원 ÷ 10,000 = 2,000만 원 (단위가 없어서 원으로 봤어요)","20,000,000원을 2,000만 원으로 이해했어요. 맞아요?"
+S055,answer,income,230,value,230,,O,,ok 230,O,,ok 230,월 230만 원,,
+S056,answer,income,월 230,value,230,,O,,ok 230,O,,ok 230,월 230만 원,,
+S057,answer,income,230만원,value,230,,O,,ok 230,O,,ok 230,월 230만 원,,
+S058,answer,income,250만 원 정도,value,250,,O,,ok 250,O,,ok 250,월 250만 원,,
+S059,answer,income,이백삼십,value,230,,X,,ask_back,O,,ok 230,월 230만 원,,
+S060,answer,income,알바로 80,value,80,,O,,ok 80,O,,ok 80,월 80만 원,,
+S061,answer,income,0,value,0,,X,,ask_back,O,,ok 0,월 0만 원,,
+S062,answer,income,없어요,value,0,,X,,ask_back,O,,ok 0,월 0만 원,,
+S063,answer,income,월급 230 정도요,value,230,,O,,ok 230,O,,ok 230,월 230만 원,,
+S064,answer,income,연봉 3천,confirm,250,연봉 ÷ 12 (코드가 계산),X,!,ok 3000,O,,confirm 250 opts=250,월 250만 원,"연봉 3,000만 원 ÷ 12","연봉 3,000만 원을 월 250만 원으로 이해했어요. 맞아요?"
+S065,answer,income,연봉 3600,confirm,300,연봉 ÷ 12,X,!,ok 3600,O,,confirm 300 opts=300,월 300만 원,"연봉 3,600만 원 ÷ 12","연봉 3,600만 원을 월 300만 원으로 이해했어요. 맞아요?"
+S066,answer,income,2300000,confirm,230,원 단위 → 만 원,X,!,ok 2300000,O,,confirm 230 opts=230,월 230만 원,"2,300,000원 ÷ 10,000 = 230만 원 (단위가 없어서 원으로 봤어요)","2,300,000원을 월 230만 원으로 이해했어요. 맞아요?"
+S067,answer,income,세후 200,confirm,200,세전 기준임을 알리고 확인 (값은 200으로 두되 세후라고 표시),X,!,ok 200,O,,confirm 200 opts=200,월 200만 원,,"세후 200만 원을 월 200만 원으로 이해했어요. 지원 자격은 세전 기준이라, 세전 금액을 알면 그 값으로 바꿔 주세요. 맞아요?"
+S068,answer,income,200~250,ask_back,,범위는 자격 판정이 갈릴 수 있어 다시 묻기,X,!,ok 200,O,,ask_back,,범위로 답함,200~250처럼 범위면 지원 자격이 갈릴 수 있어요. 세전 기준 한 달 수입을 한 숫자로 알려 주세요.
+S069,answer,time,40분,value,40,,O,,ok 40,O,,ok 40,40분까지,,
+S070,answer,time,한시간,value,60,,O,,ok 60,O,,ok 60,60분까지,1시간 = 60분,
+S071,answer,time,한 시간 반,value,90,,O,,ok 90,O,,ok 90,90분까지,1시간 30분 = 90분,
+S072,answer,time,1시간 30분,value,90,,X,!,ok 60,O,,ok 90,90분까지,1시간 30분 = 90분,
+S073,answer,time,1시간반,value,90,,O,,ok 90,O,,ok 90,90분까지,1시간 30분 = 90분,
+S074,answer,time,30분 이내,value,30,,O,,ok 30,O,,ok 30,30분까지,,
+S075,answer,time,상관없어요,value,999,,O,,ok 999,O,,ok 999,상관없어요,상관없음 = 999,
+S076,answer,time,90,value,90,,O,,ok 90,O,,ok 90,90분까지,,
+S077,answer,time,1.5시간,value,90,,X,!,ok 300,O,,ok 90,90분까지,1.5시간 = 90분,
+S078,answer,time,45분정도,value,45,,O,,ok 45,O,,ok 45,45분까지,,
+S079,answer,time,30~40분,value,40,,X,!,ok 30,O,,ok 40,40분까지,범위 30~40분 → 위쪽 값 40분,
+S080,answer,time,한시간 이내면 괜찮아요,value,60,,X,!,ok 999,O,,ok 60,60분까지,1시간 = 60분,
+S081,answer,time,1시간 10분,value,70,,X,!,ok 60,O,,ok 70,70분까지,1시간 10분 = 70분,
+S082,answer,when,다음 달,value,다음 달,,O,,ok 다음 달,O,,ok 다음 달,다음 달,,
+S083,answer,when,12월,value,12월,,O,,ok 12월,O,,ok 12월,12월,,
+S084,answer,when,내년 3월,value,3월,,O,,ok 3월,O,,ok 3월,3월,,
+S085,answer,when,3개월 안에,value,3개월 안,,O,,ok 3개월 안,O,,ok 3개월 안,3개월 안,,
+S086,answer,when,1월 초,value,1월,,O,,ok 1월,O,,ok 1월,1월,,
+S087,answer,when,아직 몰라요,value,아직 몰라요,,O,,ok 아직 몰라요,O,,ok 아직 몰라요,아직 몰라요,,
+S088,answer,when,당장,value,이번 달,,O,,ok 이번 달,O,,ok 이번 달,이번 달,,
+S089,answer,when,2주 뒤,value,다음 달,,X,,ask_back,O,,ok 다음 달,다음 달,2주 뒤 → 다음 달 (2026-11-21 기준),
+S090,answer,when,6개월 뒤,value,5월,,X,!,ok 3개월 안,O,,ok 5월,5월,6개월 뒤 → 5월 (2026-11-21 기준),
+S091,answer,when,봄,ask_back,,,O,,ask_back,O,,ask_back,,,몇 월쯤인지 알려 주시거나 아래에서 골라 주세요.
+S092,answer,own,없어요,value,없어요,,O,,ok 없어요,O,,ok 없어요,없어요,,
+S093,answer,own,없음,value,없어요,,O,,ok 없어요,O,,ok 없어요,없어요,,
+S094,answer,own,있어요,value,있어요,,O,,ok 있어요,O,,ok 있어요,있어요,,
+S095,answer,own,부모님 집은 있어요,value,없어요,,X,!,ok 있어요,O,,ok 없어요,없어요,가족 명의 집은 본인 명의가 아니에요 → 없어요,
+S096,answer,own,아니요,value,없어요,,O,,ok 없어요,O,,ok 없어요,없어요,,
+S097,answer,own,제 명의는 없어요,value,없어요,,O,,ok 없어요,O,,ok 없어요,없어요,,
+S098,answer,own,네,value,있어요,,X,,ask_back,O,,ok 있어요,있어요,,
+S099,answer,sep,네,value,네,,O,,ok 네,O,,ok 네,"네, 같아요",,
+S100,answer,sep,아니요,value,아니요,,O,,ok 아니요,O,,ok 아니요,아니요,,
+S101,answer,sep,따로 살아요,value,아니요,,O,,ok 아니요,O,,ok 아니요,아니요,,
+S102,answer,sep,같이 살아요,value,네,,O,,ok 네,O,,ok 네,"네, 같아요",,
+S103,answer,sep,부모님이랑 살아요,value,네,,X,,ask_back,O,,ok 네,"네, 같아요",,
+S104,answer,sep,아니 같아요,value,네,,X,!,ok 아니요,O,,ok 네,"네, 같아요",,
+S105,answer,sep,모르겠어요,value,모름,,X,,ask_back,O,,ok 모름,잘 모르겠어요,,
+S106,update,,월급 250으로 올랐어요,value,income=250,,O,!,"change: job=직장인(ok), income=250(ok)",O,,change: income=250(ok),월 250만 원,,한 달 수입을 월 250만 원으로 바꿨어요 (월 230만 원 → 월 250만 원)
+S107,update,,35살 됐어요,value,age=35,,O,,change: age=35(ok),O,,change: age=35(ok),만 35세,,나이를 만 35세로 바꿨어요 (만 27세 → 만 35세)
+S108,update,,연봉이 4천으로 올랐어요,confirm,income=333,,X,,question,O,,change: income=333(confirm),월 333만 원,"연봉 4,000만 원 ÷ 12","한 달 수입: 연봉 4,000만 원을 월 333만 원으로 이해했어요. 맞아요?"
+S109,update,,보증금은 3천까지 돼요,value,cash=3000,,O,,change: cash=3000(ok),O,,change: cash=3000(ok),"3,000만 원",,"보증금을 3,000만 원으로 바꿨어요 (2,000만 원 → 3,000만 원)"
+S110,update,,이사는 3월에 할래요,value,when=3월,,O,,change: when=3월(ok),O,,change: when=3월(ok),3월,,입주 시기를 3월로 바꿨어요 (다음 달 → 3월)
+S111,update,,출퇴근은 1시간까지 괜찮아요,value,time=60,,O,,change: time=60(ok),O,,change: time=60(ok),60분까지,1시간 = 60분,출퇴근 시간을 60분까지로 바꿨어요 (40분까지 → 60분까지)
+S112,update,,회사가 판교로 바뀌었어요,ask_back,place=판교(후보 제시),,X,!,"change: job=직장인(ok), place=판교로 바뀌었어요(ok)",O,,change: place=null(ask_back),,넓은 지명 → 후보 제시,자주 가는 곳: 판교는 넓어서 출퇴근 시간을 정확히 계산하기 어려워요. 어디쯤인지 골라 주시거나 역·건물 이름을 적어 주세요.
+S113,update,,집을 샀어요,value,own=있어요,,X,,question,O,,change: own=있어요(ok),있어요,,내 집을 있어요로 바꿨어요 (없어요 → 있어요)
+S114,update,,학교 졸업하고 회사 들어갔어요,value,job=직장인,,O,,change: job=직장인(ok),O,,change: job=직장인(ok),직장인,'회사 들어갔어요' → 직장인,상황을 직장인으로 바꿨어요
+S115,update,,부모님 집에서 나와서 따로 전입했어요,value,sep=아니요,,O,,change: sep=아니요(ok),O,,change: sep=아니요(ok),아니요,,"주소를 아니요로 바꿨어요 (네, 같아요 → 아니요)"
+S116,update,,월세 50 정도 생각해요,none,,9개 항목이 아니라 바뀌는 조건 없음 → 3단계에서 집별로 본다고 안내,X,,question,O,,none,,,그 내용은 3단계에서 집별로 볼게요. 1단계 조건은 그대로예요.
+S117,update,,반려동물 키워도 돼요?,question,,,O,,question,O,,question,,,"조건은 그대로 두고, 공고문에서 찾아볼게요."
+S118,update,,35살인데 받을 수 있어요?,question,,질문이라 나이를 바꾸지 않음 (PRD R1),O,,question,O,,question,,,"조건은 그대로 두고, 공고문에서 찾아볼게요."
+S119,update,,월급이 250이면 달라져요?,question,,가정 질문이라 조건을 바꾸지 않음,O,,question,O,,question,,,"조건은 그대로 두고, 공고문에서 찾아볼게요."
