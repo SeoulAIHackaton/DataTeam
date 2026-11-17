@@ -200,13 +200,15 @@ if __name__ == "__main__":
                 row[f"{kind}_m"] = ""
             row[f"{kind}_반경내수"] = total
 
+        # 한 달 실부담 = 월세 + 관리비 (교통비는 참고 표시만, 실부담·비용 점수에는 넣지 않음 · PRD v1.2 4절)
+        row["월실부담(만원)"] = round(h["월세"] + h["관리비"], 1)
+
         # 대중교통
         t = transit(x, y, dx, dy)
         if t:
             month_fare = t["요금"] * 2 * COMMUTE_DAYS
             row.update({"통근_분": t["분"], "통근_경로": t["경로"], "환승": t["환승"],
                         "편도요금(원)": t["요금"], "월교통비(원)": month_fare})
-            row["월실부담(만원)"] = round(h["월세"] + h["관리비"] + month_fare / 10000, 1)
         summary_rows.append(row)
 
         print(f"■ {h['이름']}  ({resolved})")
