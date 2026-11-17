@@ -7,6 +7,7 @@
 - 포트 5500을 쓰는 이유: 카카오 JS 키에 등록한 주소(http://127.0.0.1:5500)와 같아야 지도가 떠요.
   → VS Code Live Server는 꺼 두세요 (같은 포트라 둘 중 하나만 켜져요).
 - LLM 키는 .env 에만 있고 서버에서만 써요. 브라우저(html)에는 키가 들어가지 않아요.
+- POST /api/compare {"question": "...", "facts": {...}}  → 3단계 비교 결과 설명 (검색 없음)
 - POST /api/ask  {"question": "...", "profile": {"age": 27}}
   → {"answer", "citations", "found", "mode", "sources": [{n, name, section, text, url}], "policies"}
 - GET /api/place?q=판교   1단계 '자주 가는 곳' 검색 (카카오 로컬 장소 검색 + 주소 검색, .env 의 KAKAO_REST_API_KEY)
@@ -22,6 +23,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rag import Rag  # noqa: E402  (rag.py가 .env 를 읽어요)
+import compare  # noqa: E402  (3단계 이 비교에 대해 물어보기)
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "5500"))
@@ -105,6 +107,20 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
+        if self.path == "/api/compare":                      # 3단계 · 계산된 비교 결과로만 AI가 설명 (검색 없음)
+            try:
+                n = int(self.headers.get("Content-Length", 0))
+                req = json.loads(self.rfile.read(n) or b"{}")
+                q, facts = (req.get("question") or "").strip()[:200], req.get("facts") or {}
+                if not q or not facts.get("homes"):
+                    return self._json(400, {"error": "question, facts 가 필요해요"})
+                t = time.time()
+                r = compare.answer(q, facts)
+                print(f"[비교 질문] {q}  → {'AI' if r['answer'] else '코드 문장 (' + r['reason'] + ')'} · {time.time() - t:.1f}초" + (f" · {r['memo']}" if r.get("memo") else ""))
+                return self._json(200, {k: v for k, v in r.items() if k != "memo"})
+            except Exception as e:
+                print(f"[비교 질문 오류] {e}")
+                return self._json(500, {"error": str(e)})
         if self.path != "/api/ask":
             return self._json(404, {"error": "not found"})
         try:
