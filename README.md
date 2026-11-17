@@ -28,6 +28,63 @@ firsthome_data/
 
 ---
 
+## 실행하기 (화면 띄우기)
+
+화면(`web/index.html`)과 API를 `scripts/server.py` 하나로 같이 띄워요. **API 키가 없어도 화면은 끝까지 돌아가요.**
+
+### 1. 처음 한 번만
+
+```bash
+git clone https://github.com/SeoulAIHackaton/DataTeam.git
+cd DataTeam
+pip install numpy                 # 서버(공고문 검색)에 필요한 유일한 패키지
+copy .env.example .env            # (선택) 키가 있을 때만 · 맥은 cp .env.example .env
+```
+
+- 파이썬 3가 있어야 해요. 윈도우에서 `python`이 안 되면 `py`로 바꿔서 실행해요.
+
+### 2. 서버 켜기
+
+```bash
+python scripts/server.py
+```
+
+브라우저에서 **http://127.0.0.1:5500** 을 열어요 (`/web/index.html`로 바로 넘어가요). 끌 때는 터미널에서 `Ctrl+C`를 눌러요.
+
+이렇게 나오면 잘 켜진 거예요.
+
+```
+검색 데이터 불러오는 중…
+장소 검색 꺼짐 → 미리 정한 후보 목록
+준비 완료 · AI 답변 꺼짐 → 공고문 원문으로 답해요
+
+열기 → http://127.0.0.1:5500/web/index.html   (끄기: Ctrl+C)
+```
+
+서버만 확인하려면 http://127.0.0.1:5500/api/health 를 열어요 → `{"ok": true, "ai": false, "place": false}` (`ai`·`place`는 키가 있으면 `true`)
+
+### 3. 키가 없을 때와 있을 때
+
+| 기능 | 키 없을 때 | 키를 넣는 곳 |
+|---|---|---|
+| 1단계 자주 가는 곳 검색 | 미리 정한 후보 목록에서 골라요 | `.env` → `KAKAO_REST_API_KEY` |
+| 2단계 공고문에 물어보기 | 공고문 원문 문장으로 답해요 | `.env` → `LLM_API_KEY` |
+| 3단계 이 비교에 대해 물어보기 | 코드가 미리 정한 문장으로 답해요 | `.env` → `LLM_API_KEY` |
+| 3단계 지도 | 2호선 그림 지도로 보여요 | `web/index.html`의 `KAKAO_JS_KEY` (`'JS_KEY'` 자리) |
+| 3단계 새 주소의 오가는 시간 | 직선거리로 추정해요 (예시 집 3곳은 저장된 값) | `web/index.html`의 `ODSAY_WEB_KEY` (`'ODSAY_KEY'` 자리) |
+
+- `.env`를 바꾸면 서버를 껐다 켜요. 키 값은 노션 「📦 데이터 · API 정리」 DB에 있어요.
+- `web/index.html`에 넣은 키는 **커밋하지 말고** 내 컴퓨터에서만 써요.
+
+### 자주 막히는 것
+
+- **`포트 5500이 이미 쓰이고 있어요`**: VS Code Live Server가 켜져 있으면 꺼요 (같은 포트예요). 다른 포트로 켜려면 `PORT=8000 python scripts/server.py` (윈도우 cmd는 `set PORT=8000` 다음 줄에 실행)인데, 카카오 지도 키가 `http://127.0.0.1:5500`에 등록돼 있어서 **지도는 5500에서만 떠요.**
+- **`ModuleNotFoundError: No module named 'numpy'`**: `pip install numpy`를 해요.
+- **`index.html`을 더블클릭해서 열면**: 화면은 보이지만 서버가 없어서 공고문에 물어보기 · 장소 검색 · 비교 질문이 안 돼요. 꼭 서버를 켜고 위 주소로 열어요.
+- **`localhost:5500`으로 열면** 카카오 지도가 안 뜰 수 있어요. 등록된 주소인 `127.0.0.1:5500`으로 열어요.
+
+---
+
 ## 0. 한눈에 보기
 
 상태 표시
@@ -419,7 +476,7 @@ supportConditions 구조
 ## 4. 수집하는 법
 
 **처음 받은 컴퓨터에서 준비**
-- 파이썬 3만 있으면 돼요 (표준 라이브러리만 써서 `pip install` 필요 없음). `python`이 안 되면 `py`로 실행해요.
+- 수집 스크립트는 파이썬 3 표준 라이브러리만 써요 (`pip install` 필요 없음). 화면 서버(`server.py`·`rag.py`)는 `numpy`가 필요해요 → [실행하기](#실행하기-화면-띄우기). `python`이 안 되면 `py`로 실행해요.
 - zip에는 보안상 `.env`가 없어요 → `.env.example`을 복사해서 키를 채워요 (키 값은 노션 DB).
 
 폴더 맨 위(`firsthome_data/`)에서 순서대로 실행해요.
