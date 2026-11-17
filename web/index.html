@@ -583,6 +583,59 @@ h1{font-size:32px}
 .mrow  {display: grid;grid-template-columns: 1fr auto;gap: 4px 16px;padding: 16px 0;border-bottom: 1px solid var(--line);}
 .mrow .nm  {font-weight: 700;font-size: 15px;}
 .mrow .rs  {font-size: 14px;color: var(--sub);grid-column: 1 / -1;}
+/* 3단계 · 이 비교에 대해 물어보기 */
+.cmp3 { margin-top: 36px }
+.cmp3-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px }
+.cmp3-h { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700 }
+.cmp3-h small { margin-left: auto; font-size: 12.5px; font-weight: 500; color: var(--sub) }
+.cmp3-ex { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px }
+.cmp3-ex button { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 14px; color: var(--ink) }
+.cmp3-ex button:hover { border-color: var(--pri); color: var(--pri) }
+.cmp3-in { display: flex; align-items: center; gap: 8px; margin-top: 12px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 5px 5px 5px 18px }
+.cmp3-in:focus-within { border-color: var(--pri) }
+.cmp3-in input { flex: 1; border: 0; outline: 0; font: inherit; font-size: 15px; background: none }
+.cmp3-in button { background: var(--pri); color: #fff; border-radius: 999px; height: 36px; padding: 0 18px; font-size: 14px; font-weight: 700 }
+.cmp3-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-top: 12px }
+.cmp3-card.gray { background: var(--bg) }
+.cmp3-q { display: inline-block; background: var(--pri-s); color: var(--pri); font-size: 13px; font-weight: 700; border-radius: 999px; padding: 4px 12px; margin-bottom: 10px }
+.cmp3-a { font-size: 15px; line-height: 1.7 }
+.cmp3-f { font-size: 12px; color: var(--mute); margin-top: 8px }
+/* ===== 홈 (첫 화면) ===== */
+.hp { background: #fff; min-height: 100vh }
+.hp-page { max-width: 1280px; margin: 0 auto }
+.hp-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 64px; border-bottom: 1px solid #eef0f3 }
+.hp-top .logo { font-size: 20px }
+.hp-tg { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #4e5968 }
+.hp-sw { width: 40px; height: 22px; border-radius: 11px; background: #d1d6db; position: relative; transition: background .2s }
+.hp-sw::after { content: ''; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .2s }
+.hp-sw.on { background: #2f6bff } .hp-sw.on::after { left: 21px }
+.hp-hero { display: grid; grid-template-columns: 1fr 440px; gap: 56px; padding: 72px 64px 56px; align-items: center }
+.hp h1 { font-size: 44px; line-height: 1.3; font-weight: 800; letter-spacing: -1px }
+.hp-btns { display: flex; gap: 12px; margin-top: 36px }
+.hp-b { border-radius: 14px; padding: 18px 36px; font-size: 17px; font-weight: 700; background: #2f6bff; color: #fff }
+.hp-b:hover { background: #1f55d9 }
+.hp-easy { margin-top: 20px; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 12px; background: #f7f8fa; font-size: 16px; font-weight: 700 }
+.hp-easy:hover { background: #eef3ff; color: #2f6bff }
+.hp-pv { border: 1px solid #e3e8ed; border-radius: 20px; padding: 24px; box-shadow: 0 12px 32px rgba(0, 0, 0, .06) }
+.hp-pvt { font-size: 13px; color: #99a3ad; font-weight: 700 }
+.hp-money { margin-top: 10px; font-size: 15px; color: #4e5968 } .hp-money b { display: block; font-size: 30px; color: #191f28; margin-top: 2px }
+.hp-line { height: 1px; background: #eef0f3; margin: 20px 0 }
+.hp-chips { display: flex; gap: 6px; margin-top: 14px }
+.hp-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid #e3e8ed; font-size: 13px; color: #6b7684; font-weight: 700; transition: all .35s }
+.hp-chip.on { background: #eef3ff; border-color: #2f6bff; color: #2f6bff }
+.hp-rec { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; margin-top: 16px; transition: opacity .15s } .hp-rec.fade { opacity: 0 }
+.hp-tag { width: 26px; height: 26px; border-radius: 50%; color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center }
+.hp-rank { position: relative; height: 102px; margin-top: 10px }
+.hp-row { position: absolute; left: 0; right: 0; height: 26px; display: flex; align-items: center; gap: 10px; font-size: 14px; transition: transform .35s cubic-bezier(.3, .7, .2, 1) }
+.hp-nm { width: 70px; font-weight: 700 } .hp-sc { width: 52px; text-align: right; font-weight: 700 }
+.hp-tr { flex: 1; height: 8px; border-radius: 4px; background: #f2f4f6; overflow: hidden }
+.hp-tr i { display: block; height: 100%; border-radius: 4px; transition: width .4s cubic-bezier(.3, .7, .2, 1) }
+.hp-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 64px 56px }
+.hp-st { border-radius: 18px; background: #f7f8fa; padding: 26px 24px }
+.hp-n { width: 30px; height: 30px; border-radius: 50%; background: #2f6bff; color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px }
+.hp-st h3 { margin-top: 16px; font-size: 20px } .hp-st p { margin-top: 6px; font-size: 15px; color: #6b7684; line-height: 1.55 }
+@media (max-width: 900px) { .hp-hero { grid-template-columns: 1fr; padding: 48px 24px } .hp-steps { grid-template-columns: 1fr; padding: 0 24px 48px } .hp-top { padding: 16px 24px } .hp h1 { font-size: 34px } }
+@media (prefers-reduced-motion: reduce) { .hp-row, .hp-tr i, .hp-chip, .hp-rec { transition: none } }
 </style>
 </head>
 <body>
@@ -845,8 +898,7 @@ function header(){
   const ez=['내 상황','받을 수 있는 돈','어느 집이 맞을까'];
   const desc=['조건 정리','근거 있는 지원 · AI 상담','후보 집 종합 비교'];
   return `<header class="gnb"><div class="wrap">
-      <div class="logo">첫집 <b>내비</b></div>
-      <nav class="menu"><span class="on">집 구하기</span><span>지원 정책 찾기</span><span>이용 방법</span></nav>
+      <button class="logo" onclick="set({home:true})" data-act="홈으로">첫집 <b>내비</b></button>
       <div class="gnb-r"><button class="toggle" onclick="set({easy:!S.easy})" data-act="쉬운 화면 켜기/끄기">쉬운 화면 <span class="sw ${S.easy?'on':''}"></span></button>${S.user?`<span class="s" style="font-weight:700;color:var(--ink)">${S.user.name}님</span><button class="btn-sm" onclick="set({user:null})" data-act="로그아웃">로그아웃</button>`:`<button class="btn-sm" onclick="set({loginOpen:true})" data-act="로그인 창 (0-1)">로그인</button>`}</div>
     </div></header>
     <div class="stepbar"><div class="wrap">${(S.easy?ez:names).map((n,i)=>`<button class="sb ${S.step===i+1?'on':S.step>i+1?'done':''}" onclick="go(${i+1})" data-act="단계 ${i+1} 이동"><i>${S.step>i+1?'✓':i+1}</i><span class="sl"><b>${n}</b>${S.easy?'':`<small>${desc[i]}</small>`}</span></button>`).join('')}</div></div>`;
@@ -1677,7 +1729,7 @@ function neighMap(h, scene){
 
 /* ---------- STEP 4 · 비교 ---------- */
 function prioChips(){
-  return `<div class="chips">${Object.entries(PRIO).map(([k,p])=>`<button class="chip ${S.prio===k?'on':''}" onclick="set({prio:'${k}'})" data-act="우선순위 바꾸기 → 종합 점수 다시 계산">${p.name}</button>`).join('')}</div>`;
+  return `<div class="chips">${Object.entries(PRIO).map(([k,p])=>`<button class="chip ${S.prio===k?'on':''}" onclick="set({prio:'${k}',cmpQ:[]})" data-act="우선순위 바꾸기 → 종합 점수 다시 계산">${p.name}</button>`).join('')}</div>`;
 }
 /* 3단계 · 이 집에서 받을 수 있는 지원 = 내 조건(2단계 judge) × 집 조건(보증금·월세) · 코드 판정 */
 function houseSupport(h){
@@ -1710,6 +1762,122 @@ function supportSec(H, th){
       <tr><td style="font-weight:700">지원 받으면 한 달 실부담</td>${H.map(h=>`<td class="${after(h)===minA?'best':''}"><b class="v">${after(h)}만 원</b><span class="w">${S3[h.key].monthSup?`월세 지원 ${S3[h.key].monthSup}만 원 빼고`:'지원 없음'}</span></td>`).join('')}</tr>
     </table>
     <p class="s" style="margin-top:10px">1단계 답과 이 집의 보증금·월세로 코드가 판정했어요. 소득·재산은 신청할 때 서류로 확인해요. 아래 종합 추천 점수는 지원 전 금액으로 계산했어요.</p></div>`;
+}
+/* ===== 3단계 · 이 비교에 대해 물어보기 (LLM · 검색 없음 · 위에서 계산된 비교 결과만) =====
+   python scripts/server.py 로 열면 → /api/compare 로 AI가 답해요 (서버가 숫자 검사·결론 검사).
+   서버가 없거나 AI 답이 검사에 걸리면 → 아래 tmpl3() 가 계산 결과로 만든 문장으로 답해요.
+   범위 밖 질문(소음·채광·면적 등)과 지원 신청 질문은 AI에 보내지 않고 코드가 바로 안내해요. */
+const nm3 = h => h.label.replace(' 원룸', '').replace(/동$/, '');
+const bat3 = w => { const c = String(w).charCodeAt(String(w).length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 !== 0; };
+const ja3 = (w, a, b) => w + (bat3(w) ? a : b);                       // ja3('신림','이','') → 신림이
+const plain = t => String(t).replace(/<[^>]+>/g, '');
+function rankBy(k) { const s = S.prio; S.prio = k; const r = scores(); S.prio = s; return r; }
+function facts3() {      // AI에 넘기는 값 = 화면에 보이는 계산 결과 그대로 (AI는 이 밖의 숫자를 쓰면 안 돼요)
+  const H = hs(), cash = me().cash, pct = v => Math.round(v * 100);
+  const homes = H.map(h => {
+    const s = houseSupport(h);
+    return {
+      name: nm3(h), label: h.label, deposit: val(h, 'deposit'), deposit_short: Math.max(0, val(h, 'deposit') - cash), rent: val(h, 'rent'), fee: val(h, 'fee'),
+      monthly: monthly(h), transit_fare_month_ref: fareMonth(h), commute_min: h.commute, route: h.route, station: h.station,
+      support_total: s.total, monthly_support: s.monthSup, monthly_after_support: r1(monthly(h) - s.monthSup),
+      nearest: Object.fromEntries(FAC.map(f => [f.label, `${LIFE[h.key][f.k][0]} ${LIFE[h.key][f.k][1]}분`]))
+    };
+  });
+  const pairs = [];
+  H.forEach((a, i) => H.forEach((b, j) => {
+    if (i < j) pairs.push({
+      a: nm3(a), b: nm3(b), monthly_diff: r1(Math.abs(monthly(a) - monthly(b))), commute_diff_min: Math.abs(a.commute - b.commute),
+      deposit_diff: Math.abs(val(a, 'deposit') - val(b, 'deposit')), commute_hours_month_diff: r1(Math.abs(a.commute - b.commute) * 2 * DAYS / 60)
+    });
+  }));
+  const priorities = Object.fromEntries(Object.entries(PRIO).map(([k, p]) => [p.name, {
+    weights: { 비용: pct(p.w.cost), 시간: pct(p.w.time), 생활: pct(p.w.life) },
+    rank: rankBy(k).map((r, i) => ({ rank: i + 1, home: nm3(r.h), total: r.total, cost_score: r.cost, time_score: r.time, life_score: r.life }))
+  }]));
+  return { dest: DEST.name, my_cash: cash, max_commute_wish: S.prof && S.prof.time < 999 ? S.prof.time : null, prio_now: PRIO[S.prio].name, priorities, homes, pairs,
+    reasons_now: reasons(scores()).map(plain), score_rule: '비용: 가장 싼 집 100점, 월 10만 원 비쌀 때마다 −15점 · 시간: 15분 이하 100점, 그 뒤 1분마다 −2점 · 생활: 시설 8곳 도보 거리 평균' };
+}
+const OUT3 = /소음|층간|방음|채광|햇빛|해가|치안|안전|경사|언덕|곰팡이|벌레|집주인|수압|냄새|전망|넓|평수|면적|크기|구조|옵션|반려|강아지|고양이|주차|엘리베이터|몇\s*층|영업시간|야간|분위기/;
+const STEP2_3 = q => /신청|언제|공고|서류|자격|조건|기간|마감/.test(q) && /지원|청년월세|월세\s*지원|이사비|중개보수|대출|보증|안심/.test(q);
+function tmpl3(q) {      // 코드가 만드는 답 (서버가 없거나 AI 답이 검사에 걸릴 때)
+  const H = hs(), rank = scores(), top = rank[0].h, pn = PRIO[S.prio].name, n = nm3;
+  const by = (f, d) => H.slice().sort((a, b) => d * (f(a) - f(b)));
+  const cheap = by(monthly, 1), fast = by(h => h.commute, 1);
+  const pos = h => rank.findIndex(r => r.h === h) + 1, sc = h => rank.find(r => r.h === h).total;
+  const named = H.filter(h => q.includes(n(h)));
+  const won = v => `${v.toLocaleString()}만 원`;
+  if (STEP2_3(q)) return { kind: 'step2', text: '지원 조건과 신청 시기는 2단계에서 확인해 보세요. 공고문 근거로 답해 드려요.' };
+  if (OUT3.test(q)) return { kind: 'out', text: '비교 결과에는 없는 내용이에요. 집 볼 때 직접 확인해 보세요.' };
+  const pk = [['money', /돈|비용|싼|저렴/], ['time', /시간|출퇴근|통근|가까/], ['life', /생활|동네|편의/], ['bal', /균형/]].find(([k, re]) => re.test(q) && /먼저|중요|우선|기준|바꾸|바뀌|으로 하면|로 하면/.test(q));
+  if (pk) {
+    const r = rankBy(pk[0]);
+    return { kind: 'ok', text: `'${PRIO[pk[0]].name}' 기준이면 ${r.map((x, i) => `${i + 1}위 ${n(x.h)} ${x.total}점`).join(', ')}이에요.${pk[0] !== S.prio ? ` 지금은 '${pn}' 기준이라 ${ja3(n(top), '이', '가')} 1위예요.` : ''}` };
+  }
+  if (/지원\s*받|지원받|실제\s*부담|실부담.*지원/.test(q)) {
+    const af = h => r1(monthly(h) - houseSupport(h).monthSup), s = by(af, 1);
+    return { kind: 'ok', text: `지원을 받으면 한 달 실부담은 ${s.map(h => `${n(h)} ${won(af(h))}`).join(', ')}이에요. ${ja3(n(s[0]), '이', '가')} 가장 적어요.` };
+  }
+  if (/보증금/.test(q)) {
+    const cash = me().cash, short = H.filter(h => val(h, 'deposit') > cash);
+    return { kind: 'ok', text: `보증금은 ${H.map(h => `${n(h)} ${won(val(h, 'deposit'))}`).join(', ')}이에요. ${short.length ? short.map(h => `${ja3(n(h), '은', '는')} 모아둔 돈 ${won(cash)}보다 ${won(val(h, 'deposit') - cash)} 많아요.`).join(' ') : `모두 모아둔 돈 ${won(cash)} 안이에요.`}` };
+  }
+  const fac = FAC.find(f => q.includes(f.label) || (f.k === 'clinic' && /병원/.test(q)) || (f.k === 'station' && /지하철|역까지/.test(q)) || (f.k === 'mart' && /마트/.test(q) && !/동네/.test(q)) || (f.k === 'gym' && /헬스|운동/.test(q)));
+  if (fac) return { kind: 'ok', text: `걸어서 가장 가까운 ${fac.label}: ${H.map(h => `${n(h)} ${LIFE[h.key][fac.k][0]} ${LIFE[h.key][fac.k][1]}분`).join(', ')}이에요.` };
+  if (/가까|출퇴근|통근|빠른|오래\s*걸/.test(q) && named.length < 2) return { kind: 'ok', text: `${ja3(n(fast[0]), '이', '가')} ${DEST.name}까지 ${fast[0].route === '걸어서' ? '걸어서 ' : ''}${fast[0].commute}분으로 가장 가까워요. ${fast.slice(1).map(h => `${n(h)} ${h.commute}분`).join(', ')}이에요.` };
+  if (/싸|저렴|돈이?\s*(적|덜)|가장\s*적|실부담/.test(q) && named.length < 2) return { kind: 'ok', text: `한 달 실부담(월세+관리비)은 ${ja3(n(cheap[0]), '이', '가')} ${won(monthly(cheap[0]))}으로 가장 적어요. ${cheap.slice(1).map(h => `${n(h)} ${won(monthly(h))}`).join(', ')}이에요.` };
+  if (named.length >= 2) {
+    const [a, b] = monthly(named[0]) >= monthly(named[1]) ? named : [named[1], named[0]];
+    const flip = Object.keys(PRIO).find(k => k !== S.prio && rankBy(k)[0].h === a && pos(a) > 1);
+    return { kind: 'ok', text: `${ja3(n(a), '은', '는')} 한 달 ${won(monthly(a))}, ${ja3(n(b), '은', '는')} ${won(monthly(b))}으로 ${won(r1(monthly(a) - monthly(b)))} 차이예요. ${a.commute < b.commute ? `대신 ${ja3(n(a), '은', '는')} ${a.route === '걸어서' ? '걸어서 ' : ''}${a.commute}분, ${ja3(n(b), '은', '는')} ${b.commute}분이에요.` : `출퇴근은 ${n(a)} ${a.commute}분, ${n(b)} ${b.commute}분이에요.`}${flip ? ` '${PRIO[flip].name}'로 바꾸면 ${ja3(n(a), '이', '가')} 1위예요.` : ''}` };
+  }
+  const why = named[0] || (/왜|추천|1위|이유/.test(q) ? top : null);
+  if (why) {
+    const p = pos(why), first = cheap[0] === why ? `한 달 실부담이 ${won(monthly(why))}으로 ${H.length}곳 중 가장 적고` : `한 달 실부담은 ${won(monthly(why))}이고`;
+    const t2 = fast[0] === why ? `${DEST.name}까지 ${why.commute}분으로 가장 가까워요` : `${DEST.name}까지 ${why.commute}분이에요`;
+    return { kind: 'ok', text: `${ja3(n(why), '은', '는')} ${first}, ${t2}. ${pn} 기준 ${sc(why)}점으로 ${p}위예요.` };
+  }
+  return { kind: 'miss', text: `비교 결과에서 답을 찾지 못했어요. '왜 ${ja3(n(top), '이야', '야')}?', '두 집 차이는?'처럼 물어봐 주세요.` };
+}
+function askCmp(q) {
+  q = String(q || '').trim().slice(0, 200); if (!q) return;
+  const t = tmpl3(q), item = { q };
+  S.cmpQ = [...(S.cmpQ || []), item];
+  const el = document.getElementById('cmp3q'); if (el) el.value = '';
+  if (t.kind === 'step2' || t.kind === 'out') { Object.assign(item, { a: t.text, mode: t.kind }); render(); return; }
+  if (!location.protocol.startsWith('http')) { Object.assign(item, { a: t.text, mode: 'code', why: 'off' }); render(); return; }
+  item.load = true; render();
+  fetch('/api/compare', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q, facts: facts3() }) })
+    .then(r => r.ok ? r.json() : null).catch(() => null).then(r => {
+      item.load = false;
+      if (!(S.cmpQ || []).includes(item)) return;          // 그 사이 우선순위를 바꿔서 지워진 질문
+      if (r && r.answer) Object.assign(item, { a: r.answer, mode: 'AI' });
+      else Object.assign(item, { a: t.text, mode: 'code', why: r ? (r.reason || 'off') : 'off' });
+      API_OK = !!r; S.cmpAiOff = !!(r && r.reason === 'off'); render();
+    });
+}
+function cmpCard(it) {
+  const b = t => esc(t).replace(/(\d[\d,.]*\s*(?:만 원|분|점|시간|곳|위))/g, '<b>$1</b>');
+  if (it.load) return `<div class="cmp3-card"><span class="cmp3-q">${esc(it.q)}</span><div class="cmp3-a" style="color:var(--sub)">비교 결과를 읽는 중…</div></div>`;
+  const gray = it.mode === 'out' || it.mode === 'step2' || it.mode === 'miss';
+  const why = it.mode === 'code' ? (it.why === 'number' ? ' · AI 답에 없는 숫자가 있어서 계산 결과 문장으로 바꿨어요' : it.why === 'conclusion' ? ' · AI 답이 추천과 달라서 계산 결과 문장으로 바꿨어요' : ' · AI 꺼짐 · 계산 결과 문장') : it.mode === 'AI' ? ' · AI 답변 (숫자·결론 검사 통과)' : '';
+  return `<div class="cmp3-card ${gray ? 'gray' : ''}"><span class="cmp3-q">${esc(it.q)}</span><div class="cmp3-a">${b(it.a)}</div>
+  ${it.mode === 'step2' ? `<button class="link" style="margin-top:6px" onclick="go(2)" data-act="2단계 공고문에 물어보기로">2단계 [공고문에 물어보기] ›</button>` : ''}
+  <div class="cmp3-f">이 답은 위 비교 결과로만 만들었어요${why}</div></div>`;
+}
+function cmpSec(rank) {
+  if (S.easy || !rank.length) return '';
+  const top = rank[0].h, sec = rank[1] && rank[1].h, n = nm3;
+  const ex = [`왜 ${ja3(n(top), '이야', '야')}?`];
+  if (sec) ex.push(`${ja3(n(sec), '이랑', '랑')} ${n(top)} 차이는?`);
+  ex.push('가장 가까운 집은?');
+  const off = API_OK === false || S.cmpAiOff || !location.protocol.startsWith('http');
+  return `<div class="sec cmp3" id="cmp3"><div class="cmp3-box">
+<div class="cmp3-h">이 비교에 대해 물어보기 <span class="pill">AI</span>${off ? '<small>AI 꺼짐 · 계산 결과 문장으로 답해요</small>' : ''}</div>
+<p class="s" style="margin-top:4px">계산된 비교 결과(실부담·출퇴근·생활·지원·점수)로만 답해요. 검색하지 않고, 추천을 바꾸지 않아요.</p>
+<div class="cmp3-ex">${ex.map(q => `<button onclick="askCmp('${q}')" data-act="예시 질문 → 답 카드">${q}</button>`).join('')}</div>
+<div class="cmp3-in"><input id="cmp3q" placeholder="궁금한 걸 물어보세요" onkeyup="if(event.key==='Enter'&&!event.isComposing)askCmp(this.value)"><button onclick="askCmp(document.getElementById('cmp3q').value)" data-act="묻기 → 답 카드">묻기</button></div>
+  </div>
+  ${(S.cmpQ || []).map(cmpCard).join('')}</div>`;
 }
 function step4(){
   if(!S.homesDone) return step4Input();
@@ -1791,11 +1959,69 @@ function step4(){
       ${wk?`<div class="note warn" style="margin-top:16px"><span class="ic">!</span><div>아쉬운 점 · ${top.h.label}은 ${wk}</div></div>`:''}
       <details style="margin-top:14px"><summary class="s" style="cursor:pointer">점수는 이렇게 계산해요</summary><p class="s" style="margin-top:8px;line-height:1.8">비용: 가장 싼 집 100점, 월 10만 원 비쌀 때마다 −15점<br>시간: 15분 이하 100점, 그 뒤 1분마다 −2점<br>생활: 시설마다 걸어서 5분 이하 100점, 20분 이상 0점 → 8개 평균<br>점수와 숫자는 코드가 계산하고, AI는 이 근거로만 설명해요.</p></details>
     </div>
+    ${cmpSec(rank)}
     <div class="hr"></div>
     <div class="diff" style="margin-top:0"><div><h4 style="color:var(--pri)">데이터로 확인한 것</h4><p class="s">주변 시설 거리 (카카오 로컬) · 오가는 시간·요금 (ODsay)</p></div><div><h4 style="color:var(--warn)">직접 확인해야 할 것</h4><p class="s">관리비 · 건물 용도 · 소음 · 채광 · 수압과 곰팡이</p></div></div>`;
 }
 
+/* ===== 홈 (웹에 들어오면 처음 보이는 화면) · [시작하기] → 1단계 =====
+   ?easy=1 로 들어오면 홈을 건너뛰고 쉬운 화면으로 시작해요. 로고를 누르면 홈으로 돌아와요. */
+let HP_T = null;
+function homePage() {
+  return `<div class="hp"><div class="hp-page">
+  <header class="hp-top"><div class="logo">첫집 <b>내비</b></div><button class="hp-tg" onclick="set({easy:!S.easy})" aria-pressed="${!!S.easy}" data-act="쉬운 화면 켜기/끄기">쉬운 화면<span class="hp-sw ${S.easy ? 'on' : ''}"></span></button></header>
+  <section class="hp-hero">
+<div>
+  <h1>첫 집, 받을 수 있는 돈부터<br>어느 집이 맞을지까지</h1>
+  <div class="hp-btns"><button class="hp-b" onclick="startApp()" data-act="시작하기 → 1단계">시작하기</button></div>
+  <button class="hp-easy" onclick="startApp(true)" data-act="쉬운 화면으로 시작">쉬운 화면으로 보기 ›</button>
+</div>
+<div class="hp-pv" id="hp-pv">
+  <div class="hp-pvt">이런 결과를 받아요 · 예시</div>
+  <div class="hp-money"><span id="hp-who"></span><b>최대 <span id="hp-amt">520</span>만 원</b></div>
+  <div class="hp-line"></div>
+  <div class="hp-chips" id="hp-chips"></div>
+  <div class="hp-rec" id="hp-rec"><div class="hp-tag" id="hp-rtag"></div><span id="hp-rtxt"></span></div>
+  <div class="hp-rank" id="hp-rank"></div>
+</div>
+  </section>
+  <section class="hp-steps">
+<div class="hp-st"><div class="hp-n">1</div><h3>내 상황</h3><p>나이, 자주 가는 곳, 모아둔 돈을 골라요.</p></div>
+<div class="hp-st"><div class="hp-n">2</div><h3>받을 수 있는 돈</h3><p>공고문을 근거로 받을 수 있는 지원금을 계산해요.</p></div>
+<div class="hp-st"><div class="hp-n">3</div><h3>집 비교</h3><p>후보 집 2~3곳을 돈, 오가는 시간, 동네 생활로 비교해요.</p></div>
+  </section>
+</div></div>`;
+}
+function startApp(easy) { clearInterval(HP_T); set({ home: false, step: 1, ...(easy ? { easy: true } : {}) }); scrollTo(0, 0); }
+function homeInit() {      // 오른쪽 예시 카드 애니메이션 (홈 원본 그대로)
+  clearInterval(HP_T);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const H = { C: { n: 'C 신림', c: '#7048e8', full: '신림동' }, A: { n: 'A 성수', c: '#f76707', full: '성수동' }, B: { n: 'B 역삼', c: '#0ca678', full: '역삼동' } };
+  const P = [['균형', { C: 86.4, A: 76.2, B: 68.1 }], ['돈이 먼저', { C: 90.6, A: 74.8, B: 54.9 }], ['시간이 먼저', { C: 79.5, A: 74.6, B: 83.1 }], ['동네 생활', { C: 87.8, A: 80.9, B: 72.2 }]];
+  const W = [['만 27세 · 월 230만 원이면, 내년에 받을 수 있는 지원금', 520], ['만 35세 · 월 230만 원이면, 내년에 받을 수 있는 지원금', 280]];
+  const $ = id => document.getElementById(id);
+  const chips = $('hp-chips'), rank = $('hp-rank'), rec = $('hp-rec'), pv = $('hp-pv');
+  if (!chips) return;
+  let amtCur = 520, idx = 0, first = true, paused = false;
+  const rows = {}, cur = { C: 0, A: 0, B: 0 };
+  function amtTo(to) { const el = $('hp-amt'), from = amtCur, t0 = performance.now(), d = reduce ? 0 : 450; (function f(t) { const p = d ? Math.min(1, (t - t0) / d) : 1, e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(from + (to - from) * e); if (p < 1) requestAnimationFrame(f); else amtCur = to; })(t0); }
+  function count(k, to) { const el = rows[k].querySelector('.hp-sc'), from = cur[k], t0 = performance.now(), d = reduce ? 0 : 400; (function f(t) { const p = d ? Math.min(1, (t - t0) / d) : 1, e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e; el.textContent = v.toFixed(1) + '점'; if (p < 1) requestAnimationFrame(f); else cur[k] = to; })(t0); }
+  function show(i) {
+    idx = i; const s = P[i][1], w = W[i % 2]; $('hp-who').textContent = w[0]; amtTo(w[1]);
+    [...chips.children].forEach((c, j) => c.classList.toggle('on', j === i));
+    const order = Object.keys(s).sort((a, b) => s[b] - s[a]);
+    order.forEach((k, r) => { rows[k].style.transform = `translateY(${r * 38}px)`; rows[k].querySelector('i').style.width = s[k] + '%'; count(k, s[k]); });
+    const top = order[0], apply = () => { $('hp-rtag').style.background = H[top].c; $('hp-rtag').textContent = top; $('hp-rtxt').textContent = H[top].full + ' 원룸을 추천해요'; rec.classList.remove('fade'); };
+    if (first || reduce) { apply(); first = false; } else { rec.classList.add('fade'); setTimeout(apply, 150); }
+  }
+  function restart() { clearInterval(HP_T); if (reduce) return; HP_T = setInterval(() => { if (!document.getElementById('hp-chips')) return clearInterval(HP_T); if (!paused) show((idx + 1) % P.length); }, 1500); }
+  P.forEach(([l], i) => { const c = document.createElement('button'); c.className = 'hp-chip'; c.textContent = l; c.onclick = () => { show(i); restart(); }; chips.appendChild(c); });
+  for (const k of ['C', 'A', 'B']) { const r = document.createElement('div'); r.className = 'hp-row'; r.innerHTML = `<span class="hp-nm">${H[k].n}</span><div class="hp-tr"><i style="width:0;background:${H[k].c}"></i></div><span class="hp-sc">0점</span>`; rank.appendChild(r); rows[k] = r; }
+  pv.onmouseenter = () => paused = true; pv.onmouseleave = () => paused = false;
+  show(0); restart();
+}
 function render(){
+  if (S.home) { document.getElementById('root').innerHTML = homePage(); homeInit(); return; }
   const body=[null,step1,step3,step4][S.step]();
   document.getElementById('root').innerHTML=fill(`<div class="app ${S.easy?'easy':''} ${S.ragShow?'show-rag':''}">${header()}<div class="main"><div class="layout"><div class="col">${banner1()}${body}</div><aside class="aside">${aside()}</aside></div></div>${footer()}</div>${loginModal()}`);
   if(document.getElementById('kmap')) drawKakao();
@@ -1824,6 +2050,8 @@ function doLogin(via){
   const given = name.length >= 3 ? name.slice(1) : name;   // 박정연 → 정연
   set({user:{name, given, via}, loginOpen:false});
 }
+if (new URLSearchParams(location.search).get('easy') === '1') S.easy = true;   // ?easy=1 → 홈 건너뛰고 쉬운 화면으로 시작
+S.home = !S.easy;                                                              // 처음 들어오면 홈
 render();
 apiCheck();
 </script>
