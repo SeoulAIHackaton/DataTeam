@@ -198,7 +198,7 @@ class Rag:
             if age and asks_age and ((lo and age < lo) or (hi and age > hi)) and same not in seen:
                 seen.add(same)
                 refs.append({"n": len(refs) + 1, "name": h["name"], "org": h["org"], "section": "나이 확인 (코드 판정)",
-                             "text": f"{h['name']}은 만 {lo or '?'}~{hi or '?'}세가 대상이라, 만 {age}세는 대상이 아니에요.", "url": h["url"], "source": "코드 판정"})
+                             "text": f"{h['name']}은 만 {lo or '?'}~{hi or '?'}세가 대상이라, 만 {age}세는 대상이 아니에요.", "url": h["url"], "source": "코드 판정", "policy_id": h["policy_id"]})
         today = os.environ.get("DEMO_DATE", "2026-11-21")
         for h in hits:
             ap = h.get("apply") or {}                              # 접수 상태도 코드가 날짜로 판정해서 근거로 붙임
@@ -210,9 +210,9 @@ class Rag:
                     txt = f"{h['name']}은 {st}부터 신청할 수 있어요 ({today} 기준 아직 시작 전)."
                 else:
                     txt = f"{h['name']}은 {today} 기준으로 지금 신청할 수 있어요 (마감 {en})."
-                refs.append({"n": len(refs) + 1, "name": h["name"], "org": h["org"], "section": "신청 상태 (코드 판정)", "text": txt, "url": h["url"], "source": "코드 판정"})
+                refs.append({"n": len(refs) + 1, "name": h["name"], "org": h["org"], "section": "신청 상태 (코드 판정)", "text": txt, "url": h["url"], "source": "코드 판정", "policy_id": h["policy_id"]})
             for c in h["chunks"]:
-                refs.append({"n": len(refs) + 1, "name": h["name"], "org": h["org"], "section": c["section"], "text": c["text"], "url": h["url"], "source": h["source"]})
+                refs.append({"n": len(refs) + 1, "name": h["name"], "org": h["org"], "section": c["section"], "text": c["text"], "url": h["url"], "source": h["source"], "policy_id": h["policy_id"]})
         ctx = "\n".join(f"[{r['n']}] ({r['name']} · {r['section']}) {r['text']}" for r in refs)
         res = None
         if os.environ.get("LLM_API_KEY"):

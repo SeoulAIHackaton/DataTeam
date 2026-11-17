@@ -10,6 +10,7 @@
 - POST /api/compare {"question": "...", "facts": {...}}  → 3단계 비교 결과 설명 (검색 없음)
 - POST /api/ask  {"question": "...", "profile": {"age": 27}}
   → {"answer", "citations", "found", "mode", "sources": [{n, name, section, text, url}], "policies"}
+- GET /api/source?policy=GOV-161300000099   [원문 보기] → 그 정책의 공고 내용 전체 {name, org, source, url, sections: [{section, text}]}
 - GET /api/config  브라우저용 키 (.env 의 KAKAO_JS_KEY, ODSAY_WEB_KEY) → 화면이 지도·길찾기에 써요
 - GET /api/place?q=판교   1단계 '자주 가는 곳' 검색 (카카오 로컬 장소 검색 + 주소 검색, .env 의 KAKAO_REST_API_KEY)
   → {"places": [{name, address, query}]}  · 키가 없으면 503 {"error": "no_key"} → 화면은 미리 정한 후보 목록으로 바꿔요
@@ -89,6 +90,17 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_header("Location", "/web/index.html")
             self.end_headers()
             return
+        if self.path.startswith("/api/source"):   # [원문 보기] → 그 정책의 공고 내용 전체 (색인에 들어 있는 정부24·온통청년 원문을 항목별로)
+            pid = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("policy", [""])[0]
+            cs = [c for c in RAG.chunks if c["policy_id"] == pid]
+            if not cs:
+                return self._json(404, {"error": "not found"})
+            secs = {}
+            for c in cs:                                   # 긴 항목은 500자씩 잘려 있어서 다시 이어 붙여요
+                secs.setdefault(c["section"], []).append(c["text"])
+            c0 = cs[0]
+            return self._json(200, {"name": c0["name"], "org": c0.get("org"), "source": c0.get("source"), "url": c0.get("url"),
+                                    "sections": [{"section": k, "text": " ".join(v)} for k, v in secs.items()]})
         if self.path == "/api/config":   # 브라우저용 키만 (카카오 JavaScript 키 · ODsay 웹 키). 원래 브라우저에 보이는 키라 도메인 등록으로 막아요. REST·LLM 키는 절대 안 내보내요
             return self._json(200, {"kakaoJsKey": os.environ.get("KAKAO_JS_KEY", ""), "odsayWebKey": os.environ.get("ODSAY_WEB_KEY", "")})
         if self.path == "/api/health":
@@ -135,7 +147,7 @@ class Handler(SimpleHTTPRequestHandler):
             t = time.time()
             r = RAG.answer(q, req.get("profile") or {})
             print(f"[질문] {q}  → {r['mode']} · {time.time() - t:.1f}초" + (f" · {r['memo']}" if r.get("memo") else ""))
-            keep = ("n", "name", "org", "section", "text", "url", "source")
+            keep = ("n", "name", "org", "section", "text", "url", "source", "policy_id")
             return self._json(200, {"answer": r["answer"], "citations": r.get("citations", []), "found": r.get("found", True),
                                     "mode": r["mode"], "sources": [{k: s.get(k) for k in keep} for s in r.get("sources", [])],
                                     "policies": [p["name"] for p in r.get("policies", [])]})
