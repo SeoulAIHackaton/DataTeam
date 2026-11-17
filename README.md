@@ -70,11 +70,12 @@ python scripts/server.py
 | 1단계 자주 가는 곳 검색 | 미리 정한 후보 목록에서 골라요 | `.env` → `KAKAO_REST_API_KEY` |
 | 2단계 공고문에 물어보기 | 공고문 원문 문장으로 답해요 | `.env` → `LLM_API_KEY` |
 | 3단계 이 비교에 대해 물어보기 | 코드가 미리 정한 문장으로 답해요 | `.env` → `LLM_API_KEY` |
-| 3단계 지도 | 2호선 그림 지도로 보여요 | `web/index.html`의 `KAKAO_JS_KEY` (`'JS_KEY'` 자리) |
-| 3단계 새 주소의 오가는 시간 | 직선거리로 추정해요 (예시 집 3곳은 저장된 값) | `web/index.html`의 `ODSAY_WEB_KEY` (`'ODSAY_KEY'` 자리) |
+| 3단계 지도 · 새 주소 검색 | 2호선 그림 지도로 보이고, 예시 집 3곳으로만 비교해요 | `.env` → `KAKAO_JS_KEY` |
+| 3단계 새 주소의 오가는 시간 | 직선거리로 추정해요 (예시 집 3곳은 저장된 값) | `.env` → `ODSAY_WEB_KEY` |
 
 - `.env`를 바꾸면 서버를 껐다 켜요. 키 값은 노션 「📦 데이터 · API 정리」 DB에 있어요.
-- `web/index.html`에 넣은 키는 **커밋하지 말고** 내 컴퓨터에서만 써요.
+- 키는 모두 `.env`에만 넣어요. `KAKAO_JS_KEY`·`ODSAY_WEB_KEY`는 브라우저에서 쓰는 키라 서버가 `/api/config`로 화면에 넘겨줘요 (원래 브라우저에 보이는 키라서 카카오·ODsay에 등록한 주소에서만 동작해요). REST·LLM 키는 서버 밖으로 안 나가요.
+- 파일을 더블클릭해서 열면 서버가 없어서 키를 못 받아요 → 그림 지도로 보여요.
 
 ### 자주 막히는 것
 
@@ -121,8 +122,8 @@ python scripts/server.py
 |---|---|---|---|
 | 공공데이터포털 인증키 | data.go.kr | 정부24 혜택, LH 공고 목록·공급정보 (나중에 약국도 같은 키로 신청) | `DATA_GO_KR_API_KEY` |
 | 온통청년 API 키 | youthcenter.go.kr | 청년정책 목록 | `YOUTHCENTER_API_KEY` |
-| 카카오 | developers.kakao.com | 로컬(REST) · 지도(JavaScript 키는 HTML에) | `KAKAO_REST_API_KEY` |
-| ODsay | lab.odsay.com | 대중교통 길찾기 (서버 IP 등록 필요) | `ODSAY_API_KEY` |
+| 카카오 | developers.kakao.com | 로컬(REST) · 지도(JavaScript 키) | `KAKAO_REST_API_KEY`, `KAKAO_JS_KEY` |
+| ODsay | lab.odsay.com | 대중교통 길찾기 (서버 IP 등록 필요) · 화면용 웹 키 | `ODSAY_API_KEY`, `ODSAY_WEB_KEY` |
 | LLM | 미정 (개발·테스트는 OpenAI 임시) | AI 설명 · RAG 답변 | `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL` |
 
 서비스 LLM은 아직 정하지 않았어요. `.env`의 `LLM_BASE_URL`, `LLM_MODEL`만 바꾸면 OpenAI 호환 API를 쓰는 다른 모델로 코드 수정 없이 바뀌어요. `.env.example`의 `gpt-4o-mini`는 개발용 기본값일 뿐이에요. **모델을 바꾸면 `python scripts/rag_eval.py`로 22문항 평가를 다시 돌려요.**
@@ -700,7 +701,7 @@ firsthome_data/
 ├── archive/          안 쓰는 것 보관: 주거 전략 단계 (strategy.py, 결과, 전환율) · 전월세 시세 · 예전 4단계 프로토타입
 └── raw/              원본 (용량이 커서 압축본에는 빠져 있음 → 기존 raw 폴더를 그대로 옮겨 넣기)
 ```
-- 이 정리본에는 **키가 하나도 들어 있지 않아요.** 키는 `.env`(REST·ODsay·AI)와 `web/index.html`의 `JS_KEY` 자리(카카오 JavaScript 키)에만 넣어요.
+- 이 정리본에는 **키가 하나도 들어 있지 않아요.** 키는 `.env`에만 넣어요 (REST·ODsay·AI·카카오 JavaScript 키 모두).
 - 지금 `.env`의 `KAKAO_REST_API_KEY`에 든 키는 카카오가 등록된 웹 주소(origin)를 요구해요(JavaScript 키처럼 동작). 그래서 `server.py`의 장소 검색은 `KA: os/javascript origin/http://127.0.0.1:5500` 헤더를 붙여요(`KAKAO_ORIGIN`으로 바꿀 수 있어요). `collect_homes.py`는 이 헤더가 없어서 같은 키로는 401이 날 수 있어요.
 - 카카오 지도는 VS Code에서 `web` 폴더를 열고 Live Server(`http://127.0.0.1:5500`)로 열어야 떠요. 키가 없으면 그림 지도로 보여요.
 

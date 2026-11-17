@@ -805,6 +805,8 @@ let API_OK = null;
 function apiCheck(){
   if(!location.protocol.startsWith('http')){ API_OK=false; return; }
   fetch('/api/health').then(r=>r.ok?r.json():null).then(j=>{ API_OK=!!(j&&j.ok); render(); }).catch(()=>{ API_OK=false; });
+  // 지도·길찾기 키는 서버가 .env 에서 읽어서 줘요 (KAKAO_JS_KEY, ODSAY_WEB_KEY). 비어 있으면 아래 기본값 그대로 → 그림 지도 · 직선거리 추정
+  fetch('/api/config').then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; if(j.kakaoJsKey) KAKAO_JS_KEY=j.kakaoJsKey; if(j.odsayWebKey) ODSAY_WEB_KEY=j.odsayWebKey; render(); }).catch(()=>{});
 }
 function apiProfile(){ const P=S.prof||{}; return {age:P.age||27, income_monthly:P.income, job:P.job, homeless:S.own!=='있어요', area:{}}; }
 function apiAsk(q){
@@ -1478,7 +1480,7 @@ const ADDR_Q = {0:'성수동2가 333-76', 1:'역삼동 778-26', 2:'신림동 502
 
 // ===== 실제 주소 검색 (카카오 키가 있을 때) =====
 // 주소 검색·주변 시설: 카카오 JavaScript SDK (services) · 오가는 시간·요금: ODsay (웹 키가 있을 때만, 없으면 거리로 추정)
-const ODSAY_WEB_KEY = 'ODSAY_KEY';   // ODsay에 웹 플랫폼(http://127.0.0.1:5500)으로 등록한 키. 없으면 그대로 두기
+let ODSAY_WEB_KEY = 'ODSAY_KEY';   // .env 의 ODSAY_WEB_KEY 를 서버(/api/config)에서 받아 채워요. ODsay에 웹 플랫폼(http://127.0.0.1:5500)으로 등록한 키
 const walkMin = d => Math.max(1, Math.round(d * 1.3 / 67));
 function kq(fn){ return new Promise(ok => fn((r, st) => ok(st === kakao.maps.services.Status.OK ? r : []))); }
 async function liveSearch(){
@@ -1622,9 +1624,9 @@ function step4Input(){
 
 /* ---------- 지도 ---------- */
 // ===== 카카오맵 =====
-// 아래 'JS_KEY'를 카카오 JavaScript 키로 바꾸고, Live Server(http://127.0.0.1:5500)로 열면 진짜 지도가 나와요.
+// .env 에 KAKAO_JS_KEY 를 넣고 python scripts/server.py 로 열면(http://127.0.0.1:5500) 서버가 키를 줘서 진짜 지도가 나와요.
 // 키가 없거나 파일을 더블클릭해서 열면 2호선 그림 지도로 보여줘요.
-const KAKAO_JS_KEY = 'JS_KEY';
+let KAKAO_JS_KEY = 'JS_KEY';
 const kakaoOn = () => KAKAO_JS_KEY !== 'JS_KEY' && location.protocol.startsWith('http') && !window._kfail;
 const GEO = {};   // 주소 → 좌표 캐시
 let _kvis = null, _kloading = null;
