@@ -32,7 +32,7 @@ firsthome_data/
 
 화면(`web/index.html`)과 API를 `scripts/server.py` 하나로 같이 띄워요. **API 키가 없어도 화면은 끝까지 돌아가요.**
 
-파이썬 3가 있어야 해요. 서버에 필요한 패키지는 `numpy` 하나뿐이고, 가상환경(`.venv`)에 설치해서 써요. 쓰는 터미널에 맞는 것을 골라요.
+파이썬 3가 있어야 해요. 서버에 필요한 패키지는 `numpy`, `scikit-learn` 두 개예요 (`requirements.txt`). 가상환경(`.venv`)에 설치해서 써요. 쓰는 터미널에 맞는 것을 골라요.
 
 ### 1. 처음 한 번만 (가상환경 만들기)
 
@@ -43,7 +43,7 @@ git clone https://github.com/SeoulAIHackaton/DataTeam.git
 cd DataTeam
 py -m venv .venv
 .venv\Scripts\activate
-pip install numpy
+pip install -r requirements.txt
 copy .env.example .env
 ```
 
@@ -54,7 +54,7 @@ git clone https://github.com/SeoulAIHackaton/DataTeam.git
 cd DataTeam
 python -m venv .venv              # 안 되면 py -m venv .venv
 source .venv/Scripts/activate
-pip install numpy
+pip install -r requirements.txt
 cp .env.example .env
 ```
 
@@ -65,7 +65,7 @@ git clone https://github.com/SeoulAIHackaton/DataTeam.git
 cd DataTeam
 python3 -m venv .venv
 source .venv/bin/activate
-pip install numpy
+pip install -r requirements.txt
 cp .env.example .env
 ```
 
@@ -117,7 +117,7 @@ cp .env.example .env
 ### 자주 막히는 것
 
 - **`포트 5500이 이미 쓰이고 있어요`**: VS Code Live Server가 켜져 있으면 꺼요 (같은 포트예요). 다른 포트로 켜려면 `PORT=8000 python scripts/server.py` (윈도우 cmd는 `set PORT=8000` 다음 줄에 실행)인데, 카카오 지도 키가 `http://127.0.0.1:5500`에 등록돼 있어서 **지도는 5500에서만 떠요.**
-- **`ModuleNotFoundError: No module named 'numpy'`**: 가상환경이 꺼져 있거나 설치를 안 한 거예요. 가상환경을 켜고(줄 앞 `(.venv)` 확인) `pip install numpy`를 해요.
+- **`ModuleNotFoundError: No module named 'numpy'` 또는 `'sklearn'`**: 가상환경이 꺼져 있거나 설치를 안 한 거예요. 가상환경을 켜고(줄 앞 `(.venv)` 확인) `pip install -r requirements.txt`를 해요.
 - **`index.html`을 더블클릭해서 열면**: 화면은 보이지만 서버가 없어서 공고문에 물어보기 · 장소 검색 · 비교 질문이 안 돼요. 꼭 서버를 켜고 위 주소로 열어요.
 - **`localhost:5500`으로 열면** 카카오 지도가 안 뜰 수 있어요. 등록된 주소인 `127.0.0.1:5500`으로 열어요.
 
@@ -514,7 +514,7 @@ supportConditions 구조
 ## 4. 수집하는 법
 
 **처음 받은 컴퓨터에서 준비**
-- 수집 스크립트는 파이썬 3 표준 라이브러리만 써요 (`pip install` 필요 없음). 화면 서버(`server.py`·`rag.py`)는 `numpy`가 필요해요 → [실행하기](#실행하기-화면-띄우기). `python`이 안 되면 `py`로 실행해요.
+- 수집 스크립트는 파이썬 3 표준 라이브러리만 써요 (`pip install` 필요 없음). 화면 서버(`server.py`·`rag.py`)는 `numpy`, `scikit-learn`이 필요해요 → [실행하기](#실행하기-화면-띄우기). `python`이 안 되면 `py`로 실행해요.
 - zip에는 보안상 `.env`가 없어요 → `.env.example`을 복사해서 키를 채워요 (키 값은 노션 DB).
 
 폴더 맨 위(`firsthome_data/`)에서 순서대로 실행해요.
