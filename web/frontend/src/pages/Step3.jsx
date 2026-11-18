@@ -7,7 +7,7 @@ import {
   scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute,
   jump, openEdit, saveEdit, cmpChecks, copyChecks, nm3, ja3, askCmp, API_OK,
 } from '../lib/core.js';
-import { Html, Icon, Tile, BBest, BUnk, ChHead, IcCk, IcX, IcDash, IcPen, IcSwap, IcDown } from '../components/ui.jsx';
+import { Html, Icon, Tile, BBest, BUnk, ChHead, Modal, IcCk, IcX, IcDash, IcPen, IcDown } from '../components/ui.jsx';
 import { MapBox, NeighMap, MiniMap } from '../components/Maps.jsx';
 
 const enterKey = (e, f) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) f(e.currentTarget.value); };
@@ -126,13 +126,14 @@ function Sup({ x }) {
     : <td><span className="st no"><IcX />조건 안 맞음</span><span className="s2">{x.t}</span></td>;
 }
 
-function CmpTable({ H, topKey }) {
+function CmpTable({ H, part = 'core' }) {
   const m = me(), cash = m.cash, K = H.filter(feeKnown), cheap = K.length >= 2 ? cheapest(H) : null;
   const fastT = Math.min(...H.map(h => h.commute)), fastN = H.filter(h => h.commute === fastT).length;
   const S3 = Object.fromEntries(H.map(h => [h.key, houseSupport(h)]));
   const wish = S.prof && S.prof.time && S.prof.time < 999 ? S.prof.time : null;
   const cell = f => f;
-  const G = ({ t, sub, extra }) => <tr><th scope="rowgroup" colSpan={H.length + 1} className="g">{extra || null}{t}{sub ? <> <span>· {sub}</span></> : null}</th></tr>;
+  const ask = cmpChecks(H).ask, core = part === 'core';
+  const G = ({ t, sub }) => <tr><th scope="rowgroup" colSpan={H.length + 1} className="g">{t}{sub ? <> <span>· {sub}</span></> : null}</th></tr>;
   const Row = ({ label, sub, f, cls, id }) => <tr className={cls || undefined} id={id}><th scope="row">{label}{sub ? <small className="s2">{sub}</small> : null}</th>{H.map(h => <Fragment key={h.key}>{f(h)}</Fragment>)}</tr>;
   return (
     <div className="tblwrap"><table>
@@ -140,21 +141,22 @@ function CmpTable({ H, topKey }) {
       <colgroup><col style={{ width: 168 }} />{H.map(h => <col key={h.key} />)}</colgroup>
       <thead><tr><th scope="col" className="k">항목</th>{H.map(h => (
         <th scope="col" key={h.key}><div className="hd"><Tile h={h} /><span className="hn2"><b>{h.label.replace(/ 원룸$/, '')}</b><small>{/ 원룸$/.test(h.label) ? '원룸' : ''}</small></span>
-          <button className="pen" onClick={() => openEdit(h.key)} aria-label={`${h.key} ${h.label} 값 고치기`} title="값 고치기" data-act="값 고치기"><IcPen /></button></div></th>
+          {core ? <button className="pen" onClick={() => openEdit(h.key)} aria-label={`${h.key} ${h.label} 값 고치기`} title="값 고치기" data-act="값 고치기"><IcPen /></button> : null}</div></th>
       ))}</tr></thead>
-      <tbody>
-        {G({ t: "매달 드는 돈" })}
-        {Row({ label: "월세", f: cell(h => <td><span className="v">{val(h, 'rent')}만 원</span></td>) })}
-        {Row({ label: "관리비", cls: "pre", id: "row-fee", f: cell(h => feeKnown(h) ? <td><span className="v">{feeOf(h)}만 원</span></td>
-          : <td><BUnk>확인 필요</BUnk><span className="s2 ok2"><IcCk />확인할 것에 담았어요</span><button className="link" onClick={() => openEdit(h.key, 'ed-fee')} data-act="관리비 넣기">관리비 알면 넣기</button></td>) })}
-        {Row({ label: "한 달 확인된 비용", sub: <>월세 + 확인된 관리비<br />공과금 별도</>, cls: "sum", id: "row-total", f: cell(h => (
-          <td><span className="big">{monthly(h)}<small>만 원{feeKnown(h) ? '' : ' +'}</small></span>
-            {!feeKnown(h) ? <BUnk>관리비 확인 필요</BUnk> : h === cheap ? <BBest>{K.length < H.length ? '확인된 것 중 가장 적어요' : '가장 적어요'}</BBest> : null}</td>)) })}
-      </tbody>
+      {core ? <>
       <tbody>
         {G({ t: "처음 드는 돈" })}
         {Row({ label: "보증금", sub: `모아둔 돈 ${cash.toLocaleString()}만 원과 비교`, f: cell(h => { const d = val(h, 'deposit');
           return <td><span className="v">{d.toLocaleString()}만 원</span>{d > cash ? <span className="bdg unk">{(d - cash).toLocaleString()}만 원 부족</span> : <span className="s2">{(cash - d).toLocaleString()}만 원 남아요</span>}</td>; }) })}
+      </tbody>
+      <tbody>
+        {G({ t: "매달 드는 돈" })}
+        {Row({ label: "월세", f: cell(h => <td><span className="v">{val(h, 'rent')}만 원</span></td>) })}
+        {Row({ label: "관리비", cls: "pre", id: "row-fee", f: cell(h => feeKnown(h) ? <td><span className="v">{feeOf(h)}만 원</span></td>
+          : <td><BUnk>확인 필요</BUnk><span className="s2 ok2"><IcCk />할 일에 담았어요</span><button className="link" onClick={() => openEdit(h.key, 'ed-fee')} data-act="관리비 넣기">관리비 알면 넣기</button></td>) })}
+        {Row({ label: "한 달 확인된 비용", sub: <>월세 + 확인된 관리비<br />공과금 별도</>, cls: "sum", id: "row-total", f: cell(h => (
+          <td><span className="big">{monthly(h)}<small>만 원{feeKnown(h) ? '' : ' +'}</small></span>
+            {!feeKnown(h) ? <BUnk>관리비 확인 필요</BUnk> : h === cheap ? <BBest>{K.length < H.length ? '확인된 것 중 가장 적어요' : '가장 적어요'}</BBest> : null}</td>)) })}
       </tbody>
       <tbody>
         {G({ t: "오가는 시간", sub: `${DEST.name}까지` })}
@@ -164,76 +166,134 @@ function CmpTable({ H, topKey }) {
         {Row({ label: "교통비 (한 달)", sub: "참고 · 합계에 넣지 않아요", f: cell(h => <td><span className="v">{fareMonth(h) ? '약 ' + fareMonth(h) + '만 원' : '0원'}</span>{fareMonth(h) ? null : <span className="s2">걸어서</span>}</td>) })}
       </tbody>
       <tbody>
-        {G({ t: "동네 생활", sub: "가장 가까운 곳까지 걸어서", extra: <button className="link gl" onClick={() => set({ detail: { home: topKey, scene: 'shop' } })} data-act="동네 생활 지도 열기">동네 지도로 보기 ›</button> })}
+        {G({ t: "확인 필요 사항", sub: "계약 전에 물어볼 것" })}
+        {Row({ label: "중개사에게 물어볼 것", sub: "04 할 일에도 담겨요", id: "row-ask", f: cell(h => { const a = ask.filter(it => it.h === h);
+          return <td>{a.length ? <><span className="bdg unk">{a.length}개 확인 필요</span><ul className="ask-l">{a.map(it => <li key={it.id}>{it.t}</li>)}</ul></> : <span className="st ok"><IcCk />따로 물어볼 것 없음</span>}</td>; }) })}
+      </tbody>
+      </> : null}
+      {part === 'life' ? <tbody>
         {Row({ label: "지하철역", f: cell(h => <LifeCell h={h} ks={['station']} />) })}
         {Row({ label: "장보기", sub: "마트·슈퍼", f: cell(h => <LifeCell h={h} ks={['mart', 'super']} />) })}
         {Row({ label: "병원", sub: "내과", f: cell(h => <LifeCell h={h} ks={['clinic']} />) })}
         {Row({ label: "공원", f: cell(h => <LifeCell h={h} ks={['park']} />) })}
-      </tbody>
-      <tbody>
-        {G({ t: "이 집에서 받을 수 있는 지원" })}
-        <tr><td colSpan={H.length + 1} className="note2">내 조건(만 {m.age}세 · 월 소득 {m.inc}만 원 · {m.own ? '집 있음' : '무주택'})과 이 집의 보증금·월세로 코드가 대조했어요. 소득·재산은 신청할 때 서류로 확인해요.</td></tr>
+      </tbody> : null}
+      {part === 'sup' ? <tbody>
         {Row({ label: "국토부 청년월세", f: cell(h => <Sup x={S3[h.key].molit} />) })}
         {Row({ label: "서울시 청년월세", f: cell(h => <Sup x={S3[h.key].seoul} />) })}
         {Row({ label: "중개보수·이사비", f: cell(h => <Sup x={S3[h.key].move} />) })}
         {Row({ label: <>지원 확정 시<span className="tagass">가정</span></>, sub: "월세 지원을 받는 동안", cls: "ass", f: cell(h => { const s = S3[h.key], a = r1(monthly(h) - s.monthSup);
           return <td><span className="v">월 {a}만 원{feeKnown(h) ? '' : ' +'}</span><span className="s2">{s.monthSup ? `${monthly(h)}만 원 − ${s.monthSup}만 원 · ${s.molit.ok ? 24 : 12}개월` : '지원 없음'}{feeKnown(h) ? '' : ' · 관리비 별도'}</span></td>; }) })}
-      </tbody>
+      </tbody> : null}
     </table></div>
   );
 }
 
 function CmpEdit() {
   const h = hs().find(x => x.key === S.editKey); if (!h) return null;
+  const close = () => set({ editKey: null });
   return (
-    <div className="cmp-edit" id="cmp-edit" key={h.key}>
-      <div className="cmp-edit-t"><Tile h={h} c="sm" /><b>{h.label} 값 고치기</b><span className="s">매물에 적힌 금액을 넣어 주세요 · 관리비를 모르면 비워 두세요</span></div>
-      <div className="fields">
+    <Modal title={`${h.label} 값 고치기`} sub="매물에 적힌 금액을 넣어 주세요 · 관리비를 모르면 비워 두세요" onClose={close}
+      foot={<><button className="btn ghost" onClick={close}>취소</button><button className="btn pri" onClick={() => saveEdit(h.key)} data-act="값 저장 → 다시 계산">저장하고 다시 계산</button></>}>
+      <div className="fields md-fields" id="cmp-edit" key={h.key}>
         <label>보증금<span className="inp"><input id="ed-dep" type="number" defaultValue={val(h, 'deposit')} />만 원</span></label>
         <label>월세<span className="inp"><input id="ed-rent" type="number" defaultValue={val(h, 'rent')} />만 원</span></label>
         <label>관리비<span className="inp"><input id="ed-fee" type="number" placeholder="모르면 비워 두기" defaultValue={feeOf(h) ?? ''} />만 원</span></label>
       </div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-        <button className="btn pri" style={{ height: 44 }} onClick={() => saveEdit(h.key)} data-act="값 저장 → 다시 계산">저장하고 다시 계산</button>
-        <button className="btn ghost" style={{ height: 44 }} onClick={() => set({ editKey: null })}>취소</button>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
-function PrioChips() {
-  return <div className="chips">{Object.entries(PRIO).map(([k, p]) => (
-    <button key={k} className={`chip ${S.prio === k ? 'on' : ''}`} onClick={() => set({ prio: k, cmpQ: [] })} data-act="우선순위 바꾸기 → 종합 점수 다시 계산">{p.name}</button>
-  ))}</div>;
+/* 1 · 무엇을 먼저 볼까요 (탭) */
+function CmpPrio() {
+  return (
+    <div className="tz-tabs" role="group" aria-label="무엇을 먼저 볼까요">{Object.entries(PRIO).map(([k, p]) => (
+      <button key={k} className={S.prio === k ? 'on' : ''} aria-pressed={S.prio === k} onClick={() => set({ prio: k, cmpQ: [] })} data-act="우선순위 바꾸기 → 종합 점수 다시 계산">{p.name}</button>
+    ))}</div>
+  );
 }
 
+/* 2 · 먼저 살펴볼 집과 이유 · 순위 목록 */
 function CmpRank({ H, rank }) {
-  const w = PRIO[S.prio].w, K = rank.filter(r => !r.unk), U = rank.filter(r => r.unk);
+  const K = rank.filter(r => !r.unk), U = rank.filter(r => r.unk);
   const cheap = K.length >= 2 ? cheapest(H) : null, fast = H.slice().sort((a, b) => a.commute - b.commute)[0];
   const minK = K.length ? Math.min(...K.map(r => monthly(r.h))) : Infinity;
   const why = h => {
     const a = [];
-    if (cheap) { const d = r1(monthly(h) - monthly(cheap)); a.push(h === cheap ? '한 달 비용이 확인된 집 중 가장 적어요.' : d > 0 ? `${cheap.key}보다 한 달 ${d}만 원 더 들어요.` : `한 달 비용은 ${cheap.key}와 같아요.`); }
+    if (cheap) { const d = r1(monthly(h) - monthly(cheap)); a.push(h === cheap ? '한 달 비용이 가장 적어요' : d > 0 ? `${cheap.key}보다 한 달 ${d}만 원 더 들어요` : `한 달 비용은 ${cheap.key}와 같아요`); }
     const t = h.commute - fast.commute;
-    a.push(h === fast ? `출퇴근이 ${walkPre(h)}${h.commute}분으로 가장 짧아요.` : t > 0 ? `출퇴근은 ${fast.key}보다 ${t}분 길어요.` : `출퇴근 시간은 ${fast.key}와 같아요.`);
-    return a.join(' ');
+    a.push(h === fast ? `출퇴근이 ${walkPre(h)}${h.commute}분으로 가장 짧아요` : t > 0 ? `출퇴근은 ${fast.key}보다 ${t}분 길어요` : `출퇴근 시간은 ${fast.key}와 같아요`);
+    return a.join(' · ');
   };
-  const rs = K.length ? reasons(rank) : [], wk = K.length ? weakness(K[0].h) : '';
+  const wk = K.length ? weakness(K[0].h) : '', top = K[0] && K[0].h;
   return (
-    <section className="cmp-rank" aria-labelledby="rank-t">
-      <div className="cmp-rank-h"><div><h2 id="rank-t">무엇을 먼저 볼지 고르면 순서를 정리해요</h2><p className="s">{PRIO[S.prio].name} 기준 · 비용 {Math.round(w.cost * 100)}% · 시간 {Math.round(w.time * 100)}% · 동네 {Math.round(w.life * 100)}%</p></div><PrioChips /></div>
-      <ol className="rk2">
-        {K.map((r, i) => <li key={r.h.key}><span className="no">{i + 1}위</span><span className="nm"><Tile h={r.h} c="xs" />{r.h.label}</span><span className="bar" aria-hidden="true"><span style={{ width: `${r.total}%`, background: r.h.color }} /></span><span className="t">{r.total}점</span><span className="d">{why(r.h)}</span></li>)}
-        {U.map(r => <li className="unk" key={r.h.key}><span className="no">–</span><span className="nm"><Tile h={r.h} c="xs" />{r.h.label}</span><span className="u"><BUnk>관리비 확인 필요</BUnk></span><span className="d">관리비를 알면 순위에 넣어요.{monthly(r.h) < minK ? ' 월세만 보면 가장 싸지만, 관리비를 더하면 달라질 수 있어요.' : ''}</span></li>)}
+    <section className="tz-pick" aria-labelledby="rank-t">
+      {top ? <>
+        <p className="tz-o">{PRIO[S.prio].name} 기준으로 보면</p>
+        <h2 id="rank-t"><span style={{ color: top.color }}>{top.key} {top.label}</span>을<br />먼저 살펴보세요</h2>
+        <p className="tz-why">{why(top)}{wk ? <><br />아쉬운 점 · {wk}</> : null}</p>
+        <dl className="tz-sum">
+          <div><dt>한 달 비용</dt><dd>{monthly(top)}만 원</dd></div>
+          <div><dt>보증금</dt><dd>{val(top, 'deposit').toLocaleString()}만 원</dd></div>
+          <div><dt>{DEST.name}까지</dt><dd>{top.commute}분</dd></div>
+        </dl>
+      </> : <h2 id="rank-t">관리비를 알아야<br />먼저 볼 집을 정할 수 있어요</h2>}
+      <ol className="tl2 rk3">
+        {K.map((r, i) => <li className="tr" key={r.h.key}><div className="tr-m static"><span className="rk-no">{i + 1}</span><Tile h={r.h} c="sm" /><span className="tr-t"><b>{r.h.label}</b><small>{why(r.h)}</small></span><span className="tr-v"><b>{r.total}점</b></span></div></li>)}
+        {U.map(r => <li className="tr tr-dim" key={r.h.key}><div className="tr-m static"><span className="rk-no">–</span><Tile h={r.h} c="sm" /><span className="tr-t"><b>{r.h.label}</b><small>관리비를 알면 순위에 넣어요{monthly(r.h) < minK ? ' · 월세만 보면 가장 싸요' : ''}</small></span>
+          <span className="tr-v"><button className="tbtn" onClick={() => openEdit(r.h.key, 'ed-fee')} data-act="관리비 넣기">관리비 넣기</button></span></div></li>)}
       </ol>
-      {K.length ? (
-        <details className="rk-more"><summary>이렇게 정리했어요</summary>
-          <ul className="why-list">{rs.map((t, i) => <Html as="li" key={i} html={t} />)}</ul>
-          {wk ? <p className="s" style={{ marginTop: 8 }}>아쉬운 점 · {K[0].h.label}은 {wk}</p> : null}
-          <p className="s" style={{ marginTop: 8, lineHeight: 1.8 }}>점수 계산: 비용은 관리비까지 확인된 집 중 가장 싼 집 100점, 월 10만 원 비쌀 때마다 −15점 · 시간은 15분 이하 100점, 그 뒤 1분마다 −2점 · 동네는 시설마다 걸어서 5분 이하 100점, 20분 이상 0점 → 8곳 평균. 점수와 숫자는 코드가 계산하고, AI는 이 근거로만 설명해요.</p>
-        </details>
-      ) : null}
+      {K.length ? <button className="link tz-more" onClick={() => set({ md3: 'why' })} aria-haspopup="dialog" data-act="점수 설명 모달">점수는 이렇게 매겼어요 ›</button> : null}
     </section>
+  );
+}
+
+/* 자세히 보기 모달 · 위치 / 주변 시설 / 지원 / 점수 설명 */
+function CmpModal({ H, rank, top }) {
+  const k = S.md3, close = () => set({ md3: null }), m = me();
+  if (!k) return null;
+  if (k === 'map') return (
+    <Modal wide title="후보 집 위치" sub={`★ ${DEST.name}까지 오가는 시간`} onClose={close}
+      foot={<button className="btn ghost" onClick={() => set({ md3: null, detail: { home: top.key, scene: 'go' } })} data-act="동네 생활 지도 열기">동네 지도로 자세히 보기</button>}>
+      <div className="md-map">{kakaoOn() ? <MapBox /> : <MiniMap H={H} />}</div>
+      <ul className="tl2">{H.map(h => <li className="tr" key={h.key}><div className="tr-m static"><Tile h={h} c="sm" /><span className="tr-t"><b>{h.label}</b><small>{shortRoute(h)}</small></span><span className="tr-v"><b>{h.commute}분</b></span></div></li>)}</ul>
+    </Modal>
+  );
+  if (k === 'life') return (
+    <Modal wide title="주변 시설 비교" sub="집에서 가장 가까운 곳까지 걸어서 걸리는 시간" onClose={close}
+      foot={<button className="btn ghost" onClick={() => set({ md3: null, detail: { home: top.key, scene: 'shop' } })} data-act="동네 생활 지도 열기">동네 지도로 보기</button>}>
+      <div className="cmp md-tbl"><CmpTable H={H} part="life" /></div>
+    </Modal>
+  );
+  if (k === 'sup') return (
+    <Modal wide title="이 집에서 받을 수 있는 지원" sub={`만 ${m.age}세 · 월 소득 ${m.inc}만 원 · ${m.own ? '집 있음' : '무주택'} 조건과 집의 보증금·월세로 확인했어요. 소득·재산은 신청할 때 서류로 확인해요.`} onClose={close}>
+      <div className="cmp md-tbl"><CmpTable H={H} part="sup" /></div>
+    </Modal>
+  );
+  const rs = reasons(rank);
+  return (
+    <Modal title="점수는 이렇게 매겼어요" sub={`${PRIO[S.prio].name} 기준 · 비용 ${Math.round(PRIO[S.prio].w.cost * 100)}% · 시간 ${Math.round(PRIO[S.prio].w.time * 100)}% · 동네 ${Math.round(PRIO[S.prio].w.life * 100)}%`} onClose={close}>
+      <ul className="why-list">{rs.map((t, i) => <Html as="li" key={i} html={t} />)}</ul>
+      <h3 className="md-st">계산 방법</h3>
+      <ul className="md-chk plain">
+        <li>비용 · 관리비까지 확인된 집 중 가장 싼 집 100점, 월 10만 원 비쌀 때마다 −15점</li>
+        <li>시간 · 15분 이하 100점, 그 뒤 1분마다 −2점</li>
+        <li>동네 · 시설마다 걸어서 5분 이하 100점, 20분 이상 0점 → 8곳 평균</li>
+      </ul>
+      <p className="md-q" style={{ marginTop: 16 }}>점수와 숫자는 코드가 계산하고, AI는 이 근거로만 설명해요.</p>
+    </Modal>
+  );
+}
+
+/* 확인할 것 → 04 할 일로 */
+function CmpChecks({ H }) {
+  const { ask, visit } = cmpChecks(H);
+  return (
+    <ul className="tl2 tz-links">
+      <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'life' })} aria-haspopup="dialog" data-act="주변 시설 모달"><span className="tr-ic"><Icon n="cart" /></span><span className="tr-t"><b>주변 시설 비교</b><small>지하철역 · 장보기 · 병원 · 공원까지 걸어서</small></span><span className="chev">›</span></button></li>
+      <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'sup' })} aria-haspopup="dialog" data-act="지원 모달"><span className="tr-ic"><Icon n="receipt" /></span><span className="tr-t"><b>집마다 받을 수 있는 지원</b><small>보증금·월세에 따라 달라지는 청년월세 조건</small></span><span className="chev">›</span></button></li>
+      <li className="tr"><button className="tr-m" onClick={() => go(4)} data-act="04 할 일로"><span className="tr-ic"><Icon n="clock" /></span><span className="tr-t"><b>계약 전에 확인할 것 {ask.length + visit.length}개</b><small>중개사에게 물어볼 것 {ask.length}개 · 집 보러 가서 볼 것 {visit.length}개 · 04 할 일에 담았어요</small></span><span className="chev">›</span></button>
+        <div className="tr-a"><button className="tbtn" id="chk-copy" onClick={copyChecks} data-act="확인할 것 복사">목록 복사하기</button></div></li>
+    </ul>
   );
 }
 
@@ -257,36 +317,39 @@ function CmpSec({ rank }) {
   ex.push('가장 가까운 집은?');
   const off = API_OK === false || S.cmpAiOff || !location.protocol.startsWith('http');
   return (
-    <div className="sec cmp3" id="cmp3">
+    <section className="tz-sec sm cmp3" id="cmp3">
       <div className="cmp3-box">
-        <div className="cmp3-h">이 비교에 대해 물어보기 <span className="pill">AI</span>{off ? <small>AI 꺼짐 · 계산 결과 문장으로 답해요</small> : null}</div>
-        <p className="s" style={{ marginTop: 4 }}>계산된 비교 결과(실부담·출퇴근·생활·지원·점수)로만 답해요. 검색하지 않고, 추천을 바꾸지 않아요.</p>
+        <h2>이 비교에 대해 물어보기 <span className="ai-by">{off ? 'AI 꺼짐 · 계산 결과 문장으로 답해요' : '계산된 비교 결과로만 답해요'}</span></h2>
         <div className="cmp3-ex">{ex.map(q => <button key={q} onClick={() => askCmp(q)} data-act="예시 질문 → 답 카드">{q}</button>)}</div>
         <div className="cmp3-in"><input id="cmp3q" placeholder="궁금한 걸 물어보세요" onKeyUp={e => enterKey(e, askCmp)} />
           <button onClick={() => askCmp(document.getElementById('cmp3q').value)} data-act="묻기 → 답 카드">묻기</button></div>
       </div>
       {(S.cmpQ || []).map((it, i) => <CmpCard key={i} it={it} />)}
-    </div>
+    </section>
   );
 }
 
 function CmpPage({ H, rank }) {
   const m = me(), top = rank[0].h, ex = H.some(h => !h.live);
   return (
-    <>
-      <ChHead n={3} h1={<>후보 집 {H.length}곳을 같은 기준으로 비교해요{ex ? <span className="cmp-tag">예시 집</span> : null}</>}
-        lead={<>{DEST.name} 기준 · 만 {m.age}세 · 모아둔 돈 {m.cash.toLocaleString()}만 원 · 월 소득 {m.inc}만 원<button className="link" onClick={() => go(1)} data-act="01로">조건 고치기</button></>}
-        right={<button className="btn-line" onClick={() => set({ homesDone: false, editKey: null })} data-act="집 바꾸기"><IcSwap />집 바꾸기</button>} />
-      {S.editKey ? <CmpEdit /> : null}
-      <section className="cmp-card cmp" aria-label="후보 집 비교">
-        <CmpSummary H={H} />
-        <CmpTable H={H} topKey={top.key} />
-      </section>
+    <div className="tz">
+      <ChHead n={3} h1={<>후보 집 {H.length}곳 비교{ex ? <span className="cmp-tag">예시 집</span> : null}</>}
+        lead={<>{DEST.name} 기준 · 모아둔 돈 {m.cash.toLocaleString()}만 원 · 월 소득 {m.inc}만 원<button className="link" onClick={() => go(1)} data-act="01로">조건 고치기</button></>}
+        right={<div className="ch-btns">
+          <button className="tbtn gray" onClick={() => set({ md3: 'map' })} aria-haspopup="dialog" data-act="위치 보기">위치 보기</button>
+          <button className="tbtn gray" onClick={() => set({ homesDone: false, editKey: null })} data-act="집 바꾸기">집 바꾸기</button></div>} />
+      <CmpPrio />
       <CmpRank H={H} rank={rank} />
+      <section className="tz-sec" aria-labelledby="tbl-t"><h2 id="tbl-t">한눈에 비교 <span>숫자를 누르면 해당 줄로 가요</span></h2>
+        <div className="cmp tz-tbl"><CmpSummary H={H} /><CmpTable H={H} /></div>
+      </section>
+      <section className="tz-sec" aria-label="더 보기"><CmpChecks H={H} /></section>
       <CmpSec rank={rank} />
       <p className="cmp-src">주변 시설 거리 · 카카오 로컬 · 오가는 시간과 요금 · ODsay{ex ? ' · 예시 집의 보증금·월세·관리비는 화면 설명용 값이에요' : ''}</p>
       <div className="cta"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" onClick={() => go(4)} data-act="다음 장">할 일 정리하기</button></div>
-    </>
+      {S.editKey ? <CmpEdit /> : null}
+      <CmpModal H={H} rank={rank} top={top} />
+    </div>
   );
 }
 
@@ -352,23 +415,4 @@ export default function Step3() {
   if (S.easy) return <Easy H={H} top={top} />;
   if (S.detail) return <Detail H={H} />;
   return <CmpPage H={H} rank={rank} />;
-}
-
-/* 오른쪽 패널 (비교 화면): 작은 지도 + 확인할 것 */
-export function CmpAside({ H, top }) {
-  if (S.easy) return null;      // 쉬운 화면은 오른쪽 패널을 숨겨요 (본문 지도와 #kmap이 겹치지 않게)
-  const { ask, visit } = cmpChecks(H), chk = S.chk || (S.chk = {});
-  const item = it => <li key={it.id}><label><input type="checkbox" defaultChecked={!!chk[it.id]} onChange={e => { S.chk[it.id] = e.target.checked; }} /><span>{it.h ? <Tile h={it.h} c="xs" /> : null}{it.t}</span></label></li>;
-  return (
-    <>
-      <div className="panel cmp-side"><div className="panel-t">위치<button className="link" onClick={() => set({ detail: { home: top.key, scene: 'go' } })} data-act="동네 생활 지도 열기">동네 지도 ›</button></div>
-        {kakaoOn() ? <MapBox /> : <MiniMap H={H} />}
-        <ul className="lg">{H.map(h => <li key={h.key}><Tile h={h} c="xs" /><span className="f">{h.label.replace(' 원룸', '')}</span><b>{h.commute}분</b><span className="r">{shortRoute(h)}</span></li>)}
-          <li className="dest"><span className="star" aria-hidden="true">★</span>{DEST.name} · 자주 가는 곳</li></ul></div>
-      <div className="panel cmp-side chk"><div className="panel-t">확인할 것 <span className="cnt">{ask.length + visit.length}</span></div>
-        <h3>중개사에게 물어볼 것</h3><ul>{ask.map(item)}</ul>
-        <h3>집 보러 가서 볼 것 · 후보 집 공통</h3><ul>{visit.map(item)}</ul>
-        <button className="btn-line full" id="chk-copy" onClick={copyChecks} data-act="확인할 것 복사">목록 복사하기</button></div>
-    </>
-  );
 }

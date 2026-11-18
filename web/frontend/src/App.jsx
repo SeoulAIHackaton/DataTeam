@@ -2,22 +2,25 @@
    틀은 위 막대 · 왼쪽 목차 · 본문 · 오른쪽 패널 (쉬운 화면은 목차와 패널을 숨겨요) */
 import { useEffect, useLayoutEffect } from 'react';
 import { S, useStore, flushFocus } from './store.js';
-import { roving1, drawKakao, apiCheck, hs, scores, DEST } from './lib/core.js';
+import { roving1, drawKakao, apiCheck, DEST } from './lib/core.js';
 import { Header, Footer, Rail, ProfileMini, AlarmPanel, TipsPanel, FileSummary } from './components/Shell.jsx';
 import Home from './pages/Home.jsx';
 import Loading from './pages/Loading.jsx';
 import Step1, { Side1, Banner1 } from './pages/Step1.jsx';
 import Step2 from './pages/Step2.jsx';
-import Step3, { CmpAside } from './pages/Step3.jsx';
+import Step3 from './pages/Step3.jsx';
 import Step4 from './pages/Step4.jsx';
 
 const BODY = [null, Step1, Step2, Step3, Step4];
+
+/* 03 비교 화면(동네 지도 포함)은 후보 3곳과 항목명을 같이 읽어야 해서 오른쪽 패널을 빼고 본문을 넓혀요 */
+const wide = () => !S.easy && S.step === 3 && S.homesDone && S.homes.length >= 2;
 
 function Aside() {
   if (S.easy) return null;
   if (S.step === 1) return <Side1 />;
   if (S.step === 2) return <><AlarmPanel /><ProfileMini /></>;
-  if (S.step === 3) return S.homesDone && S.homes.length >= 2 ? <CmpAside H={hs()} top={scores()[0].h} /> : <><TipsPanel /><ProfileMini /></>;
+  if (S.step === 3) return <><TipsPanel /><ProfileMini /></>;
   return <FileSummary />;
 }
 
@@ -41,10 +44,10 @@ export default function App() {
   return (
     <div className={`app ${S.easy ? 'easy' : ''} ${S.ragShow ? 'show-rag' : ''}`}>
       <Header />
-      <div className="shell">
+      <div className={`shell ${wide() ? 'wide' : ''}`}>
         {S.easy ? null : <Rail />}
         <main className="col" id="main"><Banner1 /><Body /></main>
-        <aside className="side" aria-label="이 장의 도구"><Aside /></aside>
+        {wide() ? null : <aside className="side" aria-label="이 장의 도구"><Aside /></aside>}
       </div>
       <Footer />
     </div>

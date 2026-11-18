@@ -453,7 +453,7 @@ h1{font-size:32px}
 .bdg.best{color:var(--pri-d);background:var(--pri-s)}
 .bdg.unk{color:var(--caution);background:var(--caution-s)}
 
-.cmp-rank{margin-top:28px;border:1px solid var(--line);border-radius:16px;padding:22px 24px;background:#fff}
+.cmp-rank{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:22px 24px;background:#fff}
 .cmp-rank-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
 .cmp-rank-h h2{font-size:18px;font-weight:800}
 .cmp-rank-h .s{font-size:13px;margin-top:4px;color:var(--sub)}
@@ -471,21 +471,41 @@ h1{font-size:32px}
 .rk-more summary{font-size:14px;font-weight:700;color:var(--pri-d);cursor:pointer}
 .cmp-src{margin-top:24px;font-size:13px;color:var(--sub)}
 
-.cmp-side #kmap{height:220px;border-radius:12px}
 .cmp-mini{display:block;width:100%;height:auto;border-radius:12px}
-.cmp-side .lg{list-style:none;margin-top:12px}
-.cmp-side .lg li{display:flex;align-items:center;gap:8px;font-size:14px;padding:5px 0}
-.cmp-side .lg .f{flex:1;font-weight:600}
-.cmp-side .lg .r{width:56px;text-align:right;font-size:13px;color:var(--sub)}
-.cmp-side .lg li.dest{font-size:13px;color:var(--sub2);padding-top:8px}
-.cmp-side .lg .star{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:10px;background:var(--ink);color:#fff;font-size:11px}
-.cmp-side.chk h3{font-size:13px;font-weight:800;color:var(--sub2);margin:14px 0 4px}
-.cmp-side.chk ul{list-style:none}
-.cmp-side.chk label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:14px;line-height:1.55;cursor:pointer}
-.cmp-side.chk input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--pri)}
-.cmp-side.chk input:checked + span{color:var(--sub);text-decoration:line-through}
-.cmp-side.chk .tile.xs{vertical-align:-4px;margin-right:6px}
-.cmp-side .cnt{font-size:12px;font-weight:700;background:var(--bg);color:var(--sub2);border-radius:999px;padding:1px 8px}
+/* 03 비교 · 넓은 본문 (오른쪽 패널 없음) · 토스 방식 */
+.shell.wide{grid-template-columns:200px minmax(0,1fr)}
+.ch-btns{display:flex;gap:8px}
+.tbtn.gray{background:var(--sheet);color:var(--ink2);box-shadow:var(--sh)}
+.tz-tabs{display:inline-flex;gap:2px;padding:4px;margin-top:28px;background:var(--bg);border-radius:14px}
+.tz-tabs button{height:40px;padding:0 18px;border-radius:10px;font-size:15px;font-weight:600;color:var(--sub)}
+.tz-tabs button.on{background:var(--sheet);color:var(--ink);font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tz-pick{margin-top:32px}
+.tz-o{font-size:15px;color:var(--sub);font-weight:600}
+.tz-pick>h2{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1.35;margin-top:6px}
+.tz-why{font-size:16px;color:var(--sub2);line-height:1.7;margin-top:10px}
+.rk3{margin-top:20px}
+.tr-m.static{cursor:default}
+.tr-m.static:hover{background:none}
+.rk-no{width:20px;font-size:15px;font-weight:800;color:var(--sub);text-align:center;flex-shrink:0}
+.tz-more{display:inline-block;margin-top:8px;font-size:14px}
+.tz-tbl{margin-top:16px}
+.tz-tbl .cmp-sum{background:none;border:0;padding:0 0 16px}
+.tz-tbl table{border-top:2px solid var(--ink)}
+.cmp.tz-tbl thead th{border-bottom:1px solid var(--line2);background:var(--paper)}
+.cmp.tz-tbl th.g{background:none;padding-top:22px;font-size:14px;color:var(--sub2);border-bottom:1px solid var(--line3)}
+.cmp.tz-tbl th,.cmp.tz-tbl td{border-bottom-color:var(--line3)}
+.cmp .ask-l{margin:8px 0 0 16px;font-size:13px;color:var(--sub2);line-height:1.55}
+.cmp .ask-l li+li{margin-top:4px}
+.tz-links .chev{margin-left:auto;font-size:18px}
+.md-map{margin-bottom:8px}
+.md-map #kmap{height:320px;border-radius:16px}
+.md-map .cmp-mini{border-radius:16px;background:var(--bg)}
+.md-tbl thead th{position:static}
+.md-fields{grid-template-columns:1fr}
+.md-chk.plain li::before{content:"·";color:var(--sub)}
+.cmp3.tz-sec>h2{font-size:18px}
+.cmp3 .cmp3-box{background:none;border:0;box-shadow:none;padding:0;margin-top:12px}
+
 /* 02 받을 지원 · 토스 목록 방식 (카드 테두리 없이 큰 글자 · 여백 · 구분선) */
 .tz .ch-lead{font-size:15px}
 .tz-sum{display:flex;gap:0;margin-top:28px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -1038,7 +1058,6 @@ td .w{color:var(--sub)}
 .cmp3-in{border-color:var(--ctl)}
 .cmp3-in button{background:var(--pri)}
 .cmp-edit{border-color:var(--pri);box-shadow:0 0 0 1px var(--pri)}
-.cmp-side .lg .star{background:var(--ink)}
 
 /* ----- 04 할 일 ----- */
 .td-g{margin-top:36px}
