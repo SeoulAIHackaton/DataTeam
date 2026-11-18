@@ -1,6 +1,6 @@
 /* 계산 · 판정 · 데이터 — firsthome.html 의 함수를 그대로 옮겼어요 (화면 그리는 부분만 components/ · pages/ 의 JSX로 바꿨어요).
    S = 화면 상태 · set/render/go/focusId = store.js · SR = step1Rules.js (1단계 항목 정의) */
-import { S, set, render, go, focusId } from '../store.js';
+import { S, set, render, focusId } from '../store.js';
 import SR from './step1Rules.js';
 
 export const ICONS={
@@ -243,6 +243,7 @@ export const PLACES1 = (() => {        // 카카오 키가 없을 때 고를 수
 export const D1 = () => S.d1 || (S.d1 = {});
 
 export function done1(k){ const P = S.prof || {};
+  if(k==='age' && S.d1?.yv != null) return false;
   return k==='own' ? !!S.own : k==='sep' ? !!S.sep : k==='place' ? !!(P.place && P.placeOk) : k==='job' ? jobs1().length>0 : k==='when' ? P.when==='아직 몰라요'||P.when==='3개월 안'||!!whenDate1() : P[k] != null; }
 
 export const lbl1 = (k, v) => (F1K[k].opts.find(o => o[1]===v) || [v])[0];
@@ -305,28 +306,31 @@ export function placeIn(v){ D1().pq = v; D1().kres = null; clearTimeout(_ptimer)
   if(liveOn1() && v.trim()){ _ptimer = setTimeout(() => kakaoOn() ? kakaoPlaces(v) : srvPlaces(v), 250); }
   render(); }
 
+const currentPlaceQuery = q => D1().pq === q && (!done1('place') || D1().pedit);
+
 export function srvPlaces(q){
   fetch('/api/place?q=' + encodeURIComponent(q)).then(r => r.ok ? r.json() : Promise.reject(r.status))
-    .then(j => { if(D1().pq !== q) return; D1().kres = (j.places || []).map(p => ({name:p.name, query:p.query, area:p.address, live:true})); })
+    .then(j => { if(!currentPlaceQuery(q)) return; D1().kres = (j.places || []).map(p => ({name:p.name, query:p.query, area:p.address, live:true})); })
     .catch(() => { window._psfail = true; })      // 서버 꺼짐·키 없음 → 후보 목록으로
     .finally(() => render());
 }
 
 export function kakaoPlaces(q){
-  loadKakao().then(() => new kakao.maps.services.Places().keywordSearch(q, (r, st) => { if(D1().pq !== q) return;
+  loadKakao().then(() => new kakao.maps.services.Places().keywordSearch(q, (r, st) => { if(!currentPlaceQuery(q)) return;
       D1().kres = st === kakao.maps.services.Status.OK ? r.slice(0, 8).map(x => ({name:x.place_name, query:x.road_address_name || x.address_name || x.place_name, area:x.road_address_name || x.address_name, live:true})) : [];
       render(); }, {size:8}))
     .catch(() => { window._kfail = true; render(); });
 }
 
 export function pickPlace1(j){ const p = placeList1()[j]; if(!p) return;
-  setDest(p.name, p.query); S.prof = {...S.prof, place:p.name, placeOk:true}; Object.assign(D1(), {pedit:false, pq:'', kres:null});
+  // 닫히는 동안 보고 있던 결과를 유지해요. 다시 열면 새 검색을 시작해요.
+  setDest(p.name, p.query); S.prof = {...S.prof, place:p.name, placeOk:true}; D1().pedit = false; clearTimeout(_ptimer);
   render(); focusId('f1-place-chg'); }
 
-export function placeChange(){ D1().pedit = true; render(); focusId('f1-pin'); }
+export function placeChange(){ Object.assign(D1(), {pedit:true, pq:'', kres:null}); render(); focusId('f1-pin'); }
 
 export function placeKey(e){
-  if(e.key==='Escape' && done1('place')){ D1().pedit = false; render(); return focusId('f1-place-chg'); }
+  if(e.key==='Escape' && done1('place')){ D1().pedit = false; clearTimeout(_ptimer); render(); return focusId('f1-place-chg'); }
   if(e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); if(placeList1().length) pickPlace1(0); }
 
 export const digits1 = s => String(s || '').replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '').slice(0, 6);
@@ -352,16 +356,6 @@ export function roving1(){ document.querySelectorAll('#root [role="radiogroup"]'
 document.addEventListener('keydown', e => { const t = e.target; if(!t || !t.getAttribute || t.getAttribute('role') !== 'radio') return;
   const g = t.closest('[role="radiogroup"]'), d = {ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1}[e.key]; if(!g || !d) return;
   e.preventDefault(); const rs = [...g.querySelectorAll('[role="radio"]')]; rs[(rs.indexOf(t) + d + rs.length) % rs.length].focus(); });
-
-export function first1(k){   // 그 항목의 첫 입력 도구
-  const r = document.getElementById('f1-' + k); if(!r) return null;
-  return r.querySelector('[aria-checked="true"]') || r.querySelector('select, input, button'); }
-
-export function to1(k, hl){ const r = document.getElementById('f1-' + k); if(!r) return;
-  if(hl){ r.classList.add('hl'); setTimeout(() => r.classList.remove('hl'), 2500); }
-  r.scrollIntoView({behavior:'smooth', block:'center'}); focusId(first1(k)); }
-
-export function go1(){ if(all1()) return go(2); const f = W1.find(f => !done1(f.k)); to1(f.k, true); }
 
 export function demo1(){   // 시연·테스트용: 시연 인물 값으로 9개 채우기
   setDest('멀티캠퍼스 역삼', '서울 강남구 테헤란로 212');

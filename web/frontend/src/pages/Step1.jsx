@@ -3,7 +3,7 @@
 import { S, set, go, render, focusId } from '../store.js';
 import {
   W1, F1K, GROUPS1, NOW_Y, TODAY1, INC_LIMIT, D1, done1, val1, ageSplit, year1, bd1, placeIn, placeList1, pickPlace1, placeChange, placeKey,
-  digits1, numStr1, incMode1, monthly1, save1n, mode1, to1, go1, demo1, addList1, add1, clear1, amtW1, vKey1, Y_RANGE1, yearStep1,
+  digits1, numStr1, incMode1, monthly1, save1n, mode1, demo1, addList1, add1, clear1, amtW1, vKey1, Y_RANGE1, yearStep1,
   T_RANGE1, fmtMin, tPct1, pick1, CARD1, DEST, won, all1, jobs1, toggleJob1, whenParts1, setWhenPart1, whenUnknown1,
 } from '../lib/core.js';
 import { Html, Icon, IcCk, ChHead } from '../components/ui.jsx';
@@ -86,10 +86,47 @@ function yearIn(raw) {
   d.yv = null; year1(+v, 'f1-year');
 }
 const yearBtn = dlt => { const d = D1(); d.yv = null; d.yx = ''; yearStep1(dlt); };
-function timeAny1() { const on = S.prof.time >= 999; S.prof = { ...S.prof, time: on ? 45 : 999 }; render(); focusId('f1-time-any'); }
+function setTime1(time) { S.prof = { ...S.prof, time }; render(); }
+function timeAny1() { setTime1(S.prof.time >= 999 ? 45 : 999); }
 function TimeTxt() {
   const t = S.prof.time;
   return t == null ? '밀어서 정해 주세요' : t >= 999 ? <b>상관없어요</b> : <>편도 <b>{fmtMin(t)}</b>까지 괜찮아요</>;
+}
+
+function Place1() {
+  const { pq = '', pedit } = D1();
+  const hasPlace = done1('place');
+  const open = !hasPlace || !!pedit;
+  const searching = !!pq.trim();
+  const places = placeList1();
+  const results = searching ? places : places.slice(0, 4);
+
+  return <>
+    {hasPlace ? <div className="s1-place-fold" data-open={!open} inert={open}>
+      <div className="s1-place-clip"><div className="s1-place-content">
+        <div className="f1pick"><span className="s1-place-icon"><Icon n="train" /></span><div className="q"><b>{S.prof.place}</b><small>{DEST.addr}</small></div>
+          <button id="f1-place-chg" className="link" onClick={placeChange} aria-controls="f1-place-search" data-act="장소 바꾸기">변경</button></div>
+      </div></div>
+    </div> : null}
+    <div className="s1-place-fold" id="f1-place-search" data-open={open} inert={!open}>
+      <div className="s1-place-clip"><div className="s1-place-content">
+        <label className="sr" htmlFor="f1-pin">통근·통학 기준 장소 검색</label>
+        <div className="f1search"><span className="ico sm"><Icon n="building" /></span>
+          <input id="f1-pin" type="search" autoComplete="off" placeholder="회사·학교 이름 또는 가까운 역 검색" aria-describedby="s1-place-help" value={pq} onChange={e => placeIn(e.target.value)} onKeyDown={e => placeKey(e.nativeEvent)} /></div>
+        <div className="s1-results-label" aria-live="polite">{searching ? `검색 결과 ${results.length}곳` : '예시 장소로 선택해도 좋아요'}</div>
+        {results.length ? <ul className="s1-results" aria-label="장소 검색 결과">
+          {results.map((p, j) => (
+            <li key={p.name}><button onClick={() => pickPlace1(j)} data-act="장소 고르기">
+              <span className="s1-result-icon"><Icon n={p.name.includes('역') ? 'train' : 'building'} /></span>
+              <span className="s1-result-text"><b>{p.name}</b><small>{p.live ? p.area || p.query : [...new Set([p.area,p.query].filter(Boolean))].join(' · ')}</small></span>
+              <span className="s1-result-pick">선택 <span aria-hidden="true">›</span></span>
+            </button></li>
+          ))}
+        </ul> : <p className="s1-no-results">검색 결과가 없어요. 장소 이름이나 가까운 역으로 다시 찾아보세요.</p>}
+        <p className="s1-help" id="s1-place-help">회사·학교 등 가장 자주 오가는 곳 한 곳을 골라 주세요.</p>
+      </div></div>
+    </div>
+  </>;
 }
 
 function Page1() {
@@ -113,32 +150,7 @@ function Page1() {
         ) : null}
       </>
     ); }
-  if (done1('place') && !d.pedit) {
-    ctl.place = (
-      <div className="f1pick"><span className="s1-place-icon"><Icon n="train" /></span><div className="q"><b>{P.place}</b><small>{DEST.addr}</small></div>
-        <button id="f1-place-chg" className="link" onClick={placeChange} data-act="장소 바꾸기">변경</button></div>
-    );
-  } else {
-    const L = placeList1(), searching = !!d.pq?.trim(), results = searching ? L : L.slice(0, 4);
-    ctl.place = (
-      <>
-        <label className="sr" htmlFor="f1-pin">통근·통학 기준 장소 검색</label>
-        <div className="f1search"><span className="ico sm"><Icon n="building" /></span>
-          <input id="f1-pin" type="search" autoComplete="off" placeholder="회사·학교 이름 또는 가까운 역 검색" aria-describedby="s1-place-help" value={d.pq || ''} onChange={e => placeIn(e.target.value)} onKeyDown={e => placeKey(e.nativeEvent)} /></div>
-        <div className="s1-results-label" aria-live="polite">{searching ? `검색 결과 ${results.length}곳` : '예시 장소로 선택해도 좋아요'}</div>
-        {results.length ? <ul className="s1-results" id="f1-plist" aria-label="장소 검색 결과">
-          {results.map((p, j) => (
-            <li key={p.name}><button onClick={() => pickPlace1(j)} data-act="장소 고르기">
-              <span className="s1-result-icon"><Icon n={p.name.includes('역') ? 'train' : 'building'} /></span>
-              <span className="s1-result-text"><b>{p.name}</b><small>{p.live ? p.area || p.query : [...new Set([p.area,p.query].filter(Boolean))].join(' · ')}</small></span>
-              <span className="s1-result-pick">선택 <span aria-hidden="true">›</span></span>
-            </button></li>
-          ))}
-        </ul> : <p className="s1-no-results" id="f1-plist">검색 결과가 없어요. 장소 이름이나 가까운 역으로 다시 찾아보세요.</p>}
-        <p className="s1-help" id="s1-place-help">회사·학교 등 가장 자주 오가는 곳 한 곳을 골라 주세요.</p>
-      </>
-    );
-  }
+  ctl.place = <Place1 />;
   ctl.cash = <><MoneyBox k="cash" unit="만 원" /><div id="f1-cash-x"><Note1 k="cash" /></div></>;
   const md = incMode1(), m = monthly1();
   ctl.income = (
@@ -165,7 +177,8 @@ function Page1() {
         <div className="f1tv" id="f1-time-v" aria-live="polite"><TimeTxt /></div>
         <label className="sr" htmlFor="f1-time-r">허용 이동 시간 (편도)</label>
         <input type="range" id="f1-time-r" className={`f1rng ${t == null ? 'unset' : t >= 999 ? 'off' : ''}`} min={T_RANGE1[0]} max={T_RANGE1[1]} step="5" value={v}
-          style={{ '--p': `${tPct1(v)}%` }} aria-valuetext={t == null ? '정하지 않음' : fmtMin(t)} onChange={e => { S.prof = { ...S.prof, time: +e.target.value }; render(); }} />
+          style={{ '--p': `${tPct1(v)}%` }} aria-valuetext={t == null ? '정하지 않음' : fmtMin(t)} onChange={e => setTime1(+e.target.value)}
+          onPointerUp={e => { if (!done1('time')) setTime1(+e.currentTarget.value); }} />
         <div className="f1tk" aria-hidden="true">{[10, 30, 45, 60, 90].map(mm => <span key={mm} style={{ left: `${tPct1(mm)}%` }}>{fmtMin(mm)}</span>)}</div>
         <button id="f1-time-any" className={`chip sm f1any ${t >= 999 ? 'on' : ''}`} aria-pressed={t >= 999} onClick={timeAny1} data-act="상관없어요">상관없어요</button>
       </div>
@@ -192,11 +205,12 @@ function Page1() {
     })}</div>
   );
   ctl.own = cards('own', S.own); ctl.sep = cards('sep', S.sep);
+  const next = W1.find(f => !done1(f.k));
   return (
     <div className="s1 tz1">
       <ChHead n={1} h1="어떤 집을 찾고 있나요?" lead="내 상황과 예산을 알려 주세요. 받을 지원과 나에게 맞는 집을 함께 찾아드릴게요."
         right={<button className="f1ex" onClick={demo1} data-act="예시로 채우기">예시로 채우기</button>} />
-      {GROUPS1.map((group, i) => <section className="s1-group" aria-labelledby={`s1-${group.id}`} key={group.id}>
+      {GROUPS1.map(group => <section className="s1-group" aria-labelledby={`s1-${group.id}`} key={group.id}>
         <div className="s1-group-head">
           <h2 id={`s1-${group.id}`}>{group.title} <span className="s1-group-count">{group.fields.filter(done1).length} / {group.fields.length}</span></h2><p>{group.desc}</p>
         </div>
@@ -207,27 +221,29 @@ function Page1() {
           </div>
         ); })}</div>
       </section>)}
+      <div className="cta s1-cta">
+        {next ? <p className="s1-next">{next.panel} 항목을 채워 주세요.</p> : null}
+        <button id="f1go" className={`btn pri wide ${next ? 'off' : ''}`} disabled={!!next} onClick={() => go(2)} data-act="다음 단계">받을 수 있는 지원 보기</button>
+      </div>
     </div>
   );
 }
 
 export default function Step1() { return S.easy ? <Easy /> : <Page1 />; }
 
-/* 오른쪽: 내 조건 패널(누르면 그 항목으로) · 세대 분리 한 줄 · [받을 수 있는 지원 보기] */
+/* 오른쪽: 내 조건 요약 · 세대 분리 안내 */
 export function Side1() {
-  const n = W1.filter(f => done1(f.k)).length, ok = n === W1.length, next = W1.find(f => !done1(f.k));
+  const n = W1.filter(f => done1(f.k)).length;
   return (
     <div id="p1side">
       <div className="panel f1panel s1-panel">
         <div className="panel-t">내 조건<span className="f1cnt">{n} / {W1.length}</span></div>
         <div className="prog" role="progressbar" aria-label="내 조건 입력 진행" aria-valuemin={0} aria-valuemax={W1.length} aria-valuenow={n}><span style={{ width: `${n / W1.length * 100}%` }} /></div>
         {GROUPS1.map(group => <div className="s1-summary-group" key={group.id}><h3>{group.title}</h3>{group.fields.map(k => { const f = F1K[k], v = val1(k); return (
-          <button key={k} className="kv f1kv" onClick={() => to1(k)} data-act="그 항목으로"><span>{f.label}</span><b className={v ? '' : 'nil'}>{v || '입력 전'}</b></button>
+          <div key={k} className="kv f1kv"><span>{f.label}</span><b className={v ? '' : 'nil'}>{v || '입력 전'}</b></div>
         ); })}</div>)}
       </div>
       {S.sep === '네' ? <div className="f1note">세대 분리 후 전입신고가 필요할 수 있어요</div> : null}
-      <button id="f1go" className={`btn pri wide ${ok ? '' : 'off'}`} aria-disabled={!ok} onClick={go1} data-act="다음 단계">받을 수 있는 지원 보기</button>
-      <p className="s1-next" aria-live="polite">{ok ? '준비됐어요. 내 조건에 맞는 지원을 확인해 보세요.' : `${next.panel}부터 이어서 입력해 주세요.`}</p>
     </div>
   );
 }
