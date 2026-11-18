@@ -1,4 +1,5 @@
 /* 여러 화면이 같이 쓰는 작은 조각 */
+import { useEffect, useRef } from 'react';
 import { ICONS, CH, fill } from '../lib/core.js';
 
 /* 공고문 인용(<mark>) · 계산 문장(<b>)처럼 데이터 안에 글자 꾸밈이 들어 있는 문장. {NM}·{AGE} 같은 자리는 fill()로 채워요 */
@@ -33,6 +34,36 @@ export function ChHead({ n, h1, lead, right }) {
       <div className="ch-o"><span className="ch-no">{c.no}</span>{c.t}</div>
       <div className="ch-row"><h1>{h1}</h1>{right || null}</div>
       {lead ? <p className="ch-lead">{lead}</p> : null}
+    </div>
+  );
+}
+
+/* 자세히 보기 모달 · Esc·바깥 누르면 닫혀요. 열 때 대화상자로, 닫으면 연 버튼으로 포커스가 돌아가요 */
+export function Modal({ title, sub, onClose, children, foot, wide }) {
+  const box = useRef(null), back = useRef(null);
+  useEffect(() => {
+    back.current = document.activeElement;
+    box.current && box.current.focus();
+    const key = e => {
+      if (e.key === 'Escape') { e.preventDefault(); onClose(); return; }
+      if (e.key !== 'Tab' || !box.current) return;
+      const f = [...box.current.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x => !x.disabled);
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    };
+    document.addEventListener('keydown', key);
+    const ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', key); document.body.style.overflow = ov; back.current && back.current.focus && back.current.focus({ preventScroll: true }); };
+  }, []);
+  return (
+    <div className="md-bg" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className={`md ${wide ? 'wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby="md-t" tabIndex={-1} ref={box}>
+        <div className="md-h"><div><h2 id="md-t">{title}</h2>{sub ? <p>{sub}</p> : null}</div>
+          <button className="md-x" onClick={onClose} aria-label="닫기"><IcX /></button></div>
+        <div className="md-b">{children}</div>
+        {foot ? <div className="md-f">{foot}</div> : null}
+      </div>
     </div>
   );
 }
