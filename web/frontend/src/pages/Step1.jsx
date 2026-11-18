@@ -1,8 +1,9 @@
 /* 01 내 조건 · 기본 정보 / 예산 / 이사·이동 조건으로 나눠 9개 항목을 골라요.
    쉬운 화면은 질문 2개만 크게 물어봐요. 고르는 즉시 S.prof에 저장되고, 02·03이 그대로 읽어요. */
-import { S, set, go, render, focusId } from '../store.js';
+import { useRef, useEffect } from 'react';
+import { S, set, go, render, focusId, showToast } from '../store.js';
 import {
-  W1, F1K, GROUPS1, NOW_Y, TODAY1, INC_LIMIT, D1, done1, val1, ageSplit, year1, bd1, placeIn, placeList1, pickPlace1, placeChange, placeKey,
+  W1, F1K, GROUPS1, NOW_Y, TODAY1, INC_LIMIT, D1, done1, val1, ageSplit, year1, bd1, YEARS1, placeIn, placeList1, pickPlace1, placeChange, placeKey,
   digits1, numStr1, incMode1, monthly1, save1n, mode1, demo1, addList1, add1, clear1, amtW1, vKey1, Y_RANGE1, yearStep1,
   T_RANGE1, fmtMin, tPct1, pick1, CARD1, DEST, won, all1, jobs1, toggleJob1, whenParts1, setWhenPart1, whenUnknown1,
 } from '../lib/core.js';
@@ -21,7 +22,7 @@ const EASY_Q = {
   when: '언제쯤<br>이사하려고 하나요?',
 };
 const EASY_H = {
-  age: '− · + 로 맞추거나 태어난 해를 바로 적어도 돼요.',
+  age: '휠을 위아래로 굴려 태어난 해를 맞춰 주세요.',
   job: '해당하는 걸 모두 골라 주세요.',
   own: '집을 산 적이 없으면 "없어요"를 눌러 주세요.',
   sep: '주민등록 주소를 말해요. 모르면 "잘 모르겠어요"를 눌러 주세요.',
@@ -31,6 +32,88 @@ const EASY_H = {
   time: '편도(한 쪽) 기준으로 정해 주세요.',
   when: '아직 안 정했으면 "아직 미정"을 눌러도 돼요.',
 };
+/* 아직 안 채웠을 때 다음 버튼 위에 띄우는 안내 (일반 화면의 '~ 채워 주세요'와 같은 역할) */
+const EASY_NEED = {
+  age: '태어난 해를 맞춰 주세요',
+  job: '해당하는 항목을 하나 이상 골라 주세요',
+  own: '하나를 골라 주세요',
+  sep: '하나를 골라 주세요',
+  cash: '모아둔 돈을 적어 주세요',
+  income: '한 달 수입을 적어 주세요',
+  place: '자주 가는 곳을 골라 주세요',
+  time: '이동 시간을 정해 주세요',
+  when: '입주 시기를 정해 주세요',
+};
+
+/* 나이 · 휠(스크롤) 피커 · 가운데에 온 해가 선택돼요 */
+const WH = 56;   // 한 줄 높이 (CSS .ywheel-list li 와 맞춰요)
+const clampI = i => Math.max(0, Math.min(YEARS1.length - 1, i));
+const commitYear = i => { const y = YEARS1[clampI(i)]; if (y && y !== (S.prof || {}).birthYear) year1(y, 'ywheel'); };
+
+function YearWheel() {
+  const ref = useRef(null), drag = useRef(null), moved = useRef(false), lock = useRef(false);
+  const sel = (S.prof || {}).birthYear;
+  useEffect(() => {   // 처음 한 번만 현재(또는 기본) 연도로 가운데 맞추고, 휠은 한 칸씩 움직이게
+    const el = ref.current; if (!el) return;
+    el.scrollTop = Math.max(0, YEARS1.indexOf(sel ?? (NOW_Y - 27))) * WH;
+    const onWheel = e => {
+      e.preventDefault(); if (lock.current) return;
+      const d = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0; if (!d) return;
+      lock.current = true;
+      const i = clampI(Math.round(el.scrollTop / WH) + d);
+      el.scrollTo({ top: i * WH, behavior: 'smooth' }); commitYear(i);
+      setTimeout(() => { lock.current = false; }, 150);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+  const commit = commitYear;
+  const snap = () => { const el = ref.current, i = Math.round(el.scrollTop / WH); el.scrollTo({ top: i * WH, behavior: 'smooth' }); commit(i); };
+  const onScroll = () => { if (drag.current || lock.current) return; const el = ref.current; if (!el) return; clearTimeout(el._t); el._t = setTimeout(snap, 110); };
+  /* 마우스·펜은 끌어서(드래그) 조절, 터치는 기본 스크롤을 그대로 써요 */
+  const down = e => {
+    if (e.pointerType === 'touch') return; e.preventDefault();
+    const el = ref.current; moved.current = false; drag.current = { y: e.clientY, top: el.scrollTop };
+    el.style.scrollSnapType = 'none'; el.setPointerCapture?.(e.pointerId); el.classList.add('grab');
+  };
+  const pmove = e => { if (!drag.current) return; const dy = e.clientY - drag.current.y; if (Math.abs(dy) > 3) moved.current = true; ref.current.scrollTop = drag.current.top - dy; };
+  const up = () => { if (!drag.current) return; drag.current = null; const el = ref.current; el.style.scrollSnapType = ''; el.classList.remove('grab'); snap(); };
+  const onKey = e => {
+    const d = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0; if (!d) return; e.preventDefault();
+    const base = sel ? YEARS1.indexOf(sel) : YEARS1.indexOf(NOW_Y - 27);
+    const i = Math.max(0, Math.min(YEARS1.length - 1, base + d));
+    ref.current.scrollTop = i * WH; commit(i);
+  };
+  return (
+    <div className="ywheel" id="ywheel">
+      <div className="ywheel-band" aria-hidden="true" />
+      <ul className="ywheel-list" ref={ref} onScroll={onScroll} onKeyDown={onKey}
+        onPointerDown={down} onPointerMove={pmove} onPointerUp={up} onPointerCancel={up}
+        role="listbox" aria-label="출생연도" tabIndex={0}>
+        {YEARS1.map((y, i) => { const on = y === sel;
+          return <li key={y} role="option" aria-selected={on} className={on ? 'on' : ''}
+            onClick={() => { if (moved.current) { moved.current = false; return; } ref.current.scrollTop = i * WH; commit(i); }}>
+            <b>{y}</b><small>만 {NOW_Y - y}세</small></li>; })}
+      </ul>
+    </div>
+  );
+}
+function EasyAge() {
+  const P = S.prof || {}, y = P.birthYear, split = y && ageSplit(y);
+  return (
+    <div className="easy-age">
+      <YearWheel />
+      {split ? (
+        <div className="easy-bd">
+          <span className="f1bd" id="f1-bdq">올해 생일 지났어요?</span>
+          <span className="chips" role="radiogroup" aria-labelledby="f1-bdq">{[['after', `지났어요 · 만 ${NOW_Y - y}세`], ['before', `아직이에요 · 만 ${NOW_Y - y - 1}세`]].map(([v, t]) => (
+            <button key={v} role="radio" aria-checked={P.bday === v} id={`f1-bd-${v}`} className={`chip ${P.bday === v ? 'on' : ''}`} onClick={() => bd1(v)} data-act="생일 고르기">{t}</button>
+          ))}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function Easy() {
   const ctl = fieldCtl1(), total = W1.length, i = S.easyQ;
@@ -51,10 +134,10 @@ function Easy() {
       {EASY_H[f.k] ? <div className="lead">{EASY_H[f.k]}</div> : null}
       <div className="f1card"><div className={`f1 s1-field-${f.k}`} role="group" aria-labelledby={`f1l-${f.k}`}>
         <div className="lab"><b id={`f1l-${f.k}`}>{f.panel}</b>{f.h ? <small>{f.h}</small> : null}</div>
-        <div className="ctl">{ctl[f.k]}</div>
+        <div className="ctl">{f.k === 'age' ? <EasyAge /> : ctl[f.k]}</div>
       </div></div>
       <div className="cta">{i > 0 ? <button className="btn ghost" onClick={() => set({ easyQ: i - 1 })} data-act="이전 질문">이전</button> : null}
-        <button className="btn pri wide" disabled={!done1(f.k)} onClick={() => set({ easyQ: i + 1 })} data-act="다음 질문">다음</button></div>
+        <button className="btn pri wide" onClick={() => done1(f.k) ? set({ easyQ: i + 1 }) : showToast(EASY_NEED[f.k] || `${f.panel} 항목을 채워 주세요`)} data-act="다음 질문">다음</button></div>
     </div>
   );
 }

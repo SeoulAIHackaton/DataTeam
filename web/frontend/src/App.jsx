@@ -71,6 +71,7 @@ export default function App() {
         {wide() ? null : <aside className="side" aria-label="이 장의 도구"><Aside /></aside>}
       </div>
       <Footer />
+      {S.toast ? <div className="toast" role="alert" key={S.toastN}>{S.toast}</div> : null}
     </div>
   );
 }

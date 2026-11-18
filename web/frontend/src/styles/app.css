@@ -35,6 +35,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 h1{font-size:28px;line-height:1.4;letter-spacing:-.5px;font-weight:800}
 .lead{font-size:16px;color:var(--sub);line-height:1.6;margin-top:8px}
 .sec{margin-top:40px}
+/* 잠깐 떴다 사라지는 안내 (토스트) */
+.toast{position:fixed;left:50%;bottom:40px;z-index:120;max-width:calc(100% - 32px);background:rgba(29,36,33,.92);color:#fff;font-size:15.5px;font-weight:600;line-height:1.4;text-align:center;padding:14px 22px;border-radius:14px;box-shadow:0 14px 34px rgba(29,36,33,.28);pointer-events:none;animation:toastLife 1.8s ease forwards}
+@keyframes toastLife{0%{opacity:0;transform:translate(-50%,14px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
+.easy .toast{font-size:18px;padding:16px 26px;bottom:48px}
+@media (prefers-reduced-motion:reduce){.toast{animation:none;opacity:1;transform:translateX(-50%)}}
 .sec-t{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .sec-t small{font-size:13px;font-weight:500;color:var(--mute)}
 .p{font-size:16px;line-height:1.7}

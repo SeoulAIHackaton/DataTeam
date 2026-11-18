@@ -164,16 +164,98 @@
 .s1-cta #f1go{margin:0 0 0 auto}
 .s1-cta #f1go:disabled{cursor:default;background:var(--pri)}
 
-/* 쉬운 화면: 한 항목을 한 화면에 크게 */
+/* ===== 쉬운 화면: 한 항목을 한 화면에 크게 ===== */
 .easy .s1-easy{margin-top:4px}
 .easy .s1-easy .f1card{margin-top:30px}
 .easy .s1-easy .f1{padding:0;border:0}
-.easy .s1-easy .f1 .lab b{font-size:18px}
-.easy .s1-easy .f1 .lab small{font-size:14px}
-.easy .s1-easy .ocard b{font-size:17px}
-.easy .s1-easy .ocard small{font-size:14px}
-.easy .s1-easy .s1-job{font-size:17px}
-.easy .s1-easy .cta{margin-top:34px}
+.easy .s1-easy .f1 .lab{margin-bottom:18px}
+.easy .s1-easy .f1 .lab b{font-size:20px}
+.easy .s1-easy .f1 .lab small{font-size:15px}
+.easy .s1-easy .s1-help,.easy .s1-easy .s1-results-label{font-size:16px}
+.easy .s1-easy .cta{margin-top:36px}
+
+/* 내 집 · 세대 (카드) */
+.easy .s1-easy .ocards{gap:14px}
+.easy .s1-easy .ocard{min-height:88px;padding:24px 56px 24px 24px;border-radius:18px}
+.easy .s1-easy .ocard b{font-size:21px}
+.easy .s1-easy .ocard small{font-size:15px;margin-top:5px}
+.easy .s1-easy .ocard .ck{top:50%;right:22px;width:26px;height:26px;transform:translateY(-50%)}
+
+/* 직업·학업 상태 (체크 박스) */
+.easy .s1-easy .s1-jobs{gap:14px}
+.easy .s1-easy .s1-job{min-height:78px;padding:22px 24px;font-size:20px;border-radius:18px;gap:16px}
+.easy .s1-easy .s1-job input{width:28px;height:28px}
+
+/* 모아둔 돈 · 한 달 수입 (가운데 큰 숫자 + 큰 버튼) */
+.easy .s1-easy .f1money{gap:16px;align-items:center}
+.easy .s1-easy .f1amt-row{justify-content:center;gap:10px}
+.easy .s1-easy .f1amt{width:auto;border-bottom-width:3px;padding-bottom:8px}
+.easy .s1-easy .f1amt input{font-size:48px;max-width:min(62vw,360px)}
+.easy .s1-easy .f1amt .u{font-size:24px}
+.easy .s1-easy .f1read{display:none}
+.easy .s1-easy .f1add{justify-content:center;flex-wrap:wrap;gap:12px;margin-top:4px}
+.easy .s1-easy .addb{height:60px;padding:0 26px;font-size:20px;border-radius:16px}
+.easy .s1-easy .addb.clr{font-size:18px}
+.easy .s1-easy .f1tog{display:flex;width:fit-content;margin:0 auto}
+.easy .s1-easy .f1tog button{padding:12px 30px;font-size:19px;border-radius:11px}
+.easy .s1-easy .f1conv,.easy .s1-easy .f1ok,.easy .s1-easy .f1over{text-align:center;font-size:17px}
+.easy .s1-easy #f1-cash-x,.easy .s1-easy #f1-income-x{text-align:center}
+.easy .s1-easy .f1gauge{max-width:440px;margin:22px auto 0}
+.easy .s1-easy .f1gauge .tr{height:14px;border-radius:7px}
+.easy .s1-easy .f1gauge .lim{top:-6px;bottom:-6px}
+.easy .s1-easy .f1gauge .lb{height:22px;margin-top:10px;font-size:14px}
+
+/* 자주 가는 곳 (검색) */
+.easy .s1-easy .f1search{height:72px;padding:0 22px;border-radius:18px}
+.easy .s1-easy .f1search input{font-size:20px}
+.easy .s1-easy .f1search .ico svg{width:24px;height:24px}
+.easy .s1-easy .s1-results-label{margin:16px 0 6px}
+.easy .s1-easy .s1-results button{padding:18px 14px}
+.easy .s1-easy .s1-result-icon,.easy .s1-easy .s1-place-icon{width:52px;height:52px}
+.easy .s1-easy .s1-result-icon svg,.easy .s1-easy .s1-place-icon svg{width:26px;height:26px}
+.easy .s1-easy .s1-result-text b{font-size:19px}
+.easy .s1-easy .s1-result-text small{font-size:15px}
+.easy .s1-easy .s1-result-pick{font-size:16px}
+.easy .s1-easy .f1pick{padding:20px 22px}
+.easy .s1-easy .f1pick .q b{font-size:20px}
+
+/* 소요 시간 (슬라이더) */
+.easy .s1-easy .f1tv{font-size:17px;min-height:0;margin-bottom:22px;text-align:center}
+.easy .s1-easy .f1tv b{font-size:30px}
+.easy .s1-easy .f1rng{height:14px;border-radius:7px}
+.easy .s1-easy .f1rng::-webkit-slider-thumb{width:36px;height:36px}
+.easy .s1-easy .f1rng::-moz-range-thumb{width:32px;height:32px}
+.easy .s1-easy .f1tk{font-size:14px}
+.easy .s1-easy .f1any{font-size:18px;padding:12px 22px;margin-top:22px}
+
+/* 입주 시기 (선택) */
+.easy .s1-easy .s1-date{gap:12px}
+.easy .s1-easy .s1-date select{min-height:66px;font-size:20px;border-radius:16px;padding:0 18px}
+.easy .s1-easy .s1-unknown{font-size:18px}
+.easy .s1-easy .s1-unknown input{width:26px;height:26px}
+
+/* 나이 · 휠 피커 */
+.easy-age{text-align:center}
+.ywheel{position:relative;height:280px;max-width:380px;margin:0 auto}
+.ywheel-list{position:relative;z-index:1;height:100%;overflow-y:auto;overflow-x:hidden;list-style:none;margin:0;padding:112px 0;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none;touch-action:pan-y}
+.ywheel-list.grab{cursor:grabbing}
+.ywheel-list::-webkit-scrollbar{display:none}
+.ywheel-list:focus-visible{outline:2px solid var(--pri);outline-offset:4px;border-radius:14px}
+.ywheel-list li{height:56px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;gap:12px;opacity:.4;cursor:pointer;transition:opacity .15s}
+.ywheel-list li b{font-size:28px;font-weight:700;color:var(--sub)}
+.ywheel-list li small{font-size:17px;font-weight:600;color:var(--mute)}
+.ywheel-list li.on{opacity:1}
+.ywheel-list li.on b{font-size:34px;color:var(--ink)}
+.ywheel-list li.on small{color:var(--pri);font-weight:700}
+.ywheel-band{position:absolute;left:50%;top:50%;width:100%;max-width:340px;height:56px;transform:translate(-50%,-50%);border-radius:14px;background:var(--pri-s);pointer-events:none}
+.ywheel::before,.ywheel::after{content:"";position:absolute;left:0;right:0;height:112px;pointer-events:none;z-index:2}
+.ywheel::before{top:0;background:linear-gradient(var(--bg),rgba(244,242,236,0))}
+.ywheel::after{bottom:0;background:linear-gradient(rgba(244,242,236,0),var(--bg))}
+.easy-bd{margin-top:24px}
+.easy-bd .f1bd{display:block;font-size:18px;font-weight:700;margin-bottom:14px}
+.easy-bd .chips{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.easy-bd .chip{border:0;border-radius:12px;background:var(--sheet);box-shadow:var(--sh);font-size:17px;padding:13px 22px}
+.easy-bd .chip.on{background:var(--pri-s);color:var(--pri-d);box-shadow:inset 0 0 0 1.5px var(--pri)}
 
 @media (max-width:760px){
   .s1.tz1 .ch-row{align-items:flex-start;flex-wrap:wrap;gap:10px}

@@ -7,7 +7,7 @@ export const S = {
   step: 1, easy: false,
   own: null, sep: null,          // STEP1 answers
   msgs: [], prof: {}, placeAsk: null, qi: 0, redo: null, extra: [],
-  easyQ: 0,                      // STEP1 easy question index
+  easyQ: 0, toast: '',           // STEP1 easy question index · toast = 잠깐 떴다 사라지는 안내
   strategy: 'B', easyMore: false,
   open: 'rent', cmp: [], showCmp: false, whatif: null,
   ragShow: false, chat: false, log: [], q3: null, why2: null, judged: true, why4: null, alarm: [],
@@ -18,6 +18,13 @@ let ver = 0;
 const subs = new Set();
 export function render() { ver++; subs.forEach(f => f()); }
 export function set(p) { Object.assign(S, p); render(); }
+
+/* 잠깐 떴다 사라지는 안내(토스트) · 같은 걸 또 부르면 시간이 다시 시작돼요 */
+export function showToast(msg) {
+  S.toast = msg; S.toastN = (S.toastN || 0) + 1; render();
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { S.toast = ''; render(); }, 1800);
+}
 const subscribe = f => { subs.add(f); return () => subs.delete(f); };
 const snap = () => ver;
 export const useStore = () => useSyncExternalStore(subscribe, snap);
