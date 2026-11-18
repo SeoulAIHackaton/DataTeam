@@ -486,7 +486,73 @@ h1{font-size:32px}
 .cmp-side.chk input:checked + span{color:var(--sub);text-decoration:line-through}
 .cmp-side.chk .tile.xs{vertical-align:-4px;margin-right:6px}
 .cmp-side .cnt{font-size:12px;font-weight:700;background:var(--bg);color:var(--sub2);border-radius:999px;padding:1px 8px}
+/* 02 받을 지원 · 토스 목록 방식 (카드 테두리 없이 큰 글자 · 여백 · 구분선) */
+.tz .ch-lead{font-size:15px}
+.tz-sum{display:flex;gap:0;margin-top:28px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tz-sum div{flex:1;padding:0 20px}
+.tz-sum div:first-child{padding-left:0}
+.tz-sum div+div{border-left:1px solid var(--line)}
+.tz-sum dt{font-size:14px;color:var(--sub)}
+.tz-sum dd{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-top:4px}
+.tz-sec{margin-top:52px}
+.tz-sec>h2{font-size:22px;font-weight:800;letter-spacing:-.6px;display:flex;align-items:baseline;gap:10px}
+.tz-sec>h2>span{font-size:14px;font-weight:500;color:var(--sub);letter-spacing:0}
+.tz-sec>h2 .ai-by{margin-left:auto}
+.tl2{list-style:none;margin-top:10px}
+.tr{display:flex;align-items:center;gap:12px}
+.tr+.tr{border-top:1px solid var(--line3)}
+.tr-m{flex:1;min-width:0;display:flex;align-items:center;gap:16px;padding:18px 12px;margin:0 -12px;border-radius:14px;text-align:left;transition:background .15s}
+.tr-m:hover{background:rgba(29,36,33,.04)}
+.tr-ic{width:44px;height:44px;border-radius:50%;background:var(--pri-s);color:var(--pri);display:grid;place-items:center;flex-shrink:0}
+.tr-ic svg{width:22px;height:22px}
+.tr-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.tr-t b{font-size:17px;font-weight:700;color:var(--ink);word-break:keep-all}
+.tr-t small{font-size:14px;color:var(--sub);margin-top:3px;word-break:keep-all}
+.tr-v{display:flex;flex-direction:column;align-items:flex-end;text-align:right;flex-shrink:0}
+.tr-v b{font-size:17px;font-weight:800;color:var(--ink);white-space:nowrap}
+.tr-v small{font-size:13px;color:var(--sub);margin-top:3px;white-space:nowrap}
+.tr-v.money b{color:var(--pri)}
+.tr-v.urg b{color:var(--warn-t)}
+.tr-dim .tr-t b,.tr-dim .tr-v b{color:var(--mute);font-weight:600}
+.tr-a{width:96px;display:flex;justify-content:flex-end;flex-shrink:0}
+.tbtn{height:36px;padding:0 14px;border-radius:10px;background:var(--pri-s);color:var(--pri-d);font-size:14px;font-weight:700;white-space:nowrap}
+.tbtn:hover{filter:brightness(.96)}
+.tbtn.on{background:var(--bg);color:var(--sub2)}
+.tz-note{margin-top:12px;font-size:14px;color:var(--sub);line-height:1.7}
+.tz-note .link{font-size:14px}
+.tz-aux{margin-top:64px;padding-top:8px;border-top:8px solid var(--line3)}
+.tz-sec.sm{margin-top:40px}
+.tz-sec.sm>h2{font-size:18px;margin-bottom:14px}
+.tz-ask .ask-in{border-width:1px}
+.tz-ask .ask-in button{height:38px}
+.tz .more-t{border:0;padding:0;font-size:18px;font-weight:800}
+
+.tr-v.down small{color:var(--warn-t);font-weight:700}
+.tr-v.up small{color:var(--ok-t);font-weight:700}
+.tr-v.cond b{color:var(--sub2)}
+.tr-v:only-child{margin-left:auto}
+.tz-sec>h2+.tl2{margin-top:6px}
+.tz-morebtn{display:block;width:100%;height:48px;margin-top:6px;border-radius:12px;background:var(--sheet);box-shadow:var(--sh);font-size:15px;font-weight:700;color:var(--sub2)}
+.tz-morebtn:hover{color:var(--ink)}
+.tz-sub{font-size:14px;color:var(--sub);margin:-8px 0 16px}
+
+/* 공고문에 물어보기 · 보라 대신 브랜드 초록 · 검색창 + 자주 묻는 질문 목록 */
+.tz-ask{--ai:var(--pri);--ai-s:var(--pri-s);--ai-l:var(--line2)}
+.tz .tz-ask .ask-in{height:58px;padding:0 8px 0 20px;border:0;border-radius:16px;background:var(--sheet);box-shadow:var(--sh)}
 .tz .tz-ask .ask-in:focus-within{box-shadow:0 0 0 2px var(--pri)}
+.tz .tz-ask .ask-in input{font-size:16px}
+.tz .tz-ask .ask-in button{height:42px;border-radius:12px;background:var(--pri);padding:0 18px}
+.tz-faq{list-style:none;margin-top:8px}
+.tz-faq button{display:flex;align-items:center;gap:12px;width:100%;padding:14px 4px;text-align:left;font-size:15px;color:var(--ink2);border-bottom:1px solid var(--line3)}
+.tz-faq button i{font-style:normal;font-weight:800;color:var(--pri)}
+.tz-faq button .chev{margin-left:auto}
+.tz-faq button:hover,.tz-faq button.on{color:var(--ink);font-weight:700}
+.tz-ask .ab{border:0;background:var(--sheet);box-shadow:var(--sh);border-radius:16px;padding:18px 20px}
+.tz-ask .qb{background:var(--pri-s);color:var(--pri-d);font-weight:600}
+.md-chk li.none{color:var(--sub)}
+.md-chk li.none::before{content:"–";color:var(--mute)}
+.md-p{font-size:15px;line-height:1.7;color:var(--ink2)}
+
 /* 자세히 보기 모달 */
 .md-bg{position:fixed;inset:0;z-index:100;background:rgba(20,24,22,.42);display:grid;place-items:center;padding:24px;animation:mdFade .15s ease-out}
 .md{width:min(560px,100%);max-height:calc(100vh - 48px);display:flex;flex-direction:column;background:var(--sheet);border-radius:24px;box-shadow:0 24px 64px rgba(0,0,0,.18);outline:0;animation:mdUp .2s ease-out}
