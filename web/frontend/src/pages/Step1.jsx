@@ -5,7 +5,7 @@ import { S, set, go, render, focusId, showToast } from '../store.js';
 import {
   W1, F1K, GROUPS1, NOW_Y, TODAY1, INC_LIMIT, D1, done1, val1, ageSplit, year1, bd1, YEARS1, placeIn, placeList1, pickPlace1, placeChange, placeKey,
   digits1, numStr1, incMode1, monthly1, save1n, mode1, demo1, addList1, add1, clear1, amtW1, vKey1, Y_RANGE1, yearStep1,
-  T_RANGE1, fmtMin, tPct1, pick1, CARD1, DEST, won, all1, jobs1, toggleJob1, whenParts1, setWhenPart1, whenUnknown1,
+  T_RANGE1, fmtMin, tPct1, pick1, CARD1, DEST, won, jobs1, toggleJob1, whenParts1, setWhenPart1, whenUnknown1,
 } from '../lib/core.js';
 import { Html, Icon, IcCk, ChHead } from '../components/ui.jsx';
 
@@ -358,14 +358,5 @@ export function Side1() {
       </div>
       {S.sep === '네' ? <div className="f1note">세대 분리 후 전입신고가 필요할 수 있어요</div> : null}
     </div>
-  );
-}
-
-/* 1단계가 덜 끝난 채 2·3단계로 가면 예시 값 배너 (me()가 빈 값을 예시 값으로 채우니까) */
-export function Banner1() {
-  if (S.step === 1 || S.easy || all1()) return null;
-  return (
-    <div className="sec" data-banner="step1"><div className="note warn"><span className="ic">!</span>
-      <div>아직 안 채운 항목은 예시 값으로 보고 있어요 · <button className="link" onClick={() => go(1)} data-act="1단계로">1단계로</button></div></div></div>
   );
 }

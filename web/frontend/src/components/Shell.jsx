@@ -1,7 +1,7 @@
 /* 앱 틀: 위 막대 · 왼쪽 목차(01~03) · 오른쪽 패널 · 아래 막대 */
-import { S, set, go } from '../store.js';
-import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, copyFile } from '../lib/core.js';
-import { IcCk } from './ui.jsx';
+import { S, set, go, showToast } from '../store.js';
+import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, copyFile, all1 } from '../lib/core.js';
+import { IcCk, IcLock } from './ui.jsx';
 
 export function Header() {
   const ez = ['내 상황', '받을 수 있는 돈', '어느 집이 맞을까'];
@@ -9,10 +9,11 @@ export function Header() {
     <header className="top"><div className="top-in">
       <button className="logo" onClick={() => { set({ home: true }); window.scrollTo(0, 0); }} data-act="홈으로">첫집<b>내비</b></button>
       {S.easy
-        ? <ol className="ez-steps" aria-label="단계">{ez.map((n, i) => (
-            <li key={n} className={S.step === i + 1 ? 'on' : S.step > i + 1 ? 'done' : ''}>
-              <button onClick={() => go(i + 1)} aria-current={S.step === i + 1 ? 'step' : undefined} data-act="단계 이동">{S.step > i + 1 ? '✓ ' : ''}{n}</button>
-            </li>))}</ol>
+        ? <ol className="ez-steps" aria-label="단계">{ez.map((n, i) => { const locked = i > 0 && !all1();
+            return (
+            <li key={n} className={`${S.step === i + 1 ? 'on' : S.step > i + 1 ? 'done' : ''} ${locked ? 'locked' : ''}`}>
+              <button onClick={() => locked ? showToast('내 상황을 모두 채우면 넘어갈 수 있어요') : go(i + 1)} aria-current={S.step === i + 1 ? 'step' : undefined} aria-disabled={locked || undefined} data-act="단계 이동">{locked ? '🔒 ' : S.step > i + 1 ? '✓ ' : ''}{n}</button>
+            </li>); })}</ol>
         : <span className="top-file">내 첫 집 파일 · {CH[S.step].no} {CH[S.step].t}</span>}
       <button className="toggle" onClick={() => set({ easy: !S.easy })} aria-pressed={!!S.easy} data-act="쉬운 화면 켜기/끄기">쉬운 화면 <span className={`sw ${S.easy ? 'on' : ''}`} /></button>
     </div></header>
@@ -31,14 +32,15 @@ export function Rail() {
   return (
     <nav className="rail" aria-label="내 첫 집 파일 목차">
       <div className="rail-t">내 첫 집 파일<small>2026년 11월 21일 기준</small></div>
-      <ol>{[1, 2, 3].map(n => {
-        const on = S.step === n, dn = !on && chDone(n);
+      <ol>{(() => { const ready = all1(); return [1, 2, 3].map(n => {
+        const on = S.step === n, dn = !on && chDone(n), locked = n > 1 && !ready;
         return (
-          <li key={n}><button className={`rl ${on ? 'on' : dn ? 'done' : ''}`} aria-current={on ? 'step' : undefined} onClick={() => go(n)} data-act="장 이동">
-            <span className="rl-no">{dn ? <IcCk /> : CH[n].no}</span><span className="rl-tx"><b>{CH[n].t}</b><small>{chSum(n)}</small></span>
+          <li key={n}><button className={`rl ${on ? 'on' : dn ? 'done' : ''} ${locked ? 'locked' : ''}`} aria-current={on ? 'step' : undefined} aria-disabled={locked || undefined}
+            onClick={() => locked ? showToast('01 내 조건을 모두 채우면 넘어갈 수 있어요') : go(n)} data-act="장 이동">
+            <span className="rl-no">{locked ? <IcLock /> : dn ? <IcCk /> : CH[n].no}</span><span className="rl-tx"><b>{CH[n].t}</b><small>{locked ? '01을 먼저 끝내요' : chSum(n)}</small></span>
           </button></li>
         );
-      })}</ol>
+      }); })()}</ol>
       <div className="rail-f">정책 · 온통청년 · 정부24 · 서울시 · SH<br />집 · 카카오 로컬 · ODsay</div>
     </nav>
   );

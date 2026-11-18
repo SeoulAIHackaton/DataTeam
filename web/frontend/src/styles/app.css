@@ -903,6 +903,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .ez-steps button{font-size:16px;font-weight:700;color:var(--sub);padding:8px 14px;border-radius:8px}
 .ez-steps li.on button{background:var(--pri);color:#fff}
 .ez-steps li.done button{color:var(--pri)}
+.ez-steps li.locked button{color:var(--mute);cursor:not-allowed}
 
 /* ----- 세 칸 (목차 · 본문 · 도구) ----- */
 .shell{max-width:1360px;min-width:1240px;width:100%;margin:0 auto;padding:36px 24px 96px;display:grid;grid-template-columns:200px minmax(0,1fr) 300px;gap:36px;align-items:start;flex:1}
@@ -931,6 +932,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .rl.on .rl-no{background:var(--pri);border-color:var(--pri);color:#fff}
 .rl.on .rl-tx b{color:var(--ink)}
 .rl.done .rl-no{background:var(--pri-s);border-color:var(--pri-s);color:var(--pri)}
+.rl.locked{cursor:not-allowed}
+.rl.locked .rl-tx b,.rl.locked .rl-tx small{color:var(--mute)}
+.rl.locked .rl-no{background:var(--bg);border-color:var(--line);color:var(--mute)}
+.rl.locked:hover{background:transparent}
 .rail-f{margin-top:20px;padding:14px 4px 0;border-top:1px solid var(--line);font-size:12px;color:var(--sub);line-height:1.65}
 
 /* 장 머리 */

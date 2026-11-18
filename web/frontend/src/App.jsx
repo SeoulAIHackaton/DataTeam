@@ -6,7 +6,7 @@ import { roving1, drawKakao, apiCheck, DEST } from './lib/core.js';
 import { Header, Footer, Rail, ProfileMini, AlarmPanel, FileSummary } from './components/Shell.jsx';
 import Home from './pages/Home.jsx';
 import Loading from './pages/Loading.jsx';
-import Step1, { Side1, Banner1 } from './pages/Step1.jsx';
+import Step1, { Side1 } from './pages/Step1.jsx';
 import Step2 from './pages/Step2.jsx';
 import Step3 from './pages/Step3.jsx';
 
@@ -67,7 +67,7 @@ export default function App() {
       <Header />
       <div className={`shell ${wide() ? 'wide' : ''}`}>
         {S.easy ? null : <Rail />}
-        <main className="col" id="main"><Banner1 /><Body /></main>
+        <main className="col" id="main"><Body /></main>
         {wide() ? null : <aside className="side" aria-label="이 장의 도구"><Aside /></aside>}
       </div>
       <Footer />
