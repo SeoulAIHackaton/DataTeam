@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { S, set, go, focusId } from '../store.js';
 import {
   HOMES, FAC, LIFE, SCENES, PRIO, MAX_HOMES, ADDR_RESULTS, ADDR_Q, DEST, val, fareMonth, feeOf, feeKnown, monthly, cheapest, r1,
-  scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute,
+  scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute, lifeScore,
   jump, openEdit, saveEdit, nm3, ja3, askCmp, API_OK, copyFile,
 } from '../lib/core.js';
 import { Html, Icon, Tile, BBest, BUnk, ChHead, Modal, IcCk, IcX, IcDash, IcPen, IcDown } from '../components/ui.jsx';
@@ -125,10 +125,12 @@ function CmpSummary({ H }) {
   return out.length ? <div className="cmp-sum"><h2>차이 요약</h2>{out}</div> : null;
 }
 
-function LifeCell({ h, ks }) {
+function LifeCell({ h, ks, best }) {
   const b = ks.map(k => LIFE[h.key][k]).reduce((a, c) => a[1] <= c[1] ? a : c);
   if (/없음/.test(b[0])) return <td><span className="v">–</span><span className="s2">2km 안에 없어요</span></td>;
-  return <td><span className="v">{b[1]}분</span><span className="s2">{b[0]}{b[1] >= 15 ? ' · 조금 멀어요' : ''}</span></td>;
+  return <td className={best != null && b[1] === best ? 'best' : ''}>
+    <b className="v">{b[1]}분{b[1] >= 15 ? <> <span className="pill warn">멀어요</span></> : null}</b>
+    <span className="s2">{b[0]}</span></td>;
 }
 
 function Sup({ x }) {
@@ -150,7 +152,7 @@ function CmpTable({ H, part = 'core' }) {
     <div className="tblwrap s3-scroll" role="region" tabIndex={0} aria-label={part === 'core' ? '후보 집 비교표' : part === 'life' ? '주변 시설 비교표' : '집별 지원 비교표'} style={{ '--home-count': H.length }}><table>
       <caption className="sr">후보 집 {H.length}곳 비교표</caption>
       <colgroup><col className="s3-item-col" />{H.map(h => <col key={h.key} />)}</colgroup>
-      <thead><tr><th scope="col" className="k">항목</th>{H.map(h => (
+      <thead><tr><th scope="col" className="k">{part === 'life' ? '시설' : '항목'}</th>{H.map(h => (
         <th scope="col" key={h.key}><div className="hd"><Tile h={h} /><span className="hn2"><b>{h.label.replace(/ 원룸$/, '')}</b><small>{/ 원룸$/.test(h.label) ? '원룸' : ''}</small></span>
           {core ? <button className="pen" onClick={() => openEdit(h.key)} aria-label={`${h.key} ${h.label} 값 고치기`} title="값 고치기" data-act="값 고치기"><IcPen /></button> : null}</div></th>
       ))}</tr></thead>
@@ -178,10 +180,9 @@ function CmpTable({ H, part = 'core' }) {
       </tbody>
       </> : null}
       {part === 'life' ? <tbody>
-        {Row({ label: "지하철역", f: cell(h => <LifeCell h={h} ks={['station']} />) })}
-        {Row({ label: "장보기", sub: "마트·슈퍼", f: cell(h => <LifeCell h={h} ks={['mart', 'super']} />) })}
-        {Row({ label: "병원", sub: "내과", f: cell(h => <LifeCell h={h} ks={['clinic']} />) })}
-        {Row({ label: "공원", f: cell(h => <LifeCell h={h} ks={['park']} />) })}
+        {FAC.map(fac => { const best = Math.min(...H.map(h => LIFE[h.key][fac.k][1]));
+          return <Fragment key={fac.k}>{Row({ label: fac.label, f: cell(h => <LifeCell h={h} ks={[fac.k]} best={best} />) })}</Fragment>; })}
+        {Row({ label: "생활 점수", cls: "sum", f: (() => { const top = Math.max(...H.map(lifeScore)); return cell(h => { const sc = lifeScore(h); return <td className={sc === top ? 'best' : ''}><b className="big">{sc}<small>점</small></b></td>; }); })() })}
       </tbody> : null}
       {part === 'sup' ? <tbody>
         {Row({ label: "국토부 청년월세", f: cell(h => <Sup x={S3[h.key].molit} />) })}

@@ -1108,7 +1108,7 @@ td .w{color:var(--sub)}
 .inp:focus-within{border-color:var(--pri);box-shadow:0 0 0 1px var(--pri)}
 .fields label{color:var(--sub2)}
 .cmp-card{border-color:var(--line);box-shadow:var(--sh)}
-.cmp thead th{top:60px}
+.cmp thead th{top:0}
 .cmp-sum{background:#FAF9F5}
 .cmp th.g{background:#F7F5F0}
 .cmp-rank{border-color:var(--line);box-shadow:var(--sh)}

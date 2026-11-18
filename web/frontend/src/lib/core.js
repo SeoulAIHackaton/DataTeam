@@ -555,6 +555,9 @@ export const clamp = v => Math.max(0, Math.min(100, v));
 
 export const walkScore = m => clamp(100 * (20 - m) / 15);
 
+// 생활 점수: 시설 8곳 도보시간의 walkScore 평균 (scores()의 life 항목과 같은 식)
+export const lifeScore = h => Math.round(FAC.reduce((a, f) => a + walkScore(LIFE[h.key][f.k][1]), 0) / FAC.length * 10) / 10;
+
 export const r1 = v => Math.round(v * 10) / 10;
 
 export function scores(){      // 관리비 확인된 집이 먼저(점수순), 모르는 집(unk)은 뒤에 붙여요 — 화면에서는 순위 대신 '확인 필요'
