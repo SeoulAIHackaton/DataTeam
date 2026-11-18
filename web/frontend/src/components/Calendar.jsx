@@ -12,9 +12,9 @@ export default function Calendar({ M, onPick }) {
   return (
     <div className="cal">
       <div className="cal-h">
-        <button className="nav" onClick={() => set({ calM: 10 })} style={m === 10 ? { opacity: .3 } : undefined} data-act="이전 달">‹</button>
-        <b>2026년 {m + 1}월</b>
-        <button className="nav" onClick={() => set({ calM: 11 })} style={m === 11 ? { opacity: .3 } : undefined} data-act="다음 달">›</button>
+        <button className="nav" onClick={() => { if (m !== 10) set({ calM: 10 }); }} aria-label="이전 달" aria-disabled={m === 10} data-act="이전 달">‹</button>
+        <b aria-live="polite">2026년 {m + 1}월</b>
+        <button className="nav" onClick={() => { if (m !== 11) set({ calM: 11 }); }} aria-label="다음 달" aria-disabled={m === 11} data-act="다음 달">›</button>
         <div className="cal-lg">
           {['safe', 'house'].map(k => <span key={k}><i style={{ background: PCOL[k].bg, border: `1px solid ${PCOL[k].bd}` }} />{PCOL[k].short}</span>)}
         </div>
@@ -32,7 +32,7 @@ export default function Calendar({ M, onPick }) {
             : { background: c.bg, color: c.fg, border: `1px solid ${c.bd}` };
           const aiId = e.id ? 'ai' + (e.id === 'safe' ? 0 : 1) : null;
           return (
-            <button key={ei} className={`bar ${e.id && S.open === aiId ? 'sel' : ''}`} style={{ ...st, gridColumn: `${a + 1}/${b + 2}`, gridRow: lane + 1 }}
+            <button key={ei} className={`bar ${e.id && S.open === aiId ? 'sel' : ''}`} aria-label={`${e.name}, ${e.ed.getMonth() + 1}월 ${e.ed.getDate()}일 마감`} style={{ ...st, gridColumn: `${a + 1}/${b + 2}`, gridRow: lane + 1 }}
               {...(e.id ? { onClick: () => onPick ? onPick(aiId) : set({ open: aiId }), 'data-act': '달력 막대 → 해당 정책 펼침' } : {})}>{label}</button>
           );
         });
