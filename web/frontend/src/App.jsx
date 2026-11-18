@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { S, useStore, flushFocus } from './store.js';
 import { roving1, drawKakao, apiCheck, DEST } from './lib/core.js';
-import { Header, Footer, Rail, ProfileMini, AlarmPanel, TipsPanel, FileSummary } from './components/Shell.jsx';
+import { Header, Footer, Rail, ProfileMini, AlarmPanel, FileSummary } from './components/Shell.jsx';
 import Home from './pages/Home.jsx';
 import Loading from './pages/Loading.jsx';
 import Step1, { Side1, Banner1 } from './pages/Step1.jsx';
@@ -20,7 +20,7 @@ function Aside() {
   if (S.easy) return null;
   if (S.step === 1) return <Side1 />;
   if (S.step === 2) return <><AlarmPanel /><ProfileMini /></>;
-  if (S.step === 3) return <><TipsPanel /><ProfileMini /></>;
+  if (S.step === 3) return <ProfileMini />;
   return <><SchedPanel /><FileSummary /></>;
 }
 

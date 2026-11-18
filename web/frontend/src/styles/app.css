@@ -1383,3 +1383,26 @@ td .w{color:var(--sub)}
   .fc > *,.mq-row{animation:none}
   .frk .br i{transition:none}
 }
+
+/* ===== 03 후보 집 넣기 · 토스 방식 (검색창 → 지도 → 후보 목록) ===== */
+.s3in .s3-search{margin-top:28px}
+.s3in .s3-search .tz-sub{margin-top:10px}
+.s3in .s3-search .tl2{margin-top:8px}
+.s3in .s3-search .tr-m:disabled{cursor:default}
+.s3in .s3-search .tr-m:disabled:hover{background:none}
+.s3in .chev{color:var(--mute);font-size:20px}
+.s3in .s3-map{margin-top:24px}
+.s3in .tz-note{margin-top:16px}
+.tr-ic.pin{color:#fff;font-weight:800;font-size:16px}
+.tr-ic.pin.empty{background:none;border:1.5px dashed var(--line2);color:var(--mute)}
+.s3in .cta .btn.pri:disabled{opacity:.45;cursor:not-allowed}
+.s3-kv{margin-top:4px}
+.s3-kv dd{font-size:20px}
+.s3-kv small{font-size:13px;color:var(--sub)}
+.s3-fac{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px 16px;margin-top:16px}
+.s3-fac li{display:flex;flex-direction:column;font-size:13px;color:var(--sub)}
+.s3-fac b{font-size:14px;color:var(--ink);margin-top:2px}
+.md-fields label small{font-weight:400;color:var(--sub);font-size:12px;margin-left:4px}
+.s3-src{font-size:13px;color:var(--sub);margin-top:14px}
+.s3-kv dd{font-size:18px;word-break:keep-all}
+.s3-fields{grid-template-columns:repeat(3,1fr)}

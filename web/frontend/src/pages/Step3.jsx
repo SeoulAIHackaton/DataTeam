@@ -12,90 +12,83 @@ import { MapBox, NeighMap, MiniMap } from '../components/Maps.jsx';
 
 const enterKey = (e, f) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) f(e.currentTarget.value); };
 
-/* ----- 후보 집 넣기 ----- */
-function Input() {
-  const slot = nextSlot(), n = S.homes.length, searching = (n < 2 || S.adding) && n < MAX_HOMES;
-  const slots = [0, 1, 2].map(i => {
-    const h = HOMES[i], has = S.homes.includes(i);
-    if (has) return <div className="slot full" key={i}><span className="pin" style={{ background: h.color }}>{h.key}</span><div><div className="name">{h.label}</div><div className="meta">보증금 {val(h, 'deposit').toLocaleString()} / 월세 {val(h, 'rent')} · {h.station}</div></div><button className="link right" onClick={() => set({ homes: S.homes.filter(x => x !== i) })} data-act="집 빼기">빼기</button></div>;
-    if (i === slot && searching) return <div className="slot now" key={i}><span className="pin empty">{h.key}</span><div><div className="name" style={{ color: 'var(--sub)' }}>집 {h.key}</div><div className="meta">지금 넣는 중</div></div></div>;
-    if (i === slot && n >= 2) return <button className="slot add" key={i} onClick={() => set({ adding: true })} data-act="후보 하나 더 넣기"><span className="pin empty">+</span><div><div className="name" style={{ color: 'var(--pri)' }}>하나 더 넣기</div><div className="meta">최대 3곳까지</div></div></button>;
-    return <div className="slot" key={i}><span className="pin empty">{h.key}</span><div><div className="name" style={{ color: 'var(--sub)' }}>집 {h.key}</div><div className="meta">{i === 2 ? '선택 · 최대 3곳' : '비어 있어요'}</div></div></div>;
-  });
-  let body = null;
+/* ----- 후보 집 넣기 · 토스 방식 ----- */
+/* 제목 → 주소 검색창 → 지도(자주 가는 곳까지 거리) → 넣은 집 목록 → 비교하기. 고른 집의 시간·금액은 모달에서 확인하고 추가해요 */
+function CandModal() {
   const parsed = S.parsed !== null && S.parsed !== undefined;
-  if (S.liveBusy === 'pick') {
-    body = <div className="sec"><div className="note"><div>주변 역·마트·약국 등 8곳과 {DEST.name}까지 오가는 시간을 찾고 있어요…</div></div></div>;
-  } else if (S.cand || parsed) {
-    const h = S.cand || HOMES[S.parsed], live = !!S.cand;
-    body = (
-      <div className="sec" key={h.addr}>
-        <div className="sec-t"><span className="ico sm"><Icon n="building" /></span>집 {h.key} <small>{h.addr}</small></div>
-        <div className="prof" style={{ gridTemplateColumns: 'repeat(3,1fr)', gap: '16px 24px' }}>
-          <div>가까운 역<b>{h.station}</b></div>
-          <div>{DEST.name}까지<b>{h.route === '걸어서' ? '걸어서 ' : ''}{h.commute}분{h.route === '걸어서' ? '' : ' · ' + h.route}</b></div>
-          <div>한 달 교통비<b>{fareMonth(h) ? '약 ' + fareMonth(h) + '만 원' : '0원 (걸어서)'}</b></div>
-        </div>
-        {live ? <div className="prof" style={{ gridTemplateColumns: 'repeat(4,1fr)', gap: '10px 18px', marginTop: 14 }}>{FAC.map(f => <div key={f.k}>{f.label}<b style={{ fontSize: 14 }}>{h.life[f.k][0]} {h.life[f.k][1]}분</b></div>)}</div> : null}
-        <div className="s" style={{ marginTop: 8 }}>역·주변 시설은 카카오 장소 검색{h.est ? <>, 오가는 시간·요금은 <b>직선거리로 추정</b>했어요 (ODsay 웹 키를 넣으면 실제 길찾기로 바뀌어요)</> : ', 오가는 시간·요금은 ODsay 대중교통 길찾기'}로 자동으로 채웠어요. 교통비 = 편도 요금 × 2 × {DAYS}일.</div>
-        <div className="sec-t" style={{ marginTop: 28 }}>계약 조건 <small>매물에 적힌 금액을 넣어 주세요 · 바꾸면 추천도 바뀌어요</small></div>
-        <div className="fields">
-          <label>보증금<span className="inp"><input id="in-dep" type="number" defaultValue={h.deposit} />만 원</span></label>
-          <label>월세<span className="inp"><input id="in-rent" type="number" defaultValue={h.rent} />만 원</span></label>
-          <label>관리비<span className="inp"><input id="in-fee" type="number" placeholder="모르면 비워 두기" defaultValue={h.fee ?? ''} />만 원</span></label>
-        </div>
-        <div className="row" style={{ border: 0, padding: '20px 0 0', gap: 10 }}>
-          <button className="btn pri" onClick={() => live ? addLive() : addHome(S.parsed)} data-act="집 추가 → 다음 칸">집 {h.key}로 추가</button>
-          <button className="btn ghost" onClick={() => set({ parsed: null, cand: null })} data-act="다시 검색">다시 검색</button>
-        </div>
-      </div>
-    );
-  } else if (searching) {
-    const search = () => kakaoOn() ? liveSearch() : set({ addrQ: S.addrQ || ADDR_Q[slot] });
-    let res;
-    if (kakaoOn()) {
-      res = S.liveBusy === 'search' ? <p className="s" style={{ marginTop: 12 }}>카카오에서 주소를 찾는 중…</p>
-        : S.live ? (S.live.length ? (
-          <div className="list" style={{ marginTop: 12 }}>{S.live.map((r, k) => (
-            <button key={k} className="row" {...(r.ok ? { onClick: () => livePick(k) } : { style: { opacity: .55, cursor: 'default' } })} data-act="결과 선택 → 주변 시설·시간 계산">
-              <span className="ico gray"><Icon n="building" /></span><div><div className="name">{r.name}</div><div className="meta">{r.sub}</div></div>
-              {r.ok ? <span className="chev right">›</span> : <span className="pill warn right">건물 번호 필요</span>}</button>
-          ))}</div>
-        ) : <p className="s" style={{ marginTop: 12 }}>검색 결과가 없어요. 동 이름과 번지까지 넣어 보세요 (예: {ADDR_Q[slot]})</p>)
-        : <p className="s" style={{ marginTop: 12 }}>예: {ADDR_Q[slot]} · 실제 주소를 카카오에서 찾아요</p>;
-    } else {
-      res = S.addrQ ? (
-        <div className="list" style={{ marginTop: 12 }}>{ADDR_RESULTS[slot].map((r, k) => (
-          <button key={k} className="row" {...(r[2] !== null ? { onClick: () => set({ parsed: r[2] }) } : { style: { opacity: .55, cursor: 'default' } })} data-act="결과 선택 → 집 정보 확인">
-            <span className="ico gray"><Icon n="building" /></span><div><div className="name">{r[0]}</div><div className="meta">{r[1]}</div></div>
-            {r[2] !== null ? <span className="chev right">›</span> : <span className="pill warn right">건물 번호 필요</span>}</button>
-        ))}</div>
-      ) : <p className="s" style={{ marginTop: 12 }}>예: {ADDR_Q[slot]} · 검색 버튼만 눌러도 예시 주소로 찾아요</p>;
-    }
-    body = (
-      <div className="sec">
-        <div className="compose" style={{ marginTop: 0 }}><span className="ico sm gray"><Icon n="home" /></span>
-          <input key={slot} defaultValue={S.addrQ || ''} placeholder={`집 ${HOMES[slot].key} · 도로명 또는 지번 주소 (건물 번호까지)`} onInput={e => { S.addrQ = e.currentTarget.value; }}
-            onKeyUp={e => enterKey(e, v => { S.addrQ = v; kakaoOn() ? liveSearch() : set({}); })} />
-          <button className="send" onClick={search} data-act="주소 검색 → 결과 목록">⌕</button></div>
-        {res}
-        {S.adding ? <button className="link" style={{ marginTop: 12 }} onClick={() => set({ adding: false, addrQ: '' })}>취소</button> : null}
-      </div>
-    );
-  }
-  const ready = n >= 2 && !searching && !parsed && !S.cand;
+  if (!S.cand && !parsed) return null;
+  const h = S.cand || HOMES[S.parsed], live = !!S.cand, close = () => set({ parsed: null, cand: null });
   return (
-    <>
-      <ChHead n={3} h1="비교할 후보 집을 넣어 주세요" lead={<>부동산 앱에서 본 집 주소를 검색해 주세요. 자주 가는 곳(<b>{DEST.name}</b>)까지 시간과 주변 시설은 자동으로 계산해요. 2곳 이상이면 비교할 수 있고, 최대 3곳까지 넣을 수 있어요.</>} />
-      {!kakaoOn() && DEST.name !== '멀티캠퍼스 역삼' ? <div className="sec"><div className="note warn"><span className="ic">!</span><div>카카오 키가 없어서 예시 집(성수·역삼·신림)은 <b>멀티캠퍼스 역삼</b> 기준 시간으로 보여줘요. 키를 넣으면 <b>{DEST.name}</b> 기준으로 다시 계산해요.</div></div></div> : null}
-      <div className="sec"><MapBox vis={homeVis()} /></div>
-      <div className="slots">{slots}</div>
-      {body}
-      {ready ? <>
-        <div className="sec"><div className="note"><div>후보 {n}곳이 준비됐어요. 생활 편의, 한 달 비용, 오가는 시간을 한 번에 비교해 볼게요.</div></div></div>
-        <div className="cta"><button className="btn pri wide" onClick={() => set({ homesDone: true })} data-act="비교 시작">{n}곳 비교하기</button></div>
-      </> : null}
-    </>
+    <Modal title={`집 ${h.key}`} sub={h.addr} onClose={close}
+      foot={<><button className="btn ghost" onClick={close} data-act="다시 검색">다시 검색</button>
+        <button className="btn pri" onClick={() => live ? addLive() : addHome(S.parsed)} data-act="집 추가 → 다음 칸">집 {h.key}로 추가</button></>}>
+      <dl className="tz-sum s3-kv">
+        <div><dt>가까운 역</dt><dd>{h.station}</dd></div>
+        <div><dt>{DEST.name}까지</dt><dd>{h.commute}분</dd><small>{h.route}</small></div>
+        <div><dt>한 달 교통비</dt><dd>{fareMonth(h) ? `${fareMonth(h)}만 원` : '0원'}</dd></div>
+      </dl>
+      {live ? <ul className="s3-fac">{FAC.map(f => <li key={f.k}><span>{f.label}</span><b>{h.life[f.k][0]} {h.life[f.k][1]}분</b></li>)}</ul> : null}
+      <h3 className="md-st">계약 조건</h3>
+      <div className="fields s3-fields">
+        <label>보증금<span className="inp"><input id="in-dep" type="number" defaultValue={h.deposit} />만 원</span></label>
+        <label>월세<span className="inp"><input id="in-rent" type="number" defaultValue={h.rent} />만 원</span></label>
+        <label>관리비<span className="inp"><input id="in-fee" type="number" placeholder="모르면 비워 두기" defaultValue={h.fee ?? ''} />만 원</span></label>
+      </div>
+      <p className="md-p s3-src">역·주변 시설은 카카오 장소 검색, 오가는 시간·요금은 {h.est ? '직선거리로 추정' : 'ODsay 길찾기'}으로 채웠어요. 관리비를 모르면 비워 두세요 (0원으로 치지 않아요). 교통비 = 편도 요금 × 2 × {DAYS}일</p>
+    </Modal>
+  );
+}
+
+function Input() {
+  const slot = nextSlot(), n = S.homes.length, full = n >= MAX_HOMES, hk = full ? null : HOMES[slot].key;
+  const search = () => kakaoOn() ? liveSearch() : set({ addrQ: S.addrQ || ADDR_Q[slot] });
+  const rows = kakaoOn() ? (S.live || []).map((r, k) => ({ name: r.name, sub: r.sub, ok: r.ok, pick: () => livePick(k) }))
+    : S.addrQ ? ADDR_RESULTS[slot].map(r => ({ name: r[0], sub: r[1], ok: r[2] !== null, pick: () => set({ parsed: r[2] }) })) : [];
+  let res = null;
+  if (S.liveBusy === 'search') res = <p className="tz-sub">카카오에서 주소를 찾는 중…</p>;
+  else if (S.liveBusy === 'pick') res = <p className="tz-sub">주변 역·마트·약국과 {DEST.name}까지 오가는 시간을 찾고 있어요…</p>;
+  else if (rows.length) res = <ul className="tl2">{rows.map((r, k) => (
+    <li className={`tr ${r.ok ? '' : 'tr-dim'}`} key={k}>
+      <button className="tr-m" disabled={!r.ok} onClick={r.pick} aria-haspopup="dialog" data-act="결과 선택 → 집 정보 모달">
+        <span className="tr-ic"><Icon n="building" /></span><span className="tr-t"><b>{r.name}</b><small>{r.sub}</small></span>
+        {r.ok ? <span className="chev">›</span> : <span className="tr-v cond"><b>건물 번호 필요</b></span>}</button></li>))}</ul>;
+  else if (kakaoOn() && S.live) res = <p className="tz-sub">검색 결과가 없어요. 동 이름과 번지까지 넣어 보세요 (예: {ADDR_Q[slot]})</p>;
+  const ready = n >= 2;
+  return (
+    <div className="tz s3in">
+      <ChHead n={3} h1="비교할 후보 집을 넣어 주세요" lead={<>부동산 앱에서 본 집 주소를 찾으면 <b>{DEST.name}</b>까지 거리와 시간을 지도에 그려 드려요.</>} />
+      {!kakaoOn() && DEST.name !== '멀티캠퍼스 역삼' ? <p className="tz-note">카카오 키가 없어서 예시 집(성수·역삼·신림)은 <b>멀티캠퍼스 역삼</b> 기준 시간으로 보여줘요.</p> : null}
+
+      {full ? null : (
+        <section className="tz-ask s3-search" aria-label="주소 찾기">
+          <div className="ask-in"><input key={slot} defaultValue={S.addrQ || ''} placeholder={`집 ${hk} 주소 · 도로명 또는 지번 (건물 번호까지)`} onInput={e => { S.addrQ = e.currentTarget.value; }}
+            onKeyUp={e => enterKey(e, v => { S.addrQ = v; kakaoOn() ? liveSearch() : set({}); })} />
+            <button onClick={search} data-act="주소 검색 → 결과 목록">찾기</button></div>
+          {res || <p className="tz-sub">예: {ADDR_Q[slot]}{kakaoOn() ? '' : ' · 찾기만 눌러도 예시 주소로 찾아요'}</p>}
+        </section>
+      )}
+
+      <section className="s3-map"><MapBox vis={homeVis()} /></section>
+
+      <section className="tz-sec sm">
+        <h2>후보 집 <span>{n} / {MAX_HOMES} · 2곳부터 비교할 수 있어요</span></h2>
+        <ul className="tl2">
+          {S.homes.map(i => { const h = HOMES[i]; return (
+            <li className="tr" key={i}>
+              <div className="tr-m static"><span className="tr-ic pin" style={{ background: h.color }}>{h.key}</span>
+                <span className="tr-t"><b>{h.label}</b><small>{h.station} · {DEST.name}까지 {h.commute}분</small></span>
+                <span className="tr-v"><b>{val(h, 'deposit').toLocaleString()} / {val(h, 'rent')}</b><small>보증금 / 월세</small></span></div>
+              <div className="tr-a"><button className="tbtn gray" onClick={() => set({ homes: S.homes.filter(x => x !== i) })} data-act="집 빼기">빼기</button></div>
+            </li>); })}
+          {full ? null : <li className="tr tr-dim"><div className="tr-m static"><span className="tr-ic pin empty">{hk}</span>
+            <span className="tr-t"><b>집 {hk}{n >= 2 ? ' (선택)' : ''}</b><small>위에서 주소를 찾아 넣어 주세요</small></span></div></li>}
+        </ul>
+      </section>
+
+      <div className="cta"><button className="btn ghost" onClick={() => go(2)}>이전</button>
+        <button className="btn pri wide" disabled={!ready} onClick={() => set({ homesDone: true })} data-act="비교 시작">{ready ? `${n}곳 비교하기` : `${2 - n}곳 더 넣으면 비교할 수 있어요`}</button></div>
+      <CandModal />
+    </div>
   );
 }
 
