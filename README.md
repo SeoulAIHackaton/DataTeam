@@ -20,11 +20,56 @@ firsthome_data/
 │   └── rag/              #   RAG 검색 색인 (공고문 조각 chunks.jsonl, index.pkl)
 ├── scripts/              # 수집·가공·계산·AI 코드
 ├── web/                  # index.html (최종 화면) · kakaomap_test.html
+│   └── frontend/         #   React(Vite) 프론트엔드 → 아래 「프론트엔드 실행하기」
 ├── docs/                 # PRD v1.2 · v4 변경사항 정리 · 기능 CRUD 명세 (엑셀) · 서비스 소개 (PDF)
 └── archive/              # 지금 안 쓰는 데이터·코드 보관 (주거 전략 단계, 전월세 시세·전환율, 예전 프로토타입)
 ```
 
 금액 단위는 따로 적지 않으면 **만원**이에요.
+
+---
+
+## 프론트엔드 실행하기 (React · `web/frontend`)
+
+React(Vite)로 옮긴 화면은 **`web/frontend` 폴더**에 있어요. 아래 [실행하기 (화면 띄우기)](#실행하기-화면-띄우기)의 `web/index.html`과는 따로 켜요. **키나 서버가 없어도 화면은 끝까지 돌아가요** (그림 지도 · 예시 집 · 미리 넣어 둔 답으로 보여줘요).
+
+Node **20.19 이상**이 있어야 해요 (Vite 8). `node -v`로 확인해요.
+
+### 1. 켜기
+
+```bash
+cd web/frontend
+npm install        # 처음 한 번만 (package.json이 바뀌면 다시)
+npm run dev        # → http://localhost:5173
+```
+
+- 끌 때는 `Ctrl+C`예요.
+- 주소 끝에 `?easy=1`을 붙이면 처음 화면을 건너뛰고 쉬운 화면으로 시작해요. 예: `http://localhost:5173/?easy=1`
+- PC 화면 전용이에요 (창 가로 1240px 이상).
+- 배포용 파일은 `npm run build` → `dist/`, 빌드 결과 미리 보기는 `npm run preview`예요.
+
+### 2. (선택) AI 답 · 지도까지 켜기
+
+`web/frontend/.env.example`을 **같은 폴더에** `.env`로 복사해서 채워요. 레포 맨 위 `.env`와는 다른 파일이에요.
+
+| 터미널 | 복사 |
+|---|---|
+| 윈도우 cmd · PowerShell | `copy .env.example .env` |
+| 윈도우 Git Bash · 맥 | `cp .env.example .env` |
+
+```
+VITE_KAKAO_JS_KEY=카카오 JavaScript 키
+VITE_ODSAY_KEY=ODsay 웹 키
+VITE_API_TARGET=http://127.0.0.1:5500
+```
+
+1. 다른 터미널에서 레포 맨 위 폴더로 가서 가상환경을 켜고 `python scripts/server.py`로 서버를 켜요 (방법은 아래 [실행하기 (화면 띄우기)](#실행하기-화면-띄우기)와 같아요).
+2. `VITE_API_TARGET`에 서버 주소를 넣으면 개발 서버가 `/api` 요청(공고문에 물어보기 · 비교 질문 · 장소 검색)을 그쪽으로 넘겨줘요. 비워 두면 미리 넣어 둔 답으로 보여줘요.
+3. `.env`를 바꾸면 `npm run dev`를 껐다 켜요.
+
+- **지도가 안 뜨면**: 카카오 키에는 `http://127.0.0.1:5500`만 등록돼 있어요. 카카오 개발자 콘솔 웹 플랫폼 도메인에 `http://localhost:5173`을 추가해야 해요. ODsay 웹 키도 같아요.
+- `VITE_`로 시작하는 값은 브라우저 코드에 그대로 들어가요. REST · LLM 같은 서버 비밀 키는 넣지 마세요.
+- 폴더 구조 · 상태 관리 등 자세한 내용은 [`web/frontend/README.md`](web/frontend/README.md)에 있어요.
 
 ---
 
