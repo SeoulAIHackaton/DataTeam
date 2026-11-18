@@ -1,0 +1,77 @@
+/* 03 집 고르기 · 후보와 비교하기를 검색창 가까이에 두고, 표는 표 안에서 스크롤해요. */
+.responsive-shell .s3in .s3-candidates{margin-top:32px}
+.responsive-shell .s3in .s3-search input{min-width:0}
+.responsive-shell .s3-candidates h2{align-items:baseline;gap:10px}
+.responsive-shell .s3-empty,.responsive-shell .s3-compare-hint{color:var(--sub);font-size:14px;line-height:1.6}
+.responsive-shell .s3-empty{margin-top:10px}
+.responsive-shell .s3-compare-hint:not(:empty){margin-top:12px}
+.responsive-shell .s3-candidate-actions{margin-top:18px}
+.responsive-shell .s3-candidate-actions button:disabled{opacity:.45;cursor:default;background:var(--pri)}
+.responsive-shell .s3in .s3-map{margin-top:40px}
+.responsive-shell .s3-map h2{font-size:18px;margin-bottom:12px}
+.responsive-shell .s3-map .map{display:block}
+.responsive-shell :is(.s3-compare,.s3in):focus{outline:none}
+
+.s3-scroll{--compare-label:168px;--compare-home:164px;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.s3-scroll table{min-width:calc(var(--compare-label) + var(--home-count) * var(--compare-home))}
+.s3-scroll .s3-item-col{width:var(--compare-label)}
+.s3-scroll :is(thead th:first-child,tbody th[scope="row"]){position:sticky;left:0;z-index:1;background:var(--paper)}
+.s3-scroll thead th:first-child{z-index:3}
+.md .s3-scroll :is(thead th:first-child,tbody th[scope="row"]){background:var(--sheet)}
+.s3-scroll tr.hit th[scope="row"]{background:var(--caution-s)}
+.s3-scroll :is(th,td){overflow-wrap:anywhere}
+.s3-scroll:focus-visible{outline-offset:3px}
+.s3-table-hint{display:none}
+.s3-detail .s3-scroll table{table-layout:fixed;border-collapse:separate;border-spacing:0}
+.s3-detail .s3-scroll thead th:first-child{width:var(--compare-label)}
+.s3-fac-label{font-size:14px;color:var(--ink);font-weight:700}
+.s3-compare .ch-btns{flex-wrap:wrap}
+.s3-compare .cmp3-in input{min-width:0}
+.s3-compare .tz-pick{padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--sheet)}
+.s3-compare .tz-pick .tz-sum{margin-top:18px}
+.s3-compare .tz-sum div{min-width:0;overflow-wrap:anywhere}
+.s3-compare .tz-links .tr-m,.s3-compare .rk3 .tr-m{min-width:0}
+
+@media (max-width:760px){
+  .responsive-shell :is(.s3in,.s3-compare,.s3-detail) .ch-row{flex-wrap:wrap;gap:12px}
+  .responsive-shell :is(.s3in,.s3-compare,.s3-detail) .ch-row h1{font-size:clamp(25px,6.7vw,32px);word-break:keep-all}
+  .responsive-shell .s3-compare .ch-h h1 .cmp-tag{display:inline-block;vertical-align:middle}
+  .responsive-shell .s3in .s3-map #kmap,.s3-compare .md-map #kmap{height:260px}
+  .responsive-shell .s3in .s3-search .ask-in{padding-left:12px}
+  .responsive-shell .s3in .s3-search .ask-in button{padding-inline:12px;white-space:nowrap}
+  .s3-compare .tz-pick>h2{font-size:clamp(22px,5.7vw,28px)}
+  .s3-compare .tz-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-top:12px}
+  .s3-compare .tz-tabs button{height:auto;min-height:44px;padding:6px;font-size:13px;word-break:keep-all}
+  .s3-scroll{--compare-label:110px;--compare-home:158px}
+  .s3-scroll :is(thead th:first-child,tbody th[scope="row"]){box-shadow:1px 0 var(--line2)}
+  .s3-scroll table :is(th,td){padding-inline:10px}
+  .s3-scroll .hd{gap:6px;flex-wrap:wrap;align-items:center}
+  .s3-scroll .pen{margin-left:0}
+  .s3-table-hint{display:block;margin-top:8px;font-size:13px;color:var(--sub)}
+  .s3-compare .tz-sec{margin-top:36px}
+  .responsive-shell .s3-fields{grid-template-columns:minmax(0,1fr);gap:10px}
+  .responsive-shell .s3-fac{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width:560px){
+  .responsive-shell .s3in .tr-m{gap:9px;margin:0;padding:12px 2px}
+  .responsive-shell .s3in .tr-ic,.s3-compare .tz-links .tr-ic{width:34px;height:34px}
+  .responsive-shell .s3in .tr-t b,.responsive-shell .s3in .tr-v b{font-size:14px}
+  .responsive-shell .s3in .tr-t small,.responsive-shell .s3in .tr-v small{white-space:normal;font-size:12px;overflow-wrap:anywhere}
+  .responsive-shell .s3in .tr-a{width:auto}
+  .responsive-shell .s3in .s3-candidates .tr-m{display:grid;grid-template-columns:34px minmax(0,1fr)}
+  .responsive-shell .s3in .s3-candidates .tr-v{grid-column:2;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:6px;text-align:left}
+  .responsive-shell .s3in .s3-candidates .tr-v small{margin:0}
+  .responsive-shell .s3in .s3-search .tr-v b{white-space:normal;max-width:64px;text-align:right}
+  .responsive-shell .s3-kv div,.s3-compare .tz-sum div{padding-inline:8px}
+  .responsive-shell .s3-kv div:first-child,.s3-compare .tz-sum div:first-child{padding-left:0}
+  .responsive-shell .s3-kv dd,.s3-compare .tz-sum dd{font-size:16px}
+  .responsive-shell .s3-kv dt,.s3-compare .tz-sum dt{font-size:12px}
+  .s3-compare .tz-pick{padding:16px}
+  .s3-compare .rk3 .tr-m,.s3-compare .tz-links .tr-m{gap:8px;margin:0;padding-inline:2px}
+  .s3-compare .rk3 .tr-t b,.s3-compare .tz-links .tr-t b{font-size:15px}
+  .s3-compare .rk3 .tbtn{padding-inline:8px;font-size:12px}
+  .s3-compare .tz-links .tr:has(.tr-a){display:grid;gap:4px;padding-bottom:8px}
+  .s3-compare .tz-links .tr-a{width:auto;justify-content:flex-start;margin-left:44px}
+  .responsive-shell .s3-candidate-actions .btn.wide,.s3-advance .btn.wide{flex:1;min-width:0}
+}
