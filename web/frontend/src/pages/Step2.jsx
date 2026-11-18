@@ -28,13 +28,14 @@ function Easy({ J }) {
 /* 지원 한 줄 (토스 목록 방식) · 아이콘 / 이름·한 줄 설명 / 금액·상태 / 버튼. 줄을 누르면 자세히 보기 모달이 떠요 */
 function Row({ ic, name, sub, val, valSub, tone, act, dim, onOpen }) {
   return (
-    <li className={`tr ${dim ? 'tr-dim' : ''}`}>
+    <li className={`tr s2-row ${dim ? 'tr-dim' : ''}`}>
       <button className="tr-m" onClick={onOpen} aria-haspopup="dialog" data-act="자세히 보기 모달">
-        <span className="tr-ic"><Icon n={ic} /></span>
+        <span className="tr-ic" aria-hidden="true"><Icon n={ic} /></span>
         <span className="tr-t"><b>{name}</b><small>{sub}</small></span>
         <span className={`tr-v ${tone || ''}`}><b>{val}</b>{valSub ? <small>{valSub}</small> : null}</span>
+        <span className="s2-row-chevron" aria-hidden="true" /><span className="sr">자세히 보기</span>
       </button>
-      {act === null ? null : <div className="tr-a">{act}</div>}
+      {act ? <div className="tr-a">{act}</div> : null}
     </li>
   );
 }
@@ -132,7 +133,7 @@ export default function Step2() {
         lead={`만 ${J.m.age}세 · 월 소득 ${J.m.inc}만 원 기준 · 실제 지급은 신청할 때 서류로 정해져요`} />
 
       {/* 1 · 결과 요약 */}
-      <dl className="tz-sum">
+      <dl className="tz-sum s2-overview">
         <div><dt>내 조건에 맞는 지원</dt><dd>{J.chosen.length + nowN}개</dd></div>
         <div><dt>지금 신청할 수 있어요</dt><dd>{nowN}개</dd></div>
         <div><dt>가장 가까운 마감</dt><dd>{nearD !== null ? `D-${nearD}` : '없음'}</dd></div>
@@ -143,7 +144,7 @@ export default function Step2() {
           <Row key={i} ic={m.ic || 'home'} name={m.n.replace(/^2026 /, '')} sub={KIND(m)}
             val={d === null ? '상시' : `D-${d}`} valSub={m.end ? `${m.end[0] + 1}월 ${m.end[1]}일 마감` : '언제든 신청'} tone={d !== null && d <= 14 ? 'urg' : ''}
             onOpen={() => set({ md: { k: 'now', i } })}
-            act={<button className="tbtn" onClick={() => go(4)} data-act="04 할 일로">할 일 보기</button>} />
+            act={<button className="tbtn" onClick={() => go(4)} aria-label={`${m.n.replace(/^2026 /, '')} 할 일 보기`} data-act="04 할 일로">할 일 보기</button>} />
         ); })}</ul> : <p className="whint">지금 조건으로 바로 신청할 수 있는 지원이 없어요.</p>}
       </section>
 
@@ -153,7 +154,7 @@ export default function Step2() {
             <Row key={p.id} ic={p.icon} name={p.name} sub={p.pay}
               val={`${p.amtN}만 원`} valSub="2027년 공고" tone="money"
               onOpen={() => set({ md: { k: 'pol', id: p.id } })}
-              act={<button className={`tbtn ${al ? 'on' : ''}`} aria-pressed={al} onClick={() => toggleAlarm(p.id)} data-act="공고 알림 받기">{al ? '알림 받는 중' : '알림 받기'}</button>} />
+              act={<button className={`tbtn ${al ? 'on' : ''}`} aria-pressed={al} aria-label={`${p.name} ${al ? '알림 받는 중' : '알림 받기'}`} onClick={() => toggleAlarm(p.id)} data-act="공고 알림 받기">{al ? '알림 받는 중' : '알림 받기'}</button>} />
           ); })}
           {J.fail.map(p => <Row key={p.id} dim ic={p.icon} name={p.name} sub={p.why.join(', ')} val="받기 어려워요" onOpen={() => set({ md: { k: 'pol', id: p.id } })} act={null} />)}
         </ul>
@@ -161,10 +162,10 @@ export default function Step2() {
         {J.m.sep ? <p className="tz-note">부모님과 같은 주소라면 <b>이사하면서 세대 분리</b>도 같이 하세요. 국토부 청년월세는 부모님과 따로 사는 청년만 받아요.</p> : null}
       </section>
 
+      <div className="cta s2-cta"><button className="btn ghost" onClick={() => go(1)}>이전</button><button className="btn pri wide" onClick={() => go(3)} data-act="다음 단계">후보 집 비교하기</button></div>
+
       <S2Modal J={J} now={now} M={M} W={W} />
 
-      {/* 4 · 보조 영역 · 조건 변경 · 공고문 질문 · 받기 어려운 지원 */}
-      {/* 4 · 보조 영역 · 같은 목록 방식 · 누르면 모달 */}
       <div className="tz-aux">
         <section className="tz-sec sm"><h2>조건이 바뀌면 이렇게 달라져요</h2>
           {Object.keys(W).length ? <ul className="tl2">{Object.entries(W).map(([k, v]) => {
@@ -184,7 +185,7 @@ export default function Step2() {
 
         <section className="tz-sec sm tz-ask ragmark"><h2>공고문에 물어보기</h2>
           <p className="tz-sub">공고문에 있는 문장으로만 답하고, 근거 문장을 같이 보여드려요{API_OK === false ? ' · 지금은 미리 준비한 답으로 보여드려요' : ''}</p>
-          <div className="ask-in"><input id="q3in" placeholder="예: 직장 다닌 지 1년 안 됐는데 받을 수 있어요?" onKeyUp={e => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) ask(e.currentTarget.value); }} />
+          <div className="ask-in"><input id="q3in" aria-label="공고문에 물어볼 내용" placeholder="예: 직장 다닌 지 1년 안 됐는데 받을 수 있어요?" onKeyUp={e => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) ask(e.currentTarget.value); }} />
             <button onClick={() => ask(document.getElementById('q3in').value)}>질문하기</button></div>
           <ul className="tz-faq" aria-label="자주 묻는 질문">{['when', 'dupRent', 'age35'].map(k => (
             <li key={k}><button className={(S.q3 === k || S.q3k === k) ? 'on' : ''} onClick={() => ask3(QA[k].q, k)} data-act="예시 질문 → 답변"><i>Q</i>{QA[k].q}<span className="chev">›</span></button></li>
@@ -193,7 +194,6 @@ export default function Step2() {
         </section>
       </div>
 
-      <div className="cta"><button className="btn ghost" onClick={() => go(1)}>이전</button><button className="btn pri wide" onClick={() => go(3)} data-act="다음 단계">후보 집 비교하기</button></div>
     </div>
   );
 }
