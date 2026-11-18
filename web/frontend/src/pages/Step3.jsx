@@ -3,9 +3,9 @@
 import { Fragment } from 'react';
 import { S, set, go, focusId } from '../store.js';
 import {
-  HOMES, FAC, LIFE, SCENES, PRIO, DAYS, MAX_HOMES, ADDR_RESULTS, ADDR_Q, DEST, val, fareMonth, feeOf, feeKnown, monthly, cheapest, r1,
+  HOMES, FAC, LIFE, SCENES, PRIO, MAX_HOMES, ADDR_RESULTS, ADDR_Q, DEST, val, fareMonth, feeOf, feeKnown, monthly, cheapest, r1,
   scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute,
-  jump, openEdit, saveEdit, cmpChecks, copyChecks, nm3, ja3, askCmp, API_OK, copyFile,
+  jump, openEdit, saveEdit, nm3, ja3, askCmp, API_OK, copyFile,
 } from '../lib/core.js';
 import { Html, Icon, Tile, BBest, BUnk, ChHead, Modal, IcCk, IcX, IcDash, IcPen, IcDown } from '../components/ui.jsx';
 import { MapBox, NeighMap, MiniMap } from '../components/Maps.jsx';
@@ -45,7 +45,6 @@ function CandModal() {
         <label>월세<span className="inp"><input id="in-rent" type="number" defaultValue={h.rent} />만 원</span></label>
         <label>관리비<span className="inp"><input id="in-fee" type="number" placeholder="모르면 비워 두기" defaultValue={h.fee ?? ''} />만 원</span></label>
       </div>
-      <p className="md-p s3-src">역·주변 시설은 카카오 장소 검색, 오가는 시간·요금은 {h.est ? '직선거리로 추정' : 'ODsay 길찾기'}으로 채웠어요. 관리비를 모르면 비워 두세요 (0원으로 치지 않아요). 교통비 = 편도 요금 × 2 × {DAYS}일</p>
     </Modal>
   );
 }
@@ -144,7 +143,7 @@ function CmpTable({ H, part = 'core' }) {
   const S3 = Object.fromEntries(H.map(h => [h.key, houseSupport(h)]));
   const wish = S.prof && S.prof.time && S.prof.time < 999 ? S.prof.time : null;
   const cell = f => f;
-  const ask = cmpChecks(H).ask, core = part === 'core';
+  const core = part === 'core';
   const G = ({ t, sub }) => <tr><th scope="rowgroup" colSpan={H.length + 1} className="g">{t}{sub ? <> <span>· {sub}</span></> : null}</th></tr>;
   const Row = ({ label, sub, f, cls, id }) => <tr className={cls || undefined} id={id}><th scope="row">{label}{sub ? <small className="s2">{sub}</small> : null}</th>{H.map(h => <Fragment key={h.key}>{f(h)}</Fragment>)}</tr>;
   return (
@@ -176,11 +175,6 @@ function CmpTable({ H, part = 'core' }) {
           <td><span className="v">{h.commute}분</span><span className="s2">{h.route}</span>{h.commute === fastT && fastN === 1 ? <BBest>가장 짧아요</BBest> : null}
             {wish && h.commute > wish ? <span className="bdg unk">{wish}분 넘음</span> : null}</td>)) })}
         {Row({ label: "교통비 (한 달)", sub: "참고 · 합계에 넣지 않아요", f: cell(h => <td><span className="v">{fareMonth(h) ? '약 ' + fareMonth(h) + '만 원' : '0원'}</span>{fareMonth(h) ? null : <span className="s2">걸어서</span>}</td>) })}
-      </tbody>
-      <tbody>
-        {G({ t: "확인 필요 사항", sub: "계약 전에 물어볼 것" })}
-        {Row({ label: "중개사에게 물어볼 것", sub: "계약 전에 확인하세요", id: "row-ask", f: cell(h => { const a = ask.filter(it => it.h === h);
-          return <td>{a.length ? <><span className="bdg unk">{a.length}개 확인 필요</span><ul className="ask-l">{a.map(it => <li key={it.id}>{it.t}</li>)}</ul></> : <span className="st ok"><IcCk />따로 물어볼 것 없음</span>}</td>; }) })}
       </tbody>
       </> : null}
       {part === 'life' ? <tbody>
@@ -296,15 +290,12 @@ function CmpModal({ H, rank, top }) {
   );
 }
 
-/* 계약 전에 확인할 것 · 목록으로 복사해요 */
-function CmpChecks({ H }) {
-  const { ask, visit } = cmpChecks(H);
+/* 비교에서 더 볼 수 있는 것 (주변 시설 · 집마다 지원) */
+function CmpChecks() {
   return (
     <ul className="tl2 tz-links">
       <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'life' })} aria-haspopup="dialog" data-act="주변 시설 모달"><span className="tr-ic"><Icon n="cart" /></span><span className="tr-t"><b>주변 시설 비교</b><small>지하철역 · 장보기 · 병원 · 공원까지 걸어서</small></span><span className="chev">›</span></button></li>
       <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'sup' })} aria-haspopup="dialog" data-act="지원 모달"><span className="tr-ic"><Icon n="receipt" /></span><span className="tr-t"><b>집마다 받을 수 있는 지원</b><small>보증금·월세에 따라 달라지는 청년월세 조건</small></span><span className="chev">›</span></button></li>
-      <li className="tr"><div className="tr-m"><span className="tr-ic"><Icon n="clock" /></span><span className="tr-t"><b>계약 전에 확인할 것 {ask.length + visit.length}개</b><small>중개사에게 물어볼 것 {ask.length}개 · 집 보러 가서 볼 것 {visit.length}개</small></span></div>
-        <div className="tr-a"><button className="tbtn" id="chk-copy" onClick={copyChecks} data-act="확인할 것 복사">목록 복사하기</button></div></li>
     </ul>
   );
 }
@@ -356,7 +347,7 @@ function CmpPage({ H, rank }) {
         <p className="s3-table-hint">표를 옆으로 움직여 다른 집도 비교해 보세요.</p>
         <div className="cmp tz-tbl"><CmpSummary H={H} /><CmpTable H={H} /></div>
       </section>
-      <section className="tz-sec" aria-label="더 보기"><CmpChecks H={H} /></section>
+      <section className="tz-sec" aria-label="더 보기"><CmpChecks /></section>
       <div className="cta s3-advance"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" id="file-copy2" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button></div>
       <CmpSec rank={rank} />
       <p className="cmp-src">주변 시설 거리 · 카카오 로컬 · 오가는 시간과 요금 · ODsay{ex ? ' · 예시 집의 보증금·월세·관리비는 화면 설명용 값이에요' : ''}</p>

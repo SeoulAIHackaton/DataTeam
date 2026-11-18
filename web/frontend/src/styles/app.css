@@ -494,8 +494,9 @@ h1{font-size:32px}
 .tz-tbl{margin-top:16px}
 .tz-tbl .cmp-sum{background:none;border:0;padding:0 0 16px}
 .tz-tbl table{border-top:2px solid var(--ink)}
-.cmp.tz-tbl thead th{border-bottom:1px solid var(--line2);background:var(--paper)}
-.cmp.tz-tbl th.g{background:none;padding-top:22px;font-size:14px;color:var(--sub2);border-bottom:1px solid var(--line3)}
+.cmp.tz-tbl thead th{border-bottom:1px solid var(--line2);background:var(--paper);vertical-align:bottom;top:0;padding-top:14px;padding-bottom:14px}
+.cmp.tz-tbl th.g{background:none;padding-top:30px;padding-bottom:9px;font-size:16px;font-weight:800;letter-spacing:-.3px;color:var(--pri-d);border-bottom:1.5px solid var(--pri-s)}
+.cmp.tz-tbl th.g span{font-weight:500;color:var(--sub2)}
 .cmp.tz-tbl th,.cmp.tz-tbl td{border-bottom-color:var(--line3)}
 .cmp .ask-l{margin:8px 0 0 16px;font-size:13px;color:var(--sub2);line-height:1.55}
 .cmp .ask-l li+li{margin-top:4px}
