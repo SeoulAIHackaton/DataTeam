@@ -60,10 +60,10 @@ export function AlarmPanel() {
   const al = POL.filter(p => S.alarm.includes(p.id));
   return (
     <div className="panel">
-      <div className="panel-t">공고 알림 <span className="cnt">{al.length}</span></div>
+      <div className="panel-t">담아둔 지원 <span className="cnt">{al.length}</span></div>
       {al.length
-        ? <><ul className="tray">{al.map(p => <li key={p.id}><span className="dot" style={{ background: PCOL[p.id].fg }} />{p.name}</li>)}</ul><p className="s">2027년 공고가 나오면 알려드려요.</p></>
-        : <p className="s">내년에 신청할 지원의 [공고 알림 받기]를 누르면 여기에 모여요.</p>}
+        ? <><ul className="tray">{al.map(p => <li key={p.id}><span className="dot" style={{ background: PCOL[p.id].fg }} />{p.name}</li>)}</ul><p className="s">2027년 공고가 열리면 이 목록에서 바로 확인하세요.</p></>
+        : <p className="s">내년에 신청할 지원을 [담기]로 저장하면 여기에 모여요.</p>}
     </div>
   );
 }

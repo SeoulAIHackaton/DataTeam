@@ -1,5 +1,5 @@
 /* 02 받을 지원 · 내 조건(01)으로 지원을 판정해요 (judge · moreJ · whatifs 는 lib/core.js)
-   결과 요약 → 지금 신청할 지원(마감순) → 다음 공고를 기다릴 지원(알림) → 보조: 조건이 바뀌면? · 공고문에 물어보기 · 받기 어려운 지원 */
+   결과 요약 → 지금 신청할 지원(마감순) → 다음 공고를 기다릴 지원(내 파일에 담기) → 보조: 조건이 바뀌면? · 공고문에 물어보기 · 받기 어려운 지원 */
 import { S, set, go, render } from '../store.js';
 import { judge, moreJ, whatifs, QA, ddayOf, toggleAlarm, ask3, API_OK, fill } from '../lib/core.js';
 import { Html, Icon, ChHead, Modal } from '../components/ui.jsx';
@@ -14,9 +14,9 @@ function Easy({ J }) {
       <h1>{J.total ? <>내년에 받을 수 있는 돈이<br /><span style={{ color: 'var(--pri)' }}>최대 {won0(J.total)}만 원</span> 있어요</> : <>지금 조건으로는<br />받을 수 있는 지원금이 없어요</>}</h1>
       <div className="lead">{J.total ? '올해 신청은 끝났어요. 내년 공고가 나오면 알려드릴게요.' : (J.fail[0] ? J.fail[0].why[0] : '') + ' 조건이 바뀌면 다시 확인해 보세요.'}</div>
       <div className="sec">{J.chosen.map(p => (
-        <button key={p.id} className="erow" onClick={() => toggleAlarm(p.id)} data-act="알림 받기">
+        <button key={p.id} className="erow" onClick={() => toggleAlarm(p.id)} data-act="내 파일에 담기">
           <span className="ico lg"><Icon n={p.icon} /></span><div><div className="t">{p.name}</div><div className="d">{p.easy || p.how}</div></div>
-          <div className="m">{p.amtN}만 원<div className="d" style={{ textAlign: 'right' }}>{S.alarm.includes(p.id) ? '✓ 알림 받는 중' : '눌러서 알림 받기'}</div></div>
+          <div className="m">{p.amtN}만 원<div className="d" style={{ textAlign: 'right' }}>{S.alarm.includes(p.id) ? '✓ 담았어요' : '눌러서 담기'}</div></div>
         </button>
       ))}</div>
       <div className="sec"><div className="note"><span className="ic">!</span><div><b>지금 할 일</b><br />이사하고 14일 안에 전입신고를 해요. 그래야 내년에 받을 수 있어요.{J.m.sep ? <><br />부모님과 주소가 같으면 세대 분리도 같이 해요.</> : null}</div></div></div>
@@ -85,7 +85,9 @@ function S2Modal({ J, now, M, W }) {
     const m = x.m, d = ddayOf(m.end), parts = String(fill(m.why)).split(' · ');
     return (
       <Modal title={m.n.replace(/^2026 /, '')} sub={m.o} onClose={close}
-        foot={<button className="btn pri" onClick={close}>확인</button>}>
+        foot={m.link
+          ? <><button className="btn ghost" onClick={close}>닫기</button><button className="btn pri" onClick={() => window.open(m.link, '_blank', 'noopener')} data-act="신청 사이트로">{m.site ? `${m.site}에서 신청하기` : '신청 사이트로 가기'} ↗</button></>
+          : <button className="btn pri" onClick={close}>확인</button>}>
         <dl className="md-kv">
           <div><dt>받는 것</dt><dd>{KIND(m)}</dd></div>
           <div><dt>접수</dt><dd>{d === null ? '상시 접수' : `${m.end[0] + 1}월 ${m.end[1]}일 마감 · D-${d}`}</dd></div>
@@ -101,10 +103,11 @@ function S2Modal({ J, now, M, W }) {
   const al = S.alarm.includes(p.id), bad = p.st === 'no';
   return (
     <Modal title={p.name} sub={p.channel} onClose={close}
-      foot={<><button className="btn ghost" onClick={close}>닫기</button>{bad ? null : <button className={`btn ${al ? 'ghost' : 'pri'}`} aria-pressed={al} onClick={() => toggleAlarm(p.id)} data-act="공고 알림 받기">{al ? '✓ 알림 받는 중' : '2027년 공고 알림 받기'}</button>}</>}>
+      foot={<><button className="btn ghost" onClick={close}>닫기</button>{bad ? null : <button className={`btn ${al ? 'ghost' : 'pri'}`} aria-pressed={al} onClick={() => toggleAlarm(p.id)} data-act="내 파일에 담기">{al ? '✓ 내 파일에 담았어요' : '내 파일에 담기'}</button>}</>}>
       <dl className="md-kv">
         <div><dt>받는 돈</dt><dd>{p.pay} <span>· 총 {p.amt}</span></dd></div>
         <div><dt>접수</dt><dd>{p.last}</dd></div>
+        {p.link ? <div><dt>신청처</dt><dd><a className="link" href={p.link} target="_blank" rel="noopener noreferrer" data-act="신청 사이트로">{p.site || '신청 사이트'} ↗</a></dd></div> : null}
       </dl>
       <h3 className="md-st">내 조건과 공고 기준을 맞춰 봤어요</h3>
       <div className="ev3" role="table" aria-label={`${p.name} 조건 확인`}>
@@ -153,7 +156,7 @@ export default function Step2() {
             <Row key={p.id} ic={p.icon} name={p.name} sub={p.pay}
               val={`${p.amtN}만 원`} valSub="2027년 공고" tone="money"
               onOpen={() => set({ md: { k: 'pol', id: p.id } })}
-              act={<button className={`tbtn ${al ? 'on' : ''}`} aria-pressed={al} aria-label={`${p.name} ${al ? '알림 받는 중' : '알림 받기'}`} onClick={() => toggleAlarm(p.id)} data-act="공고 알림 받기">{al ? '알림 받는 중' : '알림 받기'}</button>} />
+              act={<button className={`tbtn ${al ? 'on' : ''}`} aria-pressed={al} aria-label={`${p.name} ${al ? '담았어요' : '내 파일에 담기'}`} onClick={() => toggleAlarm(p.id)} data-act="내 파일에 담기">{al ? '✓ 담았어요' : '담기'}</button>} />
           ); })}
           {J.fail.map(p => <Row key={p.id} dim ic={p.icon} name={p.name} sub={p.why.join(', ')} val="받기 어려워요" onOpen={() => set({ md: { k: 'pol', id: p.id } })} act={null} />)}
         </ul>
