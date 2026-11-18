@@ -11,13 +11,28 @@
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://127.0.0.1:5500
 npm run build      # dist/ 에 배포용 파일
 npm run preview    # 빌드한 결과 미리 보기
 ```
 
-- 주소 끝에 `?easy=1`을 붙이면 처음 화면을 건너뛰고 **쉬운 화면**으로 시작해요. 예: `http://localhost:5173/?easy=1`
+- 주소 끝에 `?easy=1`을 붙이면 처음 화면을 건너뛰고 **쉬운 화면**으로 시작해요. 예: `http://127.0.0.1:5500/?easy=1`
 - Node 24.14에서 확인했어요. (Vite 8.3, React 19.2 · Vite 8은 Node 20.19 이상이 필요해요)
+
+## 백엔드 함께 실행하기
+
+프런트엔드는 `http://127.0.0.1:5500`, 백엔드는 `http://127.0.0.1:8000`을 사용해요.
+5500이 이미 사용 중이면 프런트엔드는 오류로 종료하며 다른 포트로 이동하지 않아요.
+
+다른 터미널에서 프로젝트의 Python 가상환경을 활성화한 뒤, `web/frontend` 폴더에서 `npm run dev:api`를 실행해요.
+Windows에서는 프로젝트 루트에서 아래 명령으로 바로 실행할 수도 있어요:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/server.py --port 8000
+```
+
+`web/frontend/.env`에는 `VITE_API_TARGET=http://127.0.0.1:8000`을 넣어 주세요.
+`http://127.0.0.1:5500/api/health`에서 `"ok": true`가 나오면 프록시까지 연결된 상태예요.
 
 ## 환경 변수 (`.env`)
 
@@ -29,7 +44,7 @@ npm run preview    # 빌드한 결과 미리 보기
 | `VITE_ODSAY_KEY` | 대중교통 시간 · 요금 (ODsay) | 직선거리로 시간을 추정해요 |
 | `VITE_API_TARGET` | `/api` 요청을 넘길 서버 주소 (예: `http://127.0.0.1:8000`) | 미리 넣어 둔 답으로 보여줘요 |
 
-- 카카오 키는 카카오 개발자 콘솔에서 `http://localhost:5173`을 웹 플랫폼 도메인으로 등록해야 지도가 떠요.
+- 카카오 키는 카카오 개발자 콘솔에서 `http://127.0.0.1:5500`을 웹 플랫폼 도메인으로 등록해야 지도가 떠요.
 - `VITE_`로 시작하는 값은 브라우저 코드에 그대로 들어가요. 서버 비밀 키는 넣지 마세요.
 
 ### `/api` 서버
@@ -43,14 +58,14 @@ npm run preview    # 빌드한 결과 미리 보기
 | `POST /api/compare` | 03 이 비교에 물어보기 · `{ question, facts }` |
 | `GET /api/place?q=` | 01 자주 가는 곳 검색 (카카오 키가 없을 때) |
 
-> 이 프로젝트에는 서버 코드가 없어요. 서버를 켠 상태로는 아직 확인하지 않았어요.
+서버 코드는 프로젝트 루트의 `scripts/server.py`예요. React 개발 시에는 위 명령으로 API를 8000에서 실행해요.
 
 ## 폴더 구조
 
 ```
 my-house/
 ├─ index.html              Pretendard 글꼴, #root
-├─ vite.config.js          포트 5173, /api 프록시
+├─ vite.config.js          포트 5500, /api 프록시
 ├─ .env.example            환경 변수 3개
 ├─ DESIGN.md               디자인 규칙 (색 · 글자 · 부품 · 화면 순서)
 ├─ public/favicon.svg

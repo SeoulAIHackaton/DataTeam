@@ -5,7 +5,8 @@
   "type": "module",
   "description": "첫집 내비 · 내 첫 집 파일 (React)",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1 --port 5500 --strictPort",
+    "dev:api": "python ../../scripts/server.py --port 8000",
     "build": "vite build",
     "preview": "vite preview"
   },

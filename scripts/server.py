@@ -15,6 +15,7 @@
 - GET /api/place?q=판교   1단계 '자주 가는 곳' 검색 (카카오 로컬 장소 검색 + 주소 검색, .env 의 KAKAO_REST_API_KEY)
   → {"places": [{name, address, query}]}  · 키가 없으면 503 {"error": "no_key"} → 화면은 미리 정한 후보 목록으로 바꿔요
 """
+import argparse
 import json
 import os
 import sys
@@ -40,7 +41,7 @@ def kakao_get(kind, q, size):
     key = os.environ.get("KAKAO_REST_API_KEY", "")
     url = f"{KAKAO_LOCAL}/{kind}.json?" + urllib.parse.urlencode({"query": q, "size": size})
     # .env 키가 JavaScript 키면 카카오가 등록된 웹 주소(origin)를 KA 헤더로 요구해요. REST 키면 이 헤더는 무시돼요.
-    ka = f"os/javascript origin/{os.environ.get('KAKAO_ORIGIN', f'http://127.0.0.1:{PORT}')}"
+    ka = f"os/javascript origin/{os.environ.get('KAKAO_ORIGIN', 'http://127.0.0.1:5500')}"
     req = urllib.request.Request(url, headers={"Authorization": f"KakaoAK {key}", "KA": ka})
     with urllib.request.urlopen(req, timeout=5) as r:
         return json.loads(r.read().decode("utf-8")).get("documents", [])
@@ -157,6 +158,9 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="첫집 내비 API 서버")
+    parser.add_argument("--port", type=int, default=PORT, help="서버 포트 (기본: PORT 환경변수 또는 5500)")
+    PORT = parser.parse_args().port
     print(f"\n열기 → http://{HOST}:{PORT}/web/index.html   (끄기: Ctrl+C)\n")
     ThreadingHTTPServer.allow_reuse_address = False      # 윈도우에서 Live Server와 같은 포트를 같이 잡지 않게 (겹치면 바로 알려줌)
     try:

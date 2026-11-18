@@ -40,11 +40,11 @@ Node **20.19 이상**이 있어야 해요 (Vite 8). `node -v`로 확인해요.
 ```bash
 cd web/frontend
 npm install        # 처음 한 번만 (package.json이 바뀌면 다시)
-npm run dev        # → http://localhost:5173
+npm run dev        # → http://127.0.0.1:5500
 ```
 
 - 끌 때는 `Ctrl+C`예요.
-- 주소 끝에 `?easy=1`을 붙이면 처음 화면을 건너뛰고 쉬운 화면으로 시작해요. 예: `http://localhost:5173/?easy=1`
+- 주소 끝에 `?easy=1`을 붙이면 처음 화면을 건너뛰고 쉬운 화면으로 시작해요. 예: `http://127.0.0.1:5500/?easy=1`
 - PC 화면 전용이에요 (창 가로 1240px 이상).
 - 배포용 파일은 `npm run build` → `dist/`, 빌드 결과 미리 보기는 `npm run preview`예요.
 
@@ -60,14 +60,14 @@ npm run dev        # → http://localhost:5173
 ```
 VITE_KAKAO_JS_KEY=카카오 JavaScript 키
 VITE_ODSAY_KEY=ODsay 웹 키
-VITE_API_TARGET=http://127.0.0.1:5500
+VITE_API_TARGET=http://127.0.0.1:8000
 ```
 
-1. 다른 터미널에서 레포 맨 위 폴더로 가서 가상환경을 켜고 `python scripts/server.py`로 서버를 켜요 (방법은 아래 [실행하기 (화면 띄우기)](#실행하기-화면-띄우기)와 같아요).
+1. 다른 터미널에서 레포 맨 위 폴더로 가서 가상환경을 켜고 `python scripts/server.py --port 8000`으로 서버를 켜요. React 화면은 5500, API는 8000을 사용해요. 가상환경을 활성화했다면 `web/frontend`에서 `npm run dev:api`로 실행해도 같아요.
 2. `VITE_API_TARGET`에 서버 주소를 넣으면 개발 서버가 `/api` 요청(공고문에 물어보기 · 비교 질문 · 장소 검색)을 그쪽으로 넘겨줘요. 비워 두면 미리 넣어 둔 답으로 보여줘요.
 3. `.env`를 바꾸면 `npm run dev`를 껐다 켜요.
 
-- **지도가 안 뜨면**: 카카오 키에는 `http://127.0.0.1:5500`만 등록돼 있어요. 카카오 개발자 콘솔 웹 플랫폼 도메인에 `http://localhost:5173`을 추가해야 해요. ODsay 웹 키도 같아요.
+- **지도가 안 뜨면**: `http://127.0.0.1:5500`으로 접속하고, 카카오 개발자 콘솔 웹 플랫폼 도메인에 이 주소가 등록돼 있는지 확인해요. ODsay 웹 키도 같아요.
 - `VITE_`로 시작하는 값은 브라우저 코드에 그대로 들어가요. REST · LLM 같은 서버 비밀 키는 넣지 마세요.
 - 폴더 구조 · 상태 관리 등 자세한 내용은 [`web/frontend/README.md`](web/frontend/README.md)에 있어요.
 

@@ -8,6 +8,6 @@ export default defineConfig(({ mode }) => {
   const target = env.VITE_API_TARGET;
   return {
     plugins: [react()],
-    server: { port: 5173, ...(target ? { proxy: { '/api': { target, changeOrigin: true } } } : {}) },
+    server: { host: '127.0.0.1', port: 5500, strictPort: true, ...(target ? { proxy: { '/api': { target, changeOrigin: true } } } : {}) },
   };
 });
