@@ -85,7 +85,7 @@ function S2Modal({ J, now, M, W }) {
     const m = x.m, d = ddayOf(m.end), parts = String(fill(m.why)).split(' · ');
     return (
       <Modal title={m.n.replace(/^2026 /, '')} sub={m.o} onClose={close}
-        foot={<><button className="btn ghost" onClick={close}>닫기</button><button className="btn pri" onClick={() => { set({ md: null }); go(4); }} data-act="04 할 일로">할 일에서 신청 준비하기</button></>}>
+        foot={<button className="btn pri" onClick={close}>확인</button>}>
         <dl className="md-kv">
           <div><dt>받는 것</dt><dd>{KIND(m)}</dd></div>
           <div><dt>접수</dt><dd>{d === null ? '상시 접수' : `${m.end[0] + 1}월 ${m.end[1]}일 마감 · D-${d}`}</dd></div>
@@ -143,8 +143,7 @@ export default function Step2() {
         {nowN ? <ul className="tl2">{now.map(({ m, i }) => { const d = ddayOf(m.end); return (
           <Row key={i} ic={m.ic || 'home'} name={m.n.replace(/^2026 /, '')} sub={KIND(m)}
             val={d === null ? '상시' : `D-${d}`} valSub={m.end ? `${m.end[0] + 1}월 ${m.end[1]}일 마감` : '언제든 신청'} tone={d !== null && d <= 14 ? 'urg' : ''}
-            onOpen={() => set({ md: { k: 'now', i } })}
-            act={<button className="tbtn" onClick={() => go(4)} aria-label={`${m.n.replace(/^2026 /, '')} 할 일 보기`} data-act="04 할 일로">할 일 보기</button>} />
+            onOpen={() => set({ md: { k: 'now', i } })} act={null} />
         ); })}</ul> : <p className="whint">지금 조건으로 바로 신청할 수 있는 지원이 없어요.</p>}
       </section>
 

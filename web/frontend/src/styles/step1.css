@@ -164,6 +164,17 @@
 .s1-cta #f1go{margin:0 0 0 auto}
 .s1-cta #f1go:disabled{cursor:default;background:var(--pri)}
 
+/* 쉬운 화면: 한 항목을 한 화면에 크게 */
+.easy .s1-easy{margin-top:4px}
+.easy .s1-easy .f1card{margin-top:30px}
+.easy .s1-easy .f1{padding:0;border:0}
+.easy .s1-easy .f1 .lab b{font-size:18px}
+.easy .s1-easy .f1 .lab small{font-size:14px}
+.easy .s1-easy .ocard b{font-size:17px}
+.easy .s1-easy .ocard small{font-size:14px}
+.easy .s1-easy .s1-job{font-size:17px}
+.easy .s1-easy .cta{margin-top:34px}
+
 @media (max-width:760px){
   .s1.tz1 .ch-row{align-items:flex-start;flex-wrap:wrap;gap:10px}
   .s1.tz1 .ch-row h1{font-size:clamp(26px,7vw,32px)}

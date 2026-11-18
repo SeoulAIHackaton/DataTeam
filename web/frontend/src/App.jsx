@@ -1,4 +1,4 @@
-/* 화면 고르기: 처음 화면 → (01 → 3초 로딩 → 02 → 03 → 04)
+/* 화면 고르기: 처음 화면 → (01 → 3초 로딩 → 02 → 03)
    틀은 위 막대 · 왼쪽 목차 · 본문 · 오른쪽 패널 (쉬운 화면은 목차와 패널을 숨겨요) */
 import { useEffect, useLayoutEffect } from 'react';
 import { S, useStore, flushFocus } from './store.js';
@@ -9,9 +9,8 @@ import Loading from './pages/Loading.jsx';
 import Step1, { Side1, Banner1 } from './pages/Step1.jsx';
 import Step2 from './pages/Step2.jsx';
 import Step3 from './pages/Step3.jsx';
-import Step4, { SchedPanel } from './pages/Step4.jsx';
 
-const BODY = [null, Step1, Step2, Step3, Step4];
+const BODY = [null, Step1, Step2, Step3];
 
 /* 03 비교 화면(동네 지도 포함)은 후보 3곳과 항목명을 같이 읽어야 해서 오른쪽 패널을 빼고 본문을 넓혀요 */
 const wide = () => !S.easy && S.step === 3 && S.homesDone && S.homes.length >= 2;
@@ -20,8 +19,7 @@ function Aside() {
   if (S.easy) return null;
   if (S.step === 1) return <Side1 />;
   if (S.step === 2) return <><AlarmPanel /><ProfileMini /></>;
-  if (S.step === 3) return <ProfileMini />;
-  return <><SchedPanel /><FileSummary /></>;
+  return <FileSummary />;
 }
 
 /* 카카오 지도는 지도 칸이 새로 생기거나 보여줄 집이 바뀔 때만 다시 그려요 */

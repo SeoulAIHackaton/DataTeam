@@ -5,7 +5,7 @@ import { S, set, go, focusId } from '../store.js';
 import {
   HOMES, FAC, LIFE, SCENES, PRIO, DAYS, MAX_HOMES, ADDR_RESULTS, ADDR_Q, DEST, val, fareMonth, feeOf, feeKnown, monthly, cheapest, r1,
   scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute,
-  jump, openEdit, saveEdit, cmpChecks, copyChecks, nm3, ja3, askCmp, API_OK,
+  jump, openEdit, saveEdit, cmpChecks, copyChecks, nm3, ja3, askCmp, API_OK, copyFile,
 } from '../lib/core.js';
 import { Html, Icon, Tile, BBest, BUnk, ChHead, Modal, IcCk, IcX, IcDash, IcPen, IcDown } from '../components/ui.jsx';
 import { MapBox, NeighMap, MiniMap } from '../components/Maps.jsx';
@@ -165,7 +165,7 @@ function CmpTable({ H, part = 'core' }) {
         {G({ t: "매달 드는 돈" })}
         {Row({ label: "월세", f: cell(h => <td><span className="v">{val(h, 'rent')}만 원</span></td>) })}
         {Row({ label: "관리비", cls: "pre", id: "row-fee", f: cell(h => feeKnown(h) ? <td><span className="v">{feeOf(h)}만 원</span></td>
-          : <td><BUnk>확인 필요</BUnk><span className="s2 ok2"><IcCk />할 일에 담았어요</span><button className="link" onClick={() => openEdit(h.key, 'ed-fee')} data-act="관리비 넣기">관리비 알면 넣기</button></td>) })}
+          : <td><BUnk>확인 필요</BUnk><button className="link" onClick={() => openEdit(h.key, 'ed-fee')} data-act="관리비 넣기">관리비 알면 넣기</button></td>) })}
         {Row({ label: "한 달 확인된 비용", sub: <>월세 + 확인된 관리비<br />공과금 별도</>, cls: "sum", id: "row-total", f: cell(h => (
           <td><span className="big">{monthly(h)}<small>만 원{feeKnown(h) ? '' : ' +'}</small></span>
             {!feeKnown(h) ? <BUnk>관리비 확인 필요</BUnk> : h === cheap ? <BBest>{K.length < H.length ? '확인된 것 중 가장 적어요' : '가장 적어요'}</BBest> : null}</td>)) })}
@@ -179,7 +179,7 @@ function CmpTable({ H, part = 'core' }) {
       </tbody>
       <tbody>
         {G({ t: "확인 필요 사항", sub: "계약 전에 물어볼 것" })}
-        {Row({ label: "중개사에게 물어볼 것", sub: "04 할 일에도 담겨요", id: "row-ask", f: cell(h => { const a = ask.filter(it => it.h === h);
+        {Row({ label: "중개사에게 물어볼 것", sub: "계약 전에 확인하세요", id: "row-ask", f: cell(h => { const a = ask.filter(it => it.h === h);
           return <td>{a.length ? <><span className="bdg unk">{a.length}개 확인 필요</span><ul className="ask-l">{a.map(it => <li key={it.id}>{it.t}</li>)}</ul></> : <span className="st ok"><IcCk />따로 물어볼 것 없음</span>}</td>; }) })}
       </tbody>
       </> : null}
@@ -296,14 +296,14 @@ function CmpModal({ H, rank, top }) {
   );
 }
 
-/* 확인할 것 → 04 할 일로 */
+/* 계약 전에 확인할 것 · 목록으로 복사해요 */
 function CmpChecks({ H }) {
   const { ask, visit } = cmpChecks(H);
   return (
     <ul className="tl2 tz-links">
       <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'life' })} aria-haspopup="dialog" data-act="주변 시설 모달"><span className="tr-ic"><Icon n="cart" /></span><span className="tr-t"><b>주변 시설 비교</b><small>지하철역 · 장보기 · 병원 · 공원까지 걸어서</small></span><span className="chev">›</span></button></li>
       <li className="tr"><button className="tr-m" onClick={() => set({ md3: 'sup' })} aria-haspopup="dialog" data-act="지원 모달"><span className="tr-ic"><Icon n="receipt" /></span><span className="tr-t"><b>집마다 받을 수 있는 지원</b><small>보증금·월세에 따라 달라지는 청년월세 조건</small></span><span className="chev">›</span></button></li>
-      <li className="tr"><button className="tr-m" onClick={() => go(4)} data-act="04 할 일로"><span className="tr-ic"><Icon n="clock" /></span><span className="tr-t"><b>계약 전에 확인할 것 {ask.length + visit.length}개</b><small>중개사에게 물어볼 것 {ask.length}개 · 집 보러 가서 볼 것 {visit.length}개 · 04 할 일에 담았어요</small></span><span className="chev">›</span></button>
+      <li className="tr"><div className="tr-m"><span className="tr-ic"><Icon n="clock" /></span><span className="tr-t"><b>계약 전에 확인할 것 {ask.length + visit.length}개</b><small>중개사에게 물어볼 것 {ask.length}개 · 집 보러 가서 볼 것 {visit.length}개</small></span></div>
         <div className="tr-a"><button className="tbtn" id="chk-copy" onClick={copyChecks} data-act="확인할 것 복사">목록 복사하기</button></div></li>
     </ul>
   );
@@ -357,7 +357,7 @@ function CmpPage({ H, rank }) {
         <div className="cmp tz-tbl"><CmpSummary H={H} /><CmpTable H={H} /></div>
       </section>
       <section className="tz-sec" aria-label="더 보기"><CmpChecks H={H} /></section>
-      <div className="cta s3-advance"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" onClick={() => go(4)} data-act="다음 장">할 일 정리하기</button></div>
+      <div className="cta s3-advance"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" id="file-copy2" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button></div>
       <CmpSec rank={rank} />
       <p className="cmp-src">주변 시설 거리 · 카카오 로컬 · 오가는 시간과 요금 · ODsay{ex ? ' · 예시 집의 보증금·월세·관리비는 화면 설명용 값이에요' : ''}</p>
       {S.editKey ? <CmpEdit /> : null}

@@ -1,5 +1,5 @@
 /* 처음 화면 · Toss·당근 서비스 소개 화면 방식
-   큰 한 문장 + 버튼 → 떠 있는 결과 카드 → 스크롤하면 브라우저 창 속 웹 화면이 01~04로 바뀌는 이야기 → 질문이 흐르는 줄 → 숫자 → 마지막 버튼
+   큰 한 문장 + 버튼 → 떠 있는 결과 카드 → 스크롤하면 브라우저 창 속 웹 화면이 01~03으로 바뀌는 이야기 → 질문이 흐르는 줄 → 숫자 → 마지막 버튼
    숫자는 모두 앱 계산 그대로예요 (예시 인물: 만 27세 · 월 230만 원 · 무주택, 예시 집 3곳 · lpData) */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { S, set } from '../store.js';
@@ -33,9 +33,8 @@ const STEPS = [
   ['01', <>고르기만 하면<br />끝나요</>, '나이, 소득, 모아둔 돈을 버튼으로 골라요. 금액은 +100만, +500만처럼 더해서 넣어요.'],
   ['02', <>받을 수 있는 돈,<br />근거까지 보여줘요</>, '공고문 조건과 내 조건을 한 줄씩 맞춰 봐요. 왜 받을 수 있는지 원문 문장도 같이 보여드려요.'],
   ['03', <>후보 집은<br />같은 기준으로</>, '한 달 비용, 출퇴근 시간, 동네 생활을 한 표에서 비교해요. 모르는 관리비는 0원으로 치지 않아요.'],
-  ['04', <>할 일은<br />체크리스트로</>, '신청 마감, 전입신고, 중개사에게 물어볼 것까지 순서대로 모아 드려요.'],
 ];
-const CHS = ['내 조건', '받을 지원', '집 고르기', '할 일'];
+const CHS = ['내 조건', '받을 지원', '집 고르기'];
 
 function startApp(easy) { set({ home: false, loading: false, step: 1, ...(easy ? { easy: true } : {}) }); window.scrollTo(0, 0); }
 
@@ -44,7 +43,6 @@ function WebShot({ scene, play, J, K, U, amt1, tap, amt2 }) {
   const rk = (r, i) => <li key={r.h.key}><span className="n">{i + 1}</span><Tile h={r.h} c="xs" /><b>{r.h.label.replace(' 원룸', '')}</b><span className="br"><i style={{ '--w': `${r.total}%`, background: r.h.color }} /></span><em>{r.total}점</em></li>;
   const uk = r => <li className="u" key={r.h.key}><span className="n">–</span><Tile h={r.h} c="xs" /><b>{r.h.label.replace(' 원룸', '')}</b><span className="uk">관리비 확인 필요</span></li>;
   const cls = n => `ps s${n} ${play === n ? 'play' : ''}`;
-  const top = K[0] && K[0].h;
   return (
     <div className="bw" data-s={scene} aria-hidden="true">
       <div className="bw-bar">
@@ -88,17 +86,6 @@ function WebShot({ scene, play, J, K, U, amt1, tap, amt2 }) {
             <div className="ps-side"><div className="t">위치</div>
               <MiniMap H={[...K, ...U].map(r => r.h)} />
               <ul className="plg">{[...K, ...U].map(r => <li key={r.h.key}><Tile h={r.h} c="xs" />{r.h.label.replace(' 원룸', '')}<b>{r.h.commute}분</b></li>)}</ul>
-              <div className="pbtn">할 일 정리하기</div></div>
-          </div>
-          <div className={cls(4)}>
-            <div className="ps-m"><span className="pc">04 할 일</span><div className="pt">계약 전후로 할 일</div>
-              <ul className="ptd">{['안심계약 도움서비스 신청', 'C 신림동 관리비 물어보기', '집 보러 가서 수압·채광 보기', '이사하면서 세대 분리', '입주 후 14일 안 전입신고'].map((t, i) => (
-                <li key={t} style={{ '--d': `${.3 + i * .35}s` }}><i><IcCk /></i>{t}</li>))}</ul>
-            </div>
-            <div className="ps-side"><div className="t">파일 요약</div>
-              <div className="kv">받을 지원<b>최대 {J.total}만</b></div>
-              {top ? <div className="kv">먼저 볼 집<b>{top.key} {top.label.replace(' 원룸', '')}</b></div> : null}
-              <div className="kv">남은 할 일<b>2개</b></div>
               <div className="pbtn">파일 전체<br />복사하기</div></div>
           </div>
         </div>
@@ -155,7 +142,7 @@ export default function Home() {
 
       <section className="lp-hero">
         <h1 className="rv">첫 독립,<br />받을 돈부터 챙겨요</h1>
-        <p className="rv d1">서울 청년 지원금 계산부터 집 비교, 계약 전 할 일까지.<br />질문 몇 개면 내 첫 집 파일이 만들어져요.</p>
+        <p className="rv d1">서울 청년 지원금 계산부터 집 비교, 계약 전 확인까지.<br />질문 몇 개면 내 첫 집 파일이 만들어져요.</p>
         <div className="lp-cta rv d2"><button className="pillb" onClick={() => startApp()} data-act="시작하기 → 01">내 파일 만들기</button><button className="lp-easy" onClick={() => startApp(true)} data-act="쉬운 화면으로 시작">쉬운 화면으로 볼래요 ›</button></div>
         <p className="lp-note rv d2">로그인 없이 바로 써요 · 5분쯤 걸려요</p>
         <div className="lp-float" aria-label="결과 예시">
@@ -163,7 +150,6 @@ export default function Home() {
             <div className="fbar">{J.chosen.map(p => <span key={p.id} style={{ flex: p.amtN, background: PCOL[p.id].fg }} />)}</div>
             <ul className="fl">{J.chosen.map(p => <li key={p.id}><i style={{ background: PCOL[p.id].fg }} />{p.name}<b>{p.amtN}만</b></li>)}</ul></div>
           <div className="fc b rv d4"><div className="fk">먼저 볼 집 <span className="ex">예시</span></div><ol className="frk">{K.map(rk)}{U.map(r => <li className="u" key={r.h.key}><span className="n">–</span><Tile h={r.h} c="xs" /><b>{r.h.label.replace(' 원룸', '')}</b><span className="uk">관리비 확인 필요</span></li>)}</ol></div>
-          <div className="fc c rv d5"><div className="fk">할 일</div><ul className="ftd"><li className="ok"><i><IcCk /></i>후보 집 3곳 비교</li><li><i />안심계약 도움 신청<span>D-40</span></li><li><i />전입신고 · 입주 후 14일</li></ul></div>
         </div>
       </section>
 

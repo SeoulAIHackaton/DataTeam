@@ -1,10 +1,10 @@
-/* 앱 틀: 위 막대 · 왼쪽 목차(01~04) · 오른쪽 패널 · 아래 막대 */
+/* 앱 틀: 위 막대 · 왼쪽 목차(01~03) · 오른쪽 패널 · 아래 막대 */
 import { S, set, go } from '../store.js';
-import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, todoLeft, copyFile } from '../lib/core.js';
+import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, copyFile } from '../lib/core.js';
 import { IcCk } from './ui.jsx';
 
 export function Header() {
-  const ez = ['내 상황', '받을 수 있는 돈', '어느 집이 맞을까', '할 일'];
+  const ez = ['내 상황', '받을 수 있는 돈', '어느 집이 맞을까'];
   return (
     <header className="top"><div className="top-in">
       <button className="logo" onClick={() => { set({ home: true }); window.scrollTo(0, 0); }} data-act="홈으로">첫집<b>내비</b></button>
@@ -23,7 +23,6 @@ export function Footer() {
   return (
     <footer className="ft"><div className="ft-in">
       <b>첫집 <span style={{ color: 'var(--pri)' }}>내비</span></b><span>처음 독립하는 서울 청년을 위한 주거 도우미</span>
-      <span className="r">정책 정보: 온통청년 · 정부24 · 서울시 · SH (2026년 11월 21일 기준) · 집 정보: 카카오 로컬 · ODsay</span>
     </div></footer>
   );
 }
@@ -32,7 +31,7 @@ export function Rail() {
   return (
     <nav className="rail" aria-label="내 첫 집 파일 목차">
       <div className="rail-t">내 첫 집 파일<small>2026년 11월 21일 기준</small></div>
-      <ol>{[1, 2, 3, 4].map(n => {
+      <ol>{[1, 2, 3].map(n => {
         const on = S.step === n, dn = !on && chDone(n);
         return (
           <li key={n}><button className={`rl ${on ? 'on' : dn ? 'done' : ''}`} aria-current={on ? 'step' : undefined} onClick={() => go(n)} data-act="장 이동">
@@ -62,7 +61,7 @@ export function AlarmPanel() {
     <div className="panel">
       <div className="panel-t">공고 알림 <span className="cnt">{al.length}</span></div>
       {al.length
-        ? <><ul className="tray">{al.map(p => <li key={p.id}><span className="dot" style={{ background: PCOL[p.id].fg }} />{p.name}</li>)}</ul><p className="s">2027년 공고가 나오면 알려드려요. 04 할 일에도 모여요.</p></>
+        ? <><ul className="tray">{al.map(p => <li key={p.id}><span className="dot" style={{ background: PCOL[p.id].fg }} />{p.name}</li>)}</ul><p className="s">2027년 공고가 나오면 알려드려요.</p></>
         : <p className="s">내년에 신청할 지원의 [공고 알림 받기]를 누르면 여기에 모여요.</p>}
     </div>
   );
@@ -84,7 +83,6 @@ export function FileSummary() {
         <div className="kv"><span>받을 지원</span><b>{J.total ? `최대 ${J.total.toLocaleString()}만 원` : '없음'}</b></div>
         <div className="kv"><span>먼저 볼 집</span>{t ? <b>{t.key} {t.label}</b> : H.length >= 2 ? <b>관리비 확인 필요</b> : <b className="nil">아직 없음</b>}</div>
         <div className="kv"><span>한 달 확인된 비용</span>{t ? <b>{monthly(t)}만 원</b> : <b className="nil">—</b>}</div>
-        <div className="kv"><span>남은 할 일</span><b>{todoLeft()}개</b></div>
         <button className="btn-line full" id="file-copy" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button>
       </div>
       <ProfileMini />

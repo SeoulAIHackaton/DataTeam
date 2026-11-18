@@ -8,30 +8,54 @@ import {
 } from '../lib/core.js';
 import { Html, Icon, IcCk, ChHead } from '../components/ui.jsx';
 
-/* ----- 쉬운 화면 ----- */
+/* ----- 쉬운 화면 · 일반 화면과 같은 9개 항목을 하나씩 크게 물어봐요 ----- */
+const EASY_Q = {
+  age: '나이가<br>어떻게 되나요?',
+  job: '지금 무엇을<br>하고 있나요?',
+  own: '내 이름으로 된 집이<br>있나요?',
+  sep: '지금 부모님과<br>주소가 같나요?',
+  cash: '모아둔 돈이<br>얼마나 되나요?',
+  income: '한 달 수입이<br>얼마인가요?',
+  place: '어디로<br>자주 오가나요?',
+  time: '그곳까지 얼마나<br>걸려도 괜찮아요?',
+  when: '언제쯤<br>이사하려고 하나요?',
+};
+const EASY_H = {
+  age: '− · + 로 맞추거나 태어난 해를 바로 적어도 돼요.',
+  job: '해당하는 걸 모두 골라 주세요.',
+  own: '집을 산 적이 없으면 "없어요"를 눌러 주세요.',
+  sep: '주민등록 주소를 말해요. 모르면 "잘 모르겠어요"를 눌러 주세요.',
+  cash: '지금까지 모은 돈을 어림잡아 적어 주세요.',
+  income: '월급이나 연봉을 적어 주세요.',
+  place: '회사·학교 등 가장 자주 가는 곳 한 곳을 골라 주세요.',
+  time: '편도(한 쪽) 기준으로 정해 주세요.',
+  when: '아직 안 정했으면 "아직 미정"을 눌러도 돼요.',
+};
+
 function Easy() {
-  const qs = [
-    { k: 'own', q: '내 이름으로 된 집이<br>있나요?', h: '집을 산 적이 없으면 "없어요"를 눌러 주세요.', a: ['없어요', '있어요'] },
-    { k: 'sep', q: '지금 부모님과<br>주소가 같나요?', h: '주민등록 주소를 말해요. 모르면 "잘 모르겠어요"를 눌러 주세요.', a: ['네, 같아요', '아니요', '잘 모르겠어요'] },
-  ];
-  if (S.easyQ >= 2) return (
+  const ctl = fieldCtl1(), total = W1.length, i = S.easyQ;
+  if (i >= total) return (
     <>
       <div className="eyebrow">질문 끝</div><h1>고마워요.<br />회원님 상황을 정리했어요</h1>
-      <div className="sec">{[['나이', '27살'], ['자주 가는 곳', '멀티캠퍼스 역삼'], ['모아둔 돈', '2,000만 원'], ['한 달 월급', '230만 원'], ['내 집', '없어요']].map(r => (
-        <div className="erow" key={r[0]}><div className="t" style={{ fontWeight: 500, color: '#434C48', width: 220 }}>{r[0]}</div><div className="t">{r[1]}</div></div>
+      <div className="sec">{W1.map(f => (
+        <div className="erow" key={f.k}><div className="t" style={{ fontWeight: 500, color: '#434C48', width: 220 }}>{f.label}</div><div className="t">{val1(f.k) || '안 정했어요'}</div></div>
       ))}</div>
-      <div className="cta"><button className="btn pri wide" onClick={() => go(2)} data-act="다음 단계">받을 수 있는 돈 보기</button></div>
+      <div className="cta"><button className="btn ghost" onClick={() => set({ easyQ: total - 1 })} data-act="이전 질문">이전</button><button className="btn pri wide" onClick={() => go(2)} data-act="다음 단계">받을 수 있는 돈 보기</button></div>
     </>
   );
-  const q = qs[S.easyQ];
+  const f = W1[i];
   return (
-    <>
-      <div className="eyebrow">질문 2개 중 {S.easyQ + 1}번째</div><Html as="h1" html={q.q} /><div className="lead">{q.h}</div>
-      <div className="big-q">{q.a.map((a, i) => (
-        <button key={a} className={`btn ${i === 0 ? 'pri' : 'ghost'} wide`} onClick={() => set({ [q.k]: a, easyQ: S.easyQ + 1 })} data-act="답 선택 → 다음 질문">{a}</button>
-      ))}</div>
-      <p className="s" style={{ textAlign: 'center', marginTop: 28 }}>글로 쓰기 어렵다면 말로 해도 돼요</p>
-    </>
+    <div className="s1 tz1 s1-easy">
+      <div className="eyebrow">질문 {total}개 중 {i + 1}번째</div>
+      <Html as="h1" html={EASY_Q[f.k] || f.panel} />
+      {EASY_H[f.k] ? <div className="lead">{EASY_H[f.k]}</div> : null}
+      <div className="f1card"><div className={`f1 s1-field-${f.k}`} role="group" aria-labelledby={`f1l-${f.k}`}>
+        <div className="lab"><b id={`f1l-${f.k}`}>{f.panel}</b>{f.h ? <small>{f.h}</small> : null}</div>
+        <div className="ctl">{ctl[f.k]}</div>
+      </div></div>
+      <div className="cta">{i > 0 ? <button className="btn ghost" onClick={() => set({ easyQ: i - 1 })} data-act="이전 질문">이전</button> : null}
+        <button className="btn pri wide" disabled={!done1(f.k)} onClick={() => set({ easyQ: i + 1 })} data-act="다음 질문">다음</button></div>
+    </div>
   );
 }
 
@@ -129,7 +153,8 @@ function Place1() {
   </>;
 }
 
-function Page1() {
+/* 9개 항목의 입력 컨트롤 · 일반 화면(Page1)과 쉬운 화면(Easy)이 같이 써요 */
+function fieldCtl1() {
   const P = S.prof || {}, d = D1(), ctl = {};
   { const y = P.birthYear, split = y && ageSplit(y);
     ctl.age = (
@@ -205,6 +230,11 @@ function Page1() {
     })}</div>
   );
   ctl.own = cards('own', S.own); ctl.sep = cards('sep', S.sep);
+  return ctl;
+}
+
+function Page1() {
+  const ctl = fieldCtl1();
   const next = W1.find(f => !done1(f.k));
   return (
     <div className="s1 tz1">

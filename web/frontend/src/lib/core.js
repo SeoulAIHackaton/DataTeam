@@ -841,7 +841,7 @@ export function askCmp(q) {
     });
 }
 
-export const CH = [null, {no:'01', t:'내 조건'}, {no:'02', t:'받을 지원'}, {no:'03', t:'집 고르기'}, {no:'04', t:'할 일'}];
+export const CH = [null, {no:'01', t:'내 조건'}, {no:'02', t:'받을 지원'}, {no:'03', t:'집 고르기'}];
 
 export function topRank(){      // 03에서 관리비까지 확인된 집 중 1위 (없으면 null)
   if (!S.homesDone || S.homes.length < 2) return null;
@@ -852,21 +852,19 @@ export const DONE = () => S.done || (S.done = {});
 
 export const todoFlat = G => [...G.before, ...G.move, ...G.apply, ...G.next];
 
-export const todoLeft = () => todoFlat(todoAll()).filter(x => !DONE()[x.id]).length;
-
 export function chSum(n){
   if (n === 1) { const k = W1.filter(f => done1(f.k)).length; return k === W1.length ? `${W1.length}개 모두 채움` : `${k} / ${W1.length} 채움`; }
   if (n === 2) { const t = judge().total; return t ? `최대 ${t.toLocaleString()}만 원` : '받을 지원 없음'; }
   if (n === 3) { const k = S.homes.length; if (!k) return '아직 없음'; if (!S.homesDone || k < 2) return `${k}곳 넣는 중`;
     const h = topRank(); return h ? `${k}곳 · 1위 ${h.key} ${h.label.replace(' 원룸', '')}` : `${k}곳 · 관리비 확인 필요`; }
-  const l = todoLeft(); return l ? `${l}개 남음` : '모두 끝냈어요';
+  return '';
 }
 
 export function chDone(n){
   if (n === 1) return all1();
   if (n === 2) return S.step > 2;
   if (n === 3) return S.homesDone && S.homes.length >= 2;
-  return todoLeft() === 0;
+  return false;
 }
 
 export function todoAll(){
@@ -907,7 +905,7 @@ export function copyFile(){
   if (S.homesDone && S.homes.length >= 2) { let i = 0; scores().forEach(r => { const h = r.h;
     L.push(`${r.unk ? '-' : (++i) + '위'} ${h.key} ${h.label} · 보증금 ${val(h, 'deposit').toLocaleString()} / 월세 ${val(h, 'rent')} · 관리비 ${feeKnown(h) ? feeOf(h) + '만 원' : '확인 필요'} · 한 달 확인된 비용 ${monthly(h)}만 원${r.unk ? ' (관리비 빼고)' : ''} · ${DEST.name}까지 ${h.commute}분`); }); }
   else L.push('- 아직 비교하지 않았어요');
-  L.push('', '04 할 일');
+  L.push('', '할 일');
   todoFlat(G).forEach(x => { L.push(`${dn[x.id] ? '☑' : '☐'} ${plain(x.t)}${x.when ? ` (${x.when})` : ''}`); (x.sub || []).forEach(it => L.push(`   ${chk[it.id] ? '☑' : '☐'} ${it.h ? `[${it.h.key} ${it.h.label}] ` : ''}${it.t}`)); });
   copyText(fill(L.join('\n')), ['file-copy', 'file-copy2'], '복사했어요');
 }

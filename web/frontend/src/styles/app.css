@@ -1305,13 +1305,12 @@ td .w{color:var(--sub)}
 .lp-easy{height:60px;padding:0 16px;font-size:16px;font-weight:700;color:var(--ink2)}
 .lp-easy:hover{color:var(--pri)}
 .lp-note{font-size:14px;color:var(--sub);margin-top:14px}
-.lp-float{position:relative;height:430px;max-width:1080px;margin:72px auto 0}
+.lp-float{position:relative;height:370px;max-width:1080px;margin:72px auto 0}
 .fc{position:absolute;background:#fff;border-radius:26px;box-shadow:0 30px 70px rgba(29,36,33,.12),0 2px 6px rgba(29,36,33,.05);padding:24px 26px;text-align:left}
 .fc > *{animation:fl 6s ease-in-out infinite}
-.fc.a{left:2%;top:90px;width:320px;rotate:-4deg}
-.fc.b{left:50%;top:0;width:380px;margin-left:-190px;z-index:2}
-.fc.c{right:2%;top:120px;width:300px;rotate:4deg}
-.fc.b > *{animation-delay:-2s}.fc.c > *{animation-delay:-4s}
+.fc.a{left:50%;margin-left:-340px;top:110px;width:320px;rotate:-4deg}
+.fc.b{left:50%;margin-left:-40px;top:0;width:380px;z-index:2;rotate:3deg}
+.fc.b > *{animation-delay:-2s}
 .lp.js .fc.rv:not(.in){transform:translateY(60px)}
 @keyframes fl{0%,100%{translate:0 0}50%{translate:0 -8px}}
 .fk{font-size:14px;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:8px}
@@ -1427,7 +1426,7 @@ td .w{color:var(--sub)}
   .responsive-shell .top-file{display:none}
   .responsive-shell .shell > .rail,.responsive-shell .shell > .side{position:static;grid-column:1}
   .responsive-shell .rail-t,.responsive-shell .rail-f,.responsive-shell .rail li::after,.responsive-shell .rl-tx small{display:none}
-  .responsive-shell .rail ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .responsive-shell .rail ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
   .responsive-shell .rl{flex-direction:column;align-items:center;gap:4px;padding:8px 2px;text-align:center}
   .responsive-shell .rl-tx b{font-size:12px;line-height:1.4}
   .responsive-shell .ft-in{flex-wrap:wrap;padding-inline:16px;gap:8px}
