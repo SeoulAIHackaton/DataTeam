@@ -1415,3 +1415,32 @@ td .w{color:var(--sub)}
 .shell > .rail,.shell > .side{position:relative;top:auto;will-change:transform;transition:transform .7s cubic-bezier(.22,.9,.3,1)}
 .shell > .side{transition-duration:.9s}
 @media (prefers-reduced-motion:reduce){.shell > .rail,.shell > .side{transition:none}}
+
+/* 적용한 장은 좁은 폭에서 목차·본문·도구 순서로 배치해요. */
+@media (max-width:1239px){
+  .responsive-shell .shell{min-width:0;grid-template-columns:170px minmax(0,1fr) 240px;gap:24px}
+  .responsive-shell .shell.wide{grid-template-columns:170px minmax(0,1fr)}
+}
+@media (max-width:1100px){
+  .responsive-shell .shell,.responsive-shell .shell.wide{grid-template-columns:164px minmax(0,1fr);max-width:960px}
+  .responsive-shell .shell > .side{position:static;grid-column:2;max-height:none;overflow:visible;margin:0;padding:0}
+}
+@media (max-width:760px){
+  .responsive-shell .shell,.responsive-shell .shell.wide{grid-template-columns:minmax(0,1fr);gap:20px;padding:12px 16px 48px}
+  .responsive-shell .top-in{padding-inline:16px}
+  .responsive-shell .top-file{display:none}
+  .responsive-shell .shell > .rail,.responsive-shell .shell > .side{position:static;grid-column:1}
+  .responsive-shell .rail-t,.responsive-shell .rail-f,.responsive-shell .rail li::after,.responsive-shell .rl-tx small{display:none}
+  .responsive-shell .rail ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .responsive-shell .rl{flex-direction:column;align-items:center;gap:4px;padding:8px 2px;text-align:center}
+  .responsive-shell .rl-tx b{font-size:12px;line-height:1.4}
+  .responsive-shell .ft-in{flex-wrap:wrap;padding-inline:16px;gap:8px}
+  .responsive-shell .ft-in .r{margin-left:0}
+  .responsive-shell .md-bg{place-items:end center;padding:0}
+  .responsive-shell .md{width:100%;max-height:calc(100dvh - 16px);border-radius:20px 20px 0 0}
+  .responsive-shell .md-h{padding:20px 16px 8px}
+  .responsive-shell .md-h h2{font-size:20px;overflow-wrap:anywhere}
+  .responsive-shell .md-b{min-height:0;padding:12px 16px 20px;overscroll-behavior:contain}
+  .responsive-shell .md-f{flex-wrap:wrap;padding:12px 16px max(16px,env(safe-area-inset-bottom))}
+  .responsive-shell .md-f .btn{min-width:0;padding-inline:12px;font-size:14px}
+}

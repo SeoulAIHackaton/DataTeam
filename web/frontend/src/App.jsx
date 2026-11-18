@@ -40,6 +40,10 @@ function floatSides() {
   const main = document.getElementById('main'); if (!main) return;
   const top = main.getBoundingClientRect().top + scrollY, bottom = top + main.offsetHeight;
   document.querySelectorAll('.shell > .rail, .shell > .side').forEach(el => {
+    if (getComputedStyle(el).position === 'static') {
+      el.style.transform = '';
+      return;
+    }
     const max = Math.max(0, bottom - top - el.offsetHeight);
     const y = Math.min(max, Math.max(0, scrollY + HEAD + GAP - top));
     el.style.transform = y ? `translateY(${Math.round(y)}px)` : '';
@@ -61,7 +65,7 @@ export default function App() {
   if (S.loading) return <Loading />;
   const Body = BODY[S.step];
   return (
-    <div className={`app ${S.easy ? 'easy' : ''} ${S.ragShow ? 'show-rag' : ''}`}>
+    <div className={`app ${S.easy ? 'easy' : 'responsive-shell'} ${S.ragShow ? 'show-rag' : ''}`}>
       <Header />
       <div className={`shell ${wide() ? 'wide' : ''}`}>
         {S.easy ? null : <Rail />}
