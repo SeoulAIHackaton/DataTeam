@@ -1,58 +1,136 @@
-/* 04 할 일 · 앞 장(01~03)에서 나온 것을 체크리스트로 모아요 (새로 계산하지 않아요) */
+/* 04 할 일 · 앞 장(01~03)에서 나온 것을 체크리스트로 모아요 (새로 계산하지 않아요)
+   토스 방식: 맨 위 '다음에 할 일' 하나 + 가까운 마감 → 진행 막대 → 계약 전 → 이사할 때 → 지원 신청 타임라인
+   줄마다 체크 · 할 일 · 기한 · 실행 버튼. 설명과 근거는 모달로, 끝낸 일은 접어 둬요. 달력은 오른쪽 일정 요약에서 모달로 열어요 */
 import { S, set, go } from '../store.js';
-import { todoAll, todoFlat, DONE, tdDone, tdOpen, toggleAlarm, moreJ, CH, copyFile } from '../lib/core.js';
-import { Html, Tile, ChHead } from '../components/ui.jsx';
+import { todoAll, todoFlat, DONE, tdDone, toggleAlarm, moreJ, CH, copyFile, ddayOf, whenDate1 } from '../lib/core.js';
+import { Html, Tile, ChHead, Modal, IcCk } from '../components/ui.jsx';
 import Calendar from '../components/Calendar.jsx';
 
-function tdItem(x) {
-  const on = !!DONE()[x.id], op = tdOpen(x), chk = S.chk || (S.chk = {});
-  const al = x.alarm && S.alarm.includes(x.alarm);
+const GT = [['before', '계약 전에', '집을 정하기 전에 해 두면 좋아요'], ['move', '이사할 때', '입주하고 14일 안에'], ['apply', '지원 신청', '지금 신청할 것과 내년 공고']];
+const groupsOf = G => ({ before: G.before, move: G.move, apply: [...G.apply, ...G.next] });
+
+/* 줄의 실행 버튼 · 앞 장으로 가기 / 알림 받기 / 자세히 */
+function Act({ x }) {
+  if (x.alarm) { const al = S.alarm.includes(x.alarm);
+    return <button className={`tbtn ${al ? 'on' : ''}`} aria-pressed={al} onClick={() => toggleAlarm(x.alarm)} data-act="공고 알림 받기">{al ? '알림 받는 중' : '알림 받기'}</button>; }
+  if (x.go) return <button className="tbtn" onClick={() => go(x.go)} data-act="그 장으로">{x.goT || CH[x.go].no + ' ' + CH[x.go].t}</button>;
+  return <button className="tbtn gray" onClick={() => set({ tdMd: x.id })} aria-haspopup="dialog" data-act="자세히 보기">자세히</button>;
+}
+
+function Item({ x }) {
+  const on = !!DONE()[x.id];
   return (
-    <li className={`td ${on ? 'done' : ''}`} key={x.id}>
-      <div className="td-ck"><input type="checkbox" id={`tdc-${x.id}`} checked={on} onChange={e => tdDone(x.id, e.target.checked)} aria-labelledby={`tdt-${x.id}`} /></div>
-      <div style={{ minWidth: 0 }}>
-        <div className="td-t" id={`tdt-${x.id}`}>{x.t}{x.when ? <span className="td-when">{x.when}</span> : null}</div>
-        <div className="td-d">{x.d}</div>
-        {x.sub ? <ul className="td-sub">{x.sub.map(it => (
-          <li key={it.id}><label><input type="checkbox" defaultChecked={!!chk[it.id]} onChange={e => { (S.chk = S.chk || {})[it.id] = e.target.checked; }} /><span>{it.h ? <Tile h={it.h} c="xs" /> : null}{it.t}</span></label></li>
-        ))}</ul> : null}
-        {op && x.why ? <div className="td-det"><b>왜 해당되나요?</b> <Html html={x.why} /><div className="np-q">원문 「지원 대상」 "{x.qt}"</div></div> : null}
-      </div>
-      <div className="td-a">
-        {x.go ? <button className="link" onClick={() => go(x.go)} data-act="그 장으로">{x.goT || CH[x.go].no + ' ' + CH[x.go].t + '에서 보기'}</button> : null}
-        {x.why ? <button className="link" aria-expanded={op} onClick={() => set({ tdOpen: op ? null : x.id, open: null })} data-act="근거 펼치기">{op ? '근거 닫기' : '근거 보기'}</button> : null}
-        {x.alarm ? <button className={`alarm ${al ? 'on' : ''}`} onClick={() => toggleAlarm(x.alarm)} data-act="공고 알림 받기">{al ? '알림 받는 중' : '공고 알림 받기'}</button> : null}
-      </div>
+    <li className={`tdr ${on ? 'done' : ''}`}>
+      <label className="tck"><input type="checkbox" id={`tdc-${x.id}`} checked={on} onChange={e => tdDone(x.id, e.target.checked)} aria-labelledby={`tdt-${x.id}`} /><span aria-hidden="true"><IcCk /></span></label>
+      <button className="tdr-m" onClick={() => set({ tdMd: x.id })} aria-haspopup="dialog" data-act="할 일 자세히 보기 모달">
+        <b id={`tdt-${x.id}`}>{x.t}</b>{x.sub ? <small>확인할 것 {x.sub.length}개</small> : null}</button>
+      <span className="tdr-w">{x.when ? x.when.replace(/ · D-\d+$/, '') : ''}</span>
+      <div className="tdr-a">{on ? null : <Act x={x} />}</div>
     </li>
   );
 }
 
-export default function Step4() {
-  const G = todoAll(), all = todoFlat(G), left = all.filter(x => !DONE()[x.id]).length, M = moreJ();
-  const GT = { before: ['계약 전에', '집을 정하기 전에 해 두면 좋아요'], move: ['이사하면서', '입주하고 14일 안에'], apply: ['지금 신청할 수 있어요', '올해 12월 31일 마감'], next: ['내년에 신청할 지원', '공고가 나오면 알려드려요'] };
-  const sec = k => G[k].length ? (
-    <section className="td-g" key={k}>
-      <h2>{GT[k][0]} <span className="cnt">{G[k].filter(x => !DONE()[x.id]).length} / {G[k].length}</span><span className="s" style={{ fontSize: 13, fontWeight: 500 }}>{GT[k][1]}</span></h2>
-      <ol className="td-list">{G[k].map(tdItem)}</ol>
+function Group({ k, t, sub, list }) {
+  if (!list.length) return null;
+  const open = list.filter(x => !DONE()[x.id]), done = list.filter(x => DONE()[x.id]), show = (S.tdDoneOpen || {})[k];
+  return (
+    <section className={`tdg ${open.length ? '' : 'all'}`}>
+      <span className="tdg-dot" aria-hidden="true">{open.length ? null : <IcCk />}</span>
+      <h2>{t} <span>{done.length} / {list.length}</span><small>{sub}</small></h2>
+      {open.length ? <ul className="tdl">{open.map(x => <Item key={x.id} x={x} />)}</ul> : <p className="tdg-all">모두 끝냈어요</p>}
+      {done.length ? <>
+        <button className="tdg-more" aria-expanded={!!show} onClick={() => set({ tdDoneOpen: { ...(S.tdDoneOpen || {}), [k]: !show } })} data-act="완료한 일 펼치기">완료한 일 {done.length}개 {show ? '접기' : '보기'}</button>
+        {show ? <ul className="tdl">{done.map(x => <Item key={x.id} x={x} />)}</ul> : null}
+      </> : null}
     </section>
-  ) : null;
-  const groups = ['before', 'move', 'apply', 'next'].map(sec);
+  );
+}
+
+/* 할 일 자세히 보기 */
+function TdModal({ all }) {
+  const x = all.find(z => z.id === S.tdMd); if (!x) return null;
+  const on = !!DONE()[x.id], chk = S.chk || (S.chk = {}), close = () => set({ tdMd: null });
+  return (
+    <Modal title={x.t} sub={x.when || ''} onClose={close}
+      foot={<><button className="btn ghost" onClick={() => { tdDone(x.id, !on); close(); }} data-act="완료 표시">{on ? '아직 안 했어요' : '다 했어요'}</button>
+        {x.go ? <button className="btn pri" onClick={() => { close(); go(x.go); }}>{x.goT || CH[x.go].no + ' ' + CH[x.go].t + '에서 보기'}</button>
+          : x.alarm ? <button className="btn pri" onClick={() => toggleAlarm(x.alarm)}>{S.alarm.includes(x.alarm) ? '✓ 알림 받는 중' : '공고 알림 받기'}</button>
+          : <button className="btn pri" onClick={close}>확인</button>}</>}>
+      <p className="md-p">{x.d}</p>
+      {x.sub ? <><h3 className="md-st">확인할 것</h3>
+        <ul className="md-ck">{x.sub.map(it => (
+          <li key={it.id}><label className="tck sm"><input type="checkbox" defaultChecked={!!chk[it.id]} onChange={e => { (S.chk = S.chk || {})[it.id] = e.target.checked; }} /><span aria-hidden="true"><IcCk /></span></label>
+            <span>{it.h ? <Tile h={it.h} c="xs" /> : null}{it.t}</span></li>
+        ))}</ul></> : null}
+      {x.why ? <><h3 className="md-st">왜 해당되나요?</h3><p className="md-p"><Html html={x.why} /></p><p className="md-q">「지원 대상」 {x.qt}</p></> : null}
+    </Modal>
+  );
+}
+
+export default function Step4() {
+  const G = todoAll(), all = todoFlat(G), left = all.filter(x => !DONE()[x.id]).length, M = moreJ(), GG = groupsOf(G);
+  const next = all.find(x => !DONE()[x.id]);
+  const deads = M.filter(m => m.j === 'ok' && m.end).sort((a, b) => ddayOf(a.end) - ddayOf(b.end)), near = deads[0];
+  const pct = all.length ? Math.round((all.length - left) / all.length * 100) : 0;
+  const pick = aiId => { const x = all.find(z => z.open === aiId); set({ calMd: false, tdMd: x ? x.id : null }); };
+  const body = (
+    <div className="tdt">{GT.map(([k, t, sub]) => <Group key={k} k={k} t={t} sub={sub} list={GG[k]} />)}</div>
+  );
   if (S.easy) return (
-    <>
+    <div className="tz">
       <ChHead n={4} h1={left ? <>할 일이 <em>{left}개</em> 남았어요</> : <>할 일을 <em>모두</em> 끝냈어요</>} lead="하나씩 끝내면 체크해 주세요." />
-      {groups}
+      {body}
+      <TdModal all={all} />
       <div className="cta"><button className="btn ghost" onClick={() => go(3)}>이전</button></div>
-    </>
+    </div>
   );
   return (
-    <>
+    <div className="tz">
       <ChHead n={4} h1={left ? <>할 일 <em>{left}개</em>가 남았어요</> : <>할 일을 <em>모두</em> 끝냈어요</>}
-        lead="01~03에서 나온 신청 마감, 전입신고, 집 보러 가서 확인할 것을 순서대로 모았어요. 체크하면 왼쪽 목차와 파일 요약에 바로 반영돼요." />
-      {groups}
-      <section className="td-g"><h2>신청 일정 <span className="s" style={{ fontSize: 13, fontWeight: 500 }}>신청 기간을 누르면 그 할 일의 근거가 열려요</span></h2>
-        <Calendar M={M} />
-        <p className="tl-note">12월 1일에 입주하면 <b>12월 14일까지 전입신고</b>를 꼭 하세요. 서울시 지원은 전입신고를 마친 사람만 신청할 수 있어요.</p></section>
+        lead="01~03에서 나온 마감과 확인할 것을 순서대로 모았어요" />
+
+      {/* 다음에 할 일 하나 + 가까운 마감 */}
+      {next ? (
+        <section className="tz-next" aria-labelledby="next-t">
+          <p className="tz-o">다음에 할 일</p>
+          <h2 id="next-t">{next.t}</h2>
+          <p className="tz-why">{next.d}</p>
+          <div className="tz-next-a">
+            <button className="btn pri" onClick={() => set({ tdMd: next.id })} aria-haspopup="dialog">자세히 보고 시작하기</button>
+            <button className="btn ghost" onClick={() => tdDone(next.id, true)} data-act="완료 표시">다 했어요</button>
+          </div>
+        </section>
+      ) : null}
+      <dl className="tz-sum">
+        <div><dt>진행</dt><dd>{all.length - left} / {all.length}<span className="tz-bar" aria-hidden="true"><i style={{ width: `${pct}%` }} /></span></dd></div>
+        <div><dt>가까운 마감</dt><dd>{near ? `D-${ddayOf(near.end)}` : '없음'}</dd>{near ? <small>{near.end[0] + 1}월 {near.end[1]}일 · {near.n.replace(/^2026 /, '')}</small> : null}</div>
+      </dl>
+
+      {body}
+
       <div className="cta"><button className="btn ghost" onClick={() => go(3)}>이전</button><button className="btn pri wide" id="file-copy2" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button></div>
-    </>
+      <TdModal all={all} />
+      {S.calMd ? (
+        <Modal wide title="신청 일정" sub="신청 기간을 누르면 그 할 일이 열려요 · 입주일은 월까지만 정해서 달력에 넣지 않았어요" onClose={() => set({ calMd: false })}>
+          <Calendar M={M} onPick={pick} />
+        </Modal>
+      ) : null}
+    </div>
+  );
+}
+
+/* 오른쪽 · 작은 일정 요약 + 전체 달력 보기 */
+export function SchedPanel() {
+  const M = moreJ(), mv = whenDate1();
+  const deads = M.filter(m => m.j === 'ok' && m.end).sort((a, b) => ddayOf(a.end) - ddayOf(b.end));
+  return (
+    <div className="panel sched"><div className="panel-t">다가오는 일정</div>
+      <ul>
+        {deads.map((m, i) => <li key={i}><span className="sd">{m.end[0] + 1}/{m.end[1]}</span><span className="sn">{m.n.replace(/^2026 /, '')} 마감</span><b>D-{ddayOf(m.end)}</b></li>)}
+        <li><span className="sd">{mv ? `${mv.month}월` : '미정'}</span><span className="sn">입주 · 날짜는 아직 몰라요</span></li>
+        <li><span className="sd">+14일</span><span className="sn">전입신고 · 입주한 날부터</span></li>
+      </ul>
+      <button className="btn-line full" onClick={() => set({ calMd: true })} aria-haspopup="dialog" data-act="전체 달력 모달">전체 달력 보기</button>
+    </div>
   );
 }

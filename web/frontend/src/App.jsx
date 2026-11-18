@@ -9,7 +9,7 @@ import Loading from './pages/Loading.jsx';
 import Step1, { Side1, Banner1 } from './pages/Step1.jsx';
 import Step2 from './pages/Step2.jsx';
 import Step3 from './pages/Step3.jsx';
-import Step4 from './pages/Step4.jsx';
+import Step4, { SchedPanel } from './pages/Step4.jsx';
 
 const BODY = [null, Step1, Step2, Step3, Step4];
 
@@ -21,7 +21,7 @@ function Aside() {
   if (S.step === 1) return <Side1 />;
   if (S.step === 2) return <><AlarmPanel /><ProfileMini /></>;
   if (S.step === 3) return <><TipsPanel /><ProfileMini /></>;
-  return <FileSummary />;
+  return <><SchedPanel /><FileSummary /></>;
 }
 
 /* 카카오 지도는 지도 칸이 새로 생기거나 보여줄 집이 바뀔 때만 다시 그려요 */
