@@ -33,10 +33,29 @@ function syncKakao() {
   drawn.set(el, sig); drawKakao();
 }
 
+/* 양옆 메뉴 · 스크롤 위치에 따라 부드럽게 따라와요
+   맨 위: 본문 첫 줄과 나란히 → 중간: 헤더 아래에 붙어서 따라옴 → 맨 아래: 본문 끝에 맞춰 멈춤 (transition으로 살짝 늦게 따라와 움직임이 보여요) */
+const HEAD = 60, GAP = 24;
+function floatSides() {
+  const main = document.getElementById('main'); if (!main) return;
+  const top = main.getBoundingClientRect().top + scrollY, bottom = top + main.offsetHeight;
+  document.querySelectorAll('.shell > .rail, .shell > .side').forEach(el => {
+    const max = Math.max(0, bottom - top - el.offsetHeight);
+    const y = Math.min(max, Math.max(0, scrollY + HEAD + GAP - top));
+    el.style.transform = y ? `translateY(${Math.round(y)}px)` : '';
+  });
+}
+let raf = 0;
+const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; floatSides(); }); };
+
 export default function App() {
   useStore();
-  useLayoutEffect(() => { flushFocus(); roving1(); syncKakao(); });   // 다 그린 뒤: 포커스 옮기기 · 버튼 그룹 Tab 자리 · 지도
+  useLayoutEffect(() => { flushFocus(); roving1(); syncKakao(); floatSides(); });   // 다 그린 뒤: 포커스 옮기기 · 버튼 그룹 Tab 자리 · 지도
   useEffect(() => { apiCheck(); }, []);
+  useEffect(() => {
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll);
+    return () => { removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll); };
+  }, []);
 
   if (S.home) return <Home />;
   if (S.loading) return <Loading />;

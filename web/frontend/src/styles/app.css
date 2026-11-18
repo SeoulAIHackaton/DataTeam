@@ -1409,3 +1409,9 @@ td .w{color:var(--sub)}
 .s3-src{font-size:13px;color:var(--sub);margin-top:14px}
 .s3-kv dd{font-size:18px;word-break:keep-all}
 .s3-fields{grid-template-columns:repeat(3,1fr)}
+
+/* ===== 헤더 구분선 없애기 · 양옆 메뉴가 스크롤을 부드럽게 따라오기 (App.jsx floatSides) ===== */
+.top{border-bottom:0}
+.shell > .rail,.shell > .side{position:relative;top:auto;will-change:transform;transition:transform .7s cubic-bezier(.22,.9,.3,1)}
+.shell > .side{transition-duration:.9s}
+@media (prefers-reduced-motion:reduce){.shell > .rail,.shell > .side{transition:none}}
