@@ -1,0 +1,109 @@
+/* 처음 화면 · 스크롤 이야기: 왼쪽 글이 지나가면 오른쪽 웹 화면(브라우저 창)이 01~04로 바뀌어요
+   앱이 아니라 웹 서비스라서 휴대폰 화면 대신 브라우저 창 안에 실제 웹 화면(왼쪽 목차 · 본문 · 오른쪽 패널) 모양으로 보여줘요 */
+.lp-story{max-width:1240px;margin:120px auto 0;padding:0 32px;display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:64px}
+.lp-step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.22;transition:opacity .5s}
+.lp-step.on{opacity:1}
+.lp-step .no{align-self:flex-start;font-size:14px;font-weight:800;color:var(--pri);background:var(--pri-s);border-radius:8px;padding:4px 10px}
+.lp-step h2{font-size:52px;line-height:1.22;letter-spacing:-2px;margin-top:20px}
+.lp-step p{font-size:19px;line-height:1.7;color:var(--sub);margin-top:20px;max-width:460px}
+.lp-stick{position:sticky;top:calc(50vh - 240px);align-self:start;height:480px;display:grid;place-items:center}
+
+/* 브라우저 창 */
+.bw{width:600px;height:440px;border-radius:16px;background:#fff;border:1px solid var(--line2);box-shadow:0 40px 80px rgba(29,36,33,.16),0 2px 6px rgba(29,36,33,.05);overflow:hidden;display:flex;flex-direction:column}
+.bw-bar{height:40px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 14px;background:#EFEDE6;border-bottom:1px solid var(--line2)}
+.bw-dots{display:flex;gap:6px;width:70px}
+.bw-dots i{width:11px;height:11px;border-radius:50%;background:#D6D2C8}
+.bw-url{flex:1;max-width:340px;margin:0 auto;height:26px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden}
+.bw-url svg{width:11px;height:11px;flex-shrink:0}
+.bw-url b{color:var(--ink);font-weight:700}
+.bw-sp{width:70px}
+.bw-body{flex:1;min-height:0;display:grid;grid-template-columns:108px 1fr}
+.bw-rail{background:var(--paper);border-right:1px solid var(--line3);padding:14px 8px}
+.bw-logo{font-size:13px;font-weight:800;margin:0 6px 12px;letter-spacing:-.3px}
+.bw-logo b{color:var(--pri)}
+.bw-rail ol{list-style:none}
+.bw-rail li{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--sub);padding:7px 6px;border-radius:8px;transition:background .3s,color .3s}
+.bw-rail li i{font-style:normal;font-size:10.5px;font-weight:800;min-width:22px;height:18px;border-radius:5px;display:grid;place-items:center;background:#E6E3DB;color:var(--sub);transition:background .3s,color .3s}
+.bw-rail li i svg{width:11px;height:11px}
+.bw-rail li.dn i{background:var(--pri-s);color:var(--pri)}
+.bw-rail li.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(29,36,33,.08)}
+.bw-rail li.on i{background:var(--pri);color:#fff}
+.bw-main{position:relative;overflow:hidden}
+
+/* 창 안의 화면 4개 (지금 장만 보여요) · 본문 + 오른쪽 패널 */
+.ps{position:absolute;inset:0;padding:18px 18px 18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 138px;gap:14px;opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s;pointer-events:none}
+.bw[data-s="1"] .s1,.bw[data-s="2"] .s2,.bw[data-s="3"] .s3,.bw[data-s="4"] .s4{opacity:1;transform:none}
+.ps-m{min-width:0}
+.ps-side{background:var(--paper);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:7px;font-size:11.5px;min-width:0}
+.ps-side .t{font-size:12px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.ps-side .t span{font-size:11px;color:var(--pri)}
+.ps-side .kv{display:flex;justify-content:space-between;gap:6px;color:var(--sub);border:0;padding:0;font-size:11.5px}
+.ps-side .kv b{color:var(--ink);font-weight:700;white-space:nowrap}
+.ps-side .pp{height:5px;border-radius:3px;background:#E6E3DB;overflow:hidden;margin-bottom:2px}
+.ps-side .pp i{display:block;height:100%;width:0;background:var(--pri);border-radius:3px;transition:width .9s cubic-bezier(.2,.7,.2,1) .2s}
+.s1.play .ps-side .pp i{width:78%}
+.pc{font-size:11px;font-weight:800;color:var(--pri);background:var(--pri-s);border-radius:6px;padding:3px 8px;display:inline-block}
+.pt{font-size:13px;font-weight:700;color:var(--sub);margin-top:12px}
+.pa{font-size:15px;font-weight:700;margin-top:2px}
+.pa b{font-size:30px;font-weight:800;letter-spacing:-1px}
+.s2 .pa b{color:var(--pri)}
+.pbtn{margin-top:auto;height:34px;border-radius:9px;background:var(--pri);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;text-align:center;line-height:1.2;padding:0 6px}
+
+/* 01 · 입력 줄 */
+.pf{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line3)}
+.pf:first-of-type{margin-top:10px;border-top:1px solid var(--line3)}
+.pf .pl{font-size:11.5px;font-weight:700;color:var(--sub);padding-top:3px}
+.pf .pv{font-size:13px;font-weight:800}
+.pf .pa{margin:0;font-size:12px}.pf .pa b{font-size:20px;letter-spacing:-.5px}
+.padd{display:flex;gap:5px;margin-top:6px}
+.padd span{font-size:11px;font-weight:700;background:#EFEDE6;color:var(--ink2);border-radius:999px;padding:5px 9px;transition:transform .12s,background .12s,color .12s}
+.padd span.tap{transform:scale(.88);background:var(--pri);color:#fff}
+.pg,.prng{position:relative;height:6px;border-radius:3px;background:#EEEBE3;margin-top:7px}
+.pg i,.prng i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--pri);width:0;transition:width 1s cubic-bezier(.2,.7,.2,1) .3s}
+.pg em{position:absolute;left:62%;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.s1.play .pg i{width:38%}.s1.play .prng i{width:44%}
+.pmo{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.pmo span{text-align:center;font-size:11.5px;font-weight:800;border:1px solid var(--line2);border-radius:8px;padding:6px 0}
+.pmo span.on{background:var(--pri-s);border-color:var(--pri);color:var(--pri-d)}
+
+/* 02 · 받을 지원 */
+.pbar{display:flex;gap:3px;height:10px;margin-top:12px}
+.pbar span{border-radius:3px;transform-origin:left;transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.7,.2,1) .15s}
+.s2.play .pbar span{transform:none}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line3);opacity:0;transform:translateX(14px);transition:opacity .4s var(--d),transform .4s var(--d)}
+.prow:first-of-type{margin-top:8px}
+.prow b{font-size:12.5px;display:block}.prow small{font-size:10.5px;color:var(--sub)}
+.prow em{font-style:normal;font-size:15px;font-weight:800;white-space:nowrap}
+.s2.play .prow{opacity:1;transform:none}
+.pwhy{display:flex;flex-direction:column;gap:5px;font-size:11px;opacity:0;transition:opacity .4s .8s}
+.pwhy span{border-radius:6px;padding:4px 7px;font-weight:700}
+.pwhy .ok{background:var(--ok-s);color:var(--ok-t)}.pwhy .q{background:var(--caution-s);color:var(--caution)}
+.s2.play .pwhy{opacity:1}
+
+/* 03 · 집 고르기 */
+.s3 .frk{margin-top:8px}
+.s3 .frk .br i{width:0;transition:width .9s cubic-bezier(.2,.7,.2,1) .2s}
+.s3.play .frk .br i{width:var(--w)}
+.s3 .frk li{grid-template-columns:14px 20px 48px 1fr 36px;font-size:12.5px;padding:7px 0}
+.s3 .frk li.u{grid-template-columns:14px 20px 48px 1fr}
+.pcmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.pcmp div{background:var(--paper);border-radius:10px;padding:10px}
+.pcmp span{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub)}
+.pcmp b{display:block;font-size:16px;font-weight:800;margin-top:4px}
+.pcmp small{font-size:10.5px;color:var(--sub)}
+.pmap{width:100%;height:auto;border-radius:8px;display:block}
+.plg{list-style:none;display:flex;flex-direction:column;gap:4px;font-size:11px}
+.plg li{display:flex;align-items:center;gap:6px;color:var(--sub)}.plg li b{margin-left:auto;color:var(--ink)}
+
+/* 04 · 할 일 */
+.ptd{list-style:none;margin-top:8px}
+.ptd li{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--line3);transition:color .25s var(--d)}
+.ptd li i{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--ctl);display:grid;place-items:center;color:#fff;flex-shrink:0;transition:background .25s var(--d),border-color .25s var(--d)}
+.ptd li i svg{width:11px;height:11px;opacity:0;transform:scale(.4);transition:opacity .25s var(--d),transform .25s var(--d)}
+.s4.play .ptd li:nth-child(-n+3){color:var(--sub)}
+.s4.play .ptd li:nth-child(-n+3) i{background:var(--pri);border-color:var(--pri)}
+.s4.play .ptd li:nth-child(-n+3) i svg{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  .ps,.prow,.pwhy,.pg i,.prng i,.frk .br i,.ptd li,.ptd li i,.ptd li i svg,.pbar span,.ps-side .pp i,.bw-rail li,.bw-rail li i{transition:none}
+}

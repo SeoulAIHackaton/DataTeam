@@ -1,0 +1,20 @@
+{
+  "name": "my-house",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "첫집 내비 · 내 첫 집 파일 (React)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "19.2.9",
+    "react-dom": "19.2.9"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.5"
+  }
+}

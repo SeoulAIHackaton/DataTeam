@@ -1,0 +1,93 @@
+/* 01 내 조건 · 입력 구역과 선택 상태를 또렷하게 보여줘요. */
+.s1 .ch-h{margin-bottom:36px}
+.s1 .ch-row{align-items:center}
+.s1 .ch-lead{max-width:540px;line-height:1.75}
+.s1-group + .s1-group{margin-top:32px}
+.s1-group-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.s1-group-no{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border:1px solid var(--line2);border-radius:10px;color:var(--pri);font-size:12px;font-weight:800;background:var(--sheet)}
+.s1-group-head h2{font-size:18px;font-weight:800;letter-spacing:-.4px}
+.s1-group-head p{font-size:13px;color:var(--sub);margin-top:3px}
+.s1-group-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--sub);font-variant-numeric:tabular-nums}
+.s1 .f1card{padding:0 24px;box-shadow:0 2px 8px rgba(29,36,33,.025)}
+.s1 .f1{display:grid;grid-template-columns:132px minmax(0,1fr);gap:20px;padding:24px 0;align-items:start}
+.s1 .f1 .lab{width:auto;padding-top:8px}
+.s1 .f1 .lab b{font-size:15px;line-height:1.5;letter-spacing:-.25px}
+.s1 .f1 .lab small{font-size:12.5px;line-height:1.6;margin-top:5px}
+.s1 .f1.hl{margin:0 -24px;padding:24px}
+.s1-help{font-size:12.5px;color:var(--sub);line-height:1.65;margin-top:10px}
+
+/* 직업과 학업은 함께 선택할 수 있어요. */
+.s1-jobs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.s1-job{display:flex;align-items:center;gap:10px;padding:13px 12px;min-height:48px;border:1px solid var(--line2);border-radius:10px;background:var(--sheet);font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer;transition:background .15s,border-color .15s}
+.s1-job:hover{border-color:var(--ctl)}
+.s1-job.selected{border-color:var(--pri);background:var(--pri-s);color:var(--pri-d);box-shadow:inset 0 0 0 1px var(--pri)}
+.s1-job input,.s1-unknown input{width:17px;height:17px;flex-shrink:0;accent-color:var(--pri);cursor:pointer}
+.s1-jobs .s1-help{grid-column:1/-1;margin-top:0}
+.s1 .ocards{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
+.s1 .ocard{padding:13px 32px 13px 13px;border-radius:10px}
+.s1 .ocard b{font-size:14px}
+.s1 .ocard small{font-size:12px;line-height:1.6}
+.s1 .ocard .ck{width:17px;height:17px;top:14px;right:11px}
+.s1 .s1-field-sep{display:block}
+.s1 .s1-field-sep .lab{padding-top:0;margin-bottom:13px;display:flex;align-items:baseline;gap:12px}
+.s1 .s1-field-sep .lab small{margin-top:0}
+.s1 .s1-field-sep .ocards{grid-template-columns:repeat(3,minmax(0,1fr))}
+.s1 .f1hint{font-size:12.5px}
+.s1 .f1amt{max-width:100%}
+.s1 .addb{padding:0 12px;height:34px;font-size:13px;border-radius:8px}
+.s1 .f1gauge .lb{font-size:11.5px}
+.s1 .f1gauge .lb span{transform:translateX(-62%)}
+
+/* 기준 장소는 이름과 주소를 함께 읽을 수 있는 목록으로 보여줘요. */
+.s1 .s1-field-place{display:block}
+.s1 .s1-field-place .lab{padding-top:0;margin-bottom:14px}
+.s1 .f1search{padding:13px 14px;gap:11px}
+.s1 .f1search input{font-size:14px;font-weight:500}
+.s1-results-label{margin:15px 0 8px;font-size:12px;color:var(--sub)}
+.s1-results{list-style:none;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.s1-results li + li{border-top:1px solid var(--line3)}
+.s1-results button{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;min-height:64px;transition:background .15s}
+.s1-results button:hover{background:#F6F8F5}
+.s1-results button:focus-visible{outline-offset:-3px}
+.s1-result-icon,.s1-place-icon{display:grid;place-items:center;flex-shrink:0;width:34px;height:34px;border-radius:9px;background:#F2F3EF;color:var(--sub)}
+.s1-result-icon svg,.s1-place-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.s1-result-text{min-width:0;flex:1}
+.s1-result-text b{display:block;font-size:14px;font-weight:650;line-height:1.5}
+.s1-result-text small{display:block;font-size:12px;color:var(--sub);line-height:1.5;margin-top:2px;overflow-wrap:anywhere}
+.s1-result-pick{font-size:12px;font-weight:600;color:var(--sub);flex-shrink:0;display:flex;gap:10px;align-items:center}
+.s1-result-pick > span{font-size:20px;font-weight:400}
+.s1-no-results{padding:20px 14px;border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.7;color:var(--sub)}
+.s1 .f1pick{padding:14px;box-shadow:none;background:#F5F9F6}
+.s1 .f1pick .q{min-width:0}
+.s1 .f1pick .q b{font-size:15px}
+.s1 .f1pick .q small{display:block;line-height:1.6;margin-top:2px;overflow-wrap:anywhere}
+.s1 .s1-place-icon{background:var(--pri-s);color:var(--pri)}
+.s1 .f1time{max-width:none;padding-top:2px}
+.s1 .f1tv{font-size:14px}
+.s1 .f1tv b{font-size:22px}
+
+/* 연도와 월은 네이티브 드롭다운으로 고릅니다. */
+.s1-date{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.s1-date > label:not(.s1-unknown){flex:1;min-width:100px}
+.s1-date select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--ctl);border-radius:10px;background:var(--sheet);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.s1-date select:disabled{background:#F3F2ED;color:var(--sub);border-color:var(--line2);cursor:default}
+.s1-unknown{display:flex;align-items:center;gap:7px;min-height:44px;font-size:13px;color:var(--ink2);cursor:pointer;white-space:nowrap}
+
+/* 오른쪽 요약도 본문과 같은 세 구역으로 정리해요. */
+.s1-panel .s1-summary-group + .s1-summary-group{margin-top:17px}
+.s1-summary-group h3{font-size:11.5px;font-weight:600;color:var(--sub);margin:14px 0 4px}
+.s1-panel .f1kv{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:start;padding:9px 0}
+.s1-panel .f1kv > span{font-size:12px}
+.s1-panel .f1kv > b{font-size:12px;text-align:right;line-height:1.6;overflow-wrap:anywhere}
+.s1-panel .f1kv > b.nil{color:var(--sub);font-size:11.5px}
+.s1-panel .f1kv:last-child{border-bottom:0}
+.s1-next{font-size:12px;color:var(--sub);line-height:1.7;text-align:center}
+
+@media (max-width:1300px){
+  .s1 .f1{grid-template-columns:116px minmax(0,1fr);gap:16px}
+  .s1 .s1-field-place,.s1 .s1-field-sep{display:block}
+  .s1-date .s1-unknown{flex-basis:100%;min-height:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  .s1-job,.s1-results button{transition:none}
+}

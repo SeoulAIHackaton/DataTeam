@@ -1,0 +1,39 @@
+/* ===== 01 → 02 넘어갈 때 3초 동안 보여주는 로딩 화면 =====
+   진행 막대 0 → 100% · 판정 순서(나이 → 소득 → 무주택·세대 → 공고문 근거)를 내 값과 함께 하나씩 체크해요 */
+.ld{min-height:100vh;background:var(--paper);display:flex;flex-direction:column}
+.ld-top{height:64px;display:flex;align-items:center;padding:0 32px}
+.ld-top .logo{cursor:default}
+.ld-in{flex:1;display:grid;place-items:center;padding:24px 32px 96px}
+.ld-card{width:600px;background:#fff;border:1px solid var(--line2);border-radius:24px;padding:44px 48px 36px;box-shadow:0 30px 60px rgba(29,36,33,.08)}
+.ld-house{width:64px;height:64px;border-radius:18px;background:var(--pri-s);color:var(--pri);display:grid;place-items:center}
+.ld-house svg{width:34px;height:34px}
+.ld-house .roof{stroke-dasharray:40;stroke-dashoffset:40;animation:ldDraw 1.2s cubic-bezier(.2,.7,.2,1) .1s forwards}
+.ld-house .wall{stroke-dasharray:48;stroke-dashoffset:48;animation:ldDraw 1.2s cubic-bezier(.2,.7,.2,1) .5s forwards}
+.ld-house .door{stroke-dasharray:14;stroke-dashoffset:14;animation:ldDraw .6s ease 1.2s forwards}
+@keyframes ldDraw{to{stroke-dashoffset:0}}
+.ld-o{display:flex;align-items:center;gap:8px;margin-top:26px;font-size:14px;font-weight:700;color:var(--sub)}
+.ld-o .ch-no{font-size:12px;font-weight:800;color:var(--pri);background:var(--pri-s);border-radius:6px;padding:2px 8px}
+.ld h1{font-size:30px;line-height:1.38;letter-spacing:-1px;margin-top:10px}
+.ld-bar{height:8px;border-radius:4px;background:#EEEBE3;margin-top:28px;overflow:hidden}
+.ld-bar i{display:block;height:100%;border-radius:4px;background:var(--pri);width:0}
+.ld-pct{display:flex;justify-content:space-between;margin-top:10px;font-size:13.5px;color:var(--sub)}
+.ld-pct b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ld-list{list-style:none;margin-top:22px;border-top:1px solid var(--line3)}
+.ld-list li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line3);font-size:16px;font-weight:600;color:var(--sub);transition:color .3s}
+.ld-list li i{width:24px;height:24px;border-radius:50%;border:2px solid var(--ctl);display:grid;place-items:center;color:#fff;transition:background .25s,border-color .25s}
+.ld-list li i svg{width:13px;height:13px}
+.ld-list li.run{color:var(--ink)}
+.ld-list li.run i{border-color:var(--pri);border-top-color:transparent;animation:ldSpin .8s linear infinite}
+.ld-list li.ok{color:var(--ink)}
+.ld-list li.ok i{background:var(--pri);border-color:var(--pri);animation:ldPop .3s cubic-bezier(.2,.7,.2,1)}
+.ld-list li span{font-size:14px;font-weight:600;color:var(--sub);opacity:0;transform:translateX(8px);transition:opacity .3s,transform .3s}
+.ld-list li.ok span{opacity:1;transform:none;color:var(--pri-d)}
+@keyframes ldSpin{to{transform:rotate(360deg)}}
+@keyframes ldPop{from{transform:scale(.6)}to{transform:none}}
+.ld-foot{margin-top:18px;font-size:13px;color:var(--sub)}
+@media (prefers-reduced-motion: reduce){
+  .ld-house .roof,.ld-house .wall,.ld-house .door{animation:none;stroke-dashoffset:0}
+  .ld-list li.run i{animation:none;border-top-color:var(--pri)}
+  .ld-list li.ok i{animation:none}
+  .ld-list li span,.ld-list li,.ld-list li i{transition:none}
+}
