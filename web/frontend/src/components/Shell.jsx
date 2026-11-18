@@ -31,7 +31,7 @@ export function Footer() {
 export function Rail() {
   return (
     <nav className="rail" aria-label="내 첫 집 파일 목차">
-      <div className="rail-t">내 첫 집 파일<small>2026년 11월 21일 기준</small></div>
+      <div className="rail-t">내 첫 집 파일</div>
       <ol>{(() => { const ready = all1(); return [1, 2, 3].map(n => {
         const on = S.step === n, dn = !on && chDone(n), locked = n > 1 && !ready;
         return (
@@ -41,7 +41,6 @@ export function Rail() {
           </button></li>
         );
       }); })()}</ol>
-      <div className="rail-f">정책 · 온통청년 · 정부24 · 서울시 · SH<br />집 · 카카오 로컬 · ODsay</div>
     </nav>
   );
 }
