@@ -193,13 +193,12 @@ function Page1() {
   );
   ctl.own = cards('own', S.own); ctl.sep = cards('sep', S.sep);
   return (
-    <div className="s1">
+    <div className="s1 tz1">
       <ChHead n={1} h1="어떤 집을 찾고 있나요?" lead="내 상황과 예산을 알려 주세요. 받을 지원과 나에게 맞는 집을 함께 찾아드릴게요."
         right={<button className="f1ex" onClick={demo1} data-act="예시로 채우기">예시로 채우기</button>} />
       {GROUPS1.map((group, i) => <section className="s1-group" aria-labelledby={`s1-${group.id}`} key={group.id}>
-        <div className="s1-group-head"><span className="s1-group-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-          <div><h2 id={`s1-${group.id}`}>{group.title}</h2><p>{group.desc}</p></div>
-          <span className="s1-group-count">{group.fields.filter(done1).length} / {group.fields.length}</span>
+        <div className="s1-group-head">
+          <h2 id={`s1-${group.id}`}>{group.title} <span className="s1-group-count">{group.fields.filter(done1).length} / {group.fields.length}</span></h2><p>{group.desc}</p>
         </div>
         <div className="f1card">{group.fields.map(k => { const f = F1K[k]; return (
           <div className={`f1 s1-field-${k}`} id={`f1-${k}`} role="group" aria-labelledby={`f1l-${k}`} key={k}>
