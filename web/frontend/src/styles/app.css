@@ -559,7 +559,8 @@ h1{font-size:32px}
 /* 공고문에 물어보기 · 보라 대신 브랜드 초록 · 검색창 + 자주 묻는 질문 목록 */
 .tz-ask{--ai:var(--pri);--ai-s:var(--pri-s);--ai-l:var(--line2)}
 .tz .tz-ask .ask-in{height:58px;padding:0 8px 0 20px;border:0;border-radius:16px;background:var(--sheet);box-shadow:var(--sh)}
-.tz .tz-ask .ask-in:focus-within{box-shadow:0 0 0 2px var(--pri)}
+.tz .tz-ask .ask-in:focus-within{box-shadow:var(--sh)}
+.tz .tz-ask .ask-in:has(input:focus){box-shadow:0 0 0 2px var(--pri)}
 .tz .tz-ask .ask-in input{font-size:16px}
 .tz .tz-ask .ask-in button{height:42px;border-radius:12px;background:var(--pri);padding:0 18px}
 .tz-faq{list-style:none;margin-top:8px}
@@ -811,7 +812,7 @@ h1{font-size:32px}
 .s2-ask  {margin-top: 64px;background: #EEEBF8;border-radius: 22px;padding: 28px 28px 24px;}
 .s2-ask .s2-h  {margin-bottom: 16px;}
 .ask-in  {display: flex;align-items: center;background: #fff;border: 1.5px solid var(--ai-l);border-radius: 14px;padding: 6px 6px 6px 18px;}
-.ask-in:focus-within  {border-color: var(--ai);}
+.ask-in:has(input:focus)  {border-color: var(--ai);}
 .ask-in input  {flex: 1;border: 0;outline: 0;font: inherit;font-size: 16px;background: none;}
 .ask-in button  {background: var(--ai);color: #fff;border-radius: 10px;padding: 0 20px;height: 42px;font-weight: 700;font-size: 15px;}
 .ask-sg  {display: flex;flex-wrap: wrap;gap: 8px;margin-top: 12px;}
@@ -849,7 +850,7 @@ h1{font-size:32px}
 .cmp3-ex button { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 14px; color: var(--ink) }
 .cmp3-ex button:hover { border-color: var(--pri); color: var(--pri) }
 .cmp3-in { display: flex; align-items: center; gap: 8px; margin-top: 12px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 5px 5px 5px 18px }
-.cmp3-in:focus-within { border-color: var(--pri) }
+.cmp3-in:has(input:focus) { border-color: var(--pri) }
 .cmp3-in input { flex: 1; border: 0; outline: 0; font: inherit; font-size: 15px; background: none }
 .cmp3-in button { background: var(--pri); color: #fff; border-radius: 999px; height: 36px; padding: 0 18px; font-size: 14px; font-weight: 700 }
 .cmp3-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-top: 12px }
@@ -882,6 +883,8 @@ html{background:var(--paper)}
 body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--paper);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.1px}
 .app{background:var(--paper);min-height:100vh;display:flex;flex-direction:column}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--pri);outline-offset:2px;border-radius:6px}
+/* 질문 입력창 · 포커스 표시는 바깥 상자에만 (안쪽 input 테두리는 겹치지 않게 빼요) */
+.ask-in input:focus-visible,.cmp3-in input:focus-visible{outline:none}
 
 /* ----- 위 막대 ----- */
 .top{display:block;position:sticky;top:0;z-index:30;height:60px;padding:0;gap:0;background:rgba(244,242,236,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
