@@ -899,19 +899,88 @@ export function copyText(txt, ids, msg){
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
 }
 
-export function copyFile(){
-  const J = judge(), G = todoAll(), dn = DONE(), chk = S.chk || {}, L = ['내 첫 집 파일 · 2026년 11월 21일 기준', ''];
-  L.push('01 내 조건'); W1.forEach(f => L.push(`- ${f.panel}: ${val1(f.k) || '아직 안 채움'}`)); L.push('');
-  L.push('02 받을 지원'); J.chosen.forEach(p => L.push(`- ${p.name}: ${p.amtN}만 원 (${p.how})`));
-  L.push(J.total ? `합계 최대 ${J.total.toLocaleString()}만 원 · 실제 지급은 신청 때 서류로 정해져요` : '- 지금 조건으로 받을 수 있는 지원이 없어요'); L.push('');
-  L.push('03 후보 집');
-  if (S.homesDone && S.homes.length >= 2) { let i = 0; scores().forEach(r => { const h = r.h;
-    L.push(`${r.unk ? '-' : (++i) + '위'} ${h.key} ${h.label} · 보증금 ${val(h, 'deposit').toLocaleString()} / 월세 ${val(h, 'rent')} · 관리비 ${feeKnown(h) ? feeOf(h) + '만 원' : '확인 필요'} · 한 달 확인된 비용 ${monthly(h)}만 원${r.unk ? ' (관리비 빼고)' : ''} · ${DEST.name}까지 ${h.commute}분`); }); }
-  else L.push('- 아직 비교하지 않았어요');
-  L.push('', '할 일');
-  todoFlat(G).forEach(x => { L.push(`${dn[x.id] ? '☑' : '☐'} ${plain(x.t)}${x.when ? ` (${x.when})` : ''}`); (x.sub || []).forEach(it => L.push(`   ${chk[it.id] ? '☑' : '☐'} ${it.h ? `[${it.h.key} ${it.h.label}] ` : ''}${it.t}`)); });
-  copyText(fill(L.join('\n')), ['file-copy', 'file-copy2'], '복사했어요');
+// 내보내는 날의 날짜 → '2026년 11월 21일' (파일 첫 줄) · '2026-11-21' (파일 이름)
+const today = () => { const d = new Date(); return {ko: `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`, iso: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`}; };
+
+// txt 꾸미기: 한글은 두 칸 너비로 세서 라벨 뒤 값의 시작 위치를 맞춰요 (고정폭 글꼴 기준)
+const tw = s => [...String(s)].reduce((n, c) => n + (/[ᄀ-ᇿ　-鿿가-힯＀-￯]/.test(c) ? 2 : 1), 0);
+const pad = (s, n) => s + ' '.repeat(Math.max(1, n - tw(s)));
+const RULE = '─'.repeat(56), RULE2 = '═'.repeat(56);
+const manW = v => `${Number(v).toLocaleString()}만 원`;
+const CIRCLE = ['①', '②', '③', '④', '⑤', '⑥'];
+
+// 복사하기와 txt 저장이 같이 쓰는 파일 내용
+function fileText(){
+  const J = judge(), P = S.prof || {}, L = [];
+  const head = (no, t, right) => { L.push('', RULE, right ? pad(`${no}  ${t}`, 40) + right : `${no}  ${t}`, RULE); };
+  const homesOk = S.homesDone && S.homes.length >= 2, R = homesOk ? scores() : [], top = R.find(r => !r.unk);
+
+  L.push(RULE2, '  내 첫 집 파일', `  첫집 내비 · ${today().ko} 기준`, RULE2);
+
+  // 한눈에 보기
+  L.push('', '■ 한눈에 보기');
+  L.push('  ' + pad('받을 수 있는 지원', 22) + (J.total ? `최대 ${manW(J.total)} (${J.chosen.length}개)` : '지금 조건으로는 없어요'));
+  L.push('  ' + pad('먼저 볼 집', 22) + (top ? `${top.h.key} ${top.h.label} · 한 달 ${manW(monthly(top.h))}` : homesOk ? '관리비를 알면 순위를 매겨요' : '아직 비교 전'));
+  L.push('  ' + pad('기준 장소', 22) + `${DEST.name}${P.time ? ` · 편도 ${P.time >= 999 ? '시간 상관없음' : fmtMin(P.time) + ' 이내'}` : ''}`);
+
+  // 01 내 조건
+  head('01', '내 조건');
+  GROUPS1.forEach((g, gi) => {
+    if (gi) L.push('');
+    L.push(`[${g.title}]`);
+    g.fields.forEach(k => L.push('  ' + pad(F1K[k].panel, 22) + (val1(k) || '아직 안 채움')));
+  });
+
+  // 02 받을 지원
+  head('02', '받을 지원', J.total ? `합계 최대 ${manW(J.total)}` : '');
+  if (J.chosen.length) {
+    J.chosen.forEach((p, i) => {
+      if (i) L.push('');
+      L.push(`${CIRCLE[i] || '·'} ${p.name}  ─  최대 ${manW(p.amtN)}`);
+      L.push('   ' + pad('받는 방식', 12) + p.how);
+      L.push('   ' + pad('신청', 12) + p.channel);
+      if (p.link) L.push('   ' + pad('사이트', 12) + `${p.site} ${p.link}`);
+      if (p.last) L.push('   ' + pad('올해 접수', 12) + p.last.replace(/^올해 접수\s*/, ''));
+    });
+    L.push('');
+    if (J.ex) L.push(`※ ${SR.josa(J.ex.name, '은는')} 국토부 청년월세와 같이 받을 수 없어서 합계에서 뺐어요.`);
+    L.push('※ 실제 지급 금액은 신청할 때 서류로 정해져요.');
+  } else L.push('지금 조건으로 받을 수 있는 지원이 없어요.');
+
+  // 03 후보 집
+  head('03', '후보 집', homesOk ? `${S.homes.length}곳 비교 · ${PRIO[S.prio].name}` : '');
+  if (homesOk) {
+    let n = 0;
+    R.forEach((r, i) => { const h = r.h, dep = val(h, 'deposit'), gap = (P.cash || 0) - dep;
+      if (i) L.push('');
+      L.push(`${r.unk ? '–  ' : `${++n}위 `} ${h.key} ${h.label}${r.unk ? '  (관리비 확인 필요)' : `  · 종합 ${r.total}점`}`);
+      if (h.addr) L.push('     ' + pad('주소', 20) + h.addr);
+      L.push('     ' + pad('보증금', 20) + manW(dep) + (P.cash != null ? (gap >= 0 ? `  (모아둔 돈으로 충분 · ${manW(gap)} 남음)` : `  (모아둔 돈보다 ${manW(-gap)} 부족)`) : ''));
+      L.push('     ' + pad('월세 + 관리비', 20) + `${manW(val(h, 'rent'))} + ${feeKnown(h) ? manW(feeOf(h)) : '확인 필요'}`);
+      L.push('     ' + pad('한 달 확인된 비용', 20) + manW(monthly(h)) + (r.unk ? ' (관리비 빼고)' : ''));
+      L.push('     ' + pad('이동 시간', 20) + `${DEST.name}까지 ${h.commute}분${h.route ? ` · ${h.route}` : ''}`);
+      if (h.station) L.push('     ' + pad('가까운 역', 20) + h.station);
+    });
+    L.push('', '※ 한 달 확인된 비용 = 월세 + 확인된 관리비예요. 관리비를 모르는 집은 순위에서 뺐어요.');
+  } else L.push('아직 후보 집을 비교하지 않았어요. 03 집 고르기에서 2곳 이상 넣어 보세요.');
+
+  L.push('', RULE2, '  첫집 내비 · 처음 독립하는 서울 청년을 위한 주거 도우미', '  지원 자격과 금액은 각 공고문 기준이에요. 신청 전에 꼭 확인해 주세요.', RULE2);
+  return fill(L.join('\n'));
 }
+
+export function copyFile(){ copyText(fileText(), ['file-copy'], '복사했어요'); }
+
+// 브라우저 안에서 txt 파일을 만들어 바로 내려받아요 (서버를 거치지 않아요)
+export function saveFile(){
+  const blob = new Blob(['﻿' + fileText().replace(/\n/g, '\r\n')], {type: 'text/plain;charset=utf-8'});   // BOM·CRLF: 윈도우 메모장에서도 한글·줄바꿈이 안 깨지게
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = `내-첫-집-파일-${today().iso}.txt`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  flash(['file-save', 'file-save2'], '저장했어요');
+}
+
+const flash = (ids, msg) => ids.forEach(id => { const b = document.getElementById(id); if (b) { const o = b.textContent; b.textContent = msg; setTimeout(() => { b.textContent = o; }, 1500); } });
 
 export const LP_RM = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 

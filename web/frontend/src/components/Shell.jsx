@@ -1,6 +1,6 @@
 /* 앱 틀: 위 막대 · 왼쪽 목차(01~03) · 오른쪽 패널 · 아래 막대 */
 import { S, set, go, showToast } from '../store.js';
-import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, copyFile, all1 } from '../lib/core.js';
+import { CH, chDone, chSum, val1, POL, PCOL, judge, topRank, hs, monthly, copyFile, saveFile, all1 } from '../lib/core.js';
 import { IcCk, IcLock } from './ui.jsx';
 
 export function Header() {
@@ -84,7 +84,8 @@ export function FileSummary() {
         <div className="kv"><span>받을 지원</span><b>{J.total ? `최대 ${J.total.toLocaleString()}만 원` : '없음'}</b></div>
         <div className="kv"><span>먼저 볼 집</span>{t ? <b>{t.key} {t.label}</b> : H.length >= 2 ? <b>관리비 확인 필요</b> : <b className="nil">아직 없음</b>}</div>
         <div className="kv"><span>한 달 확인된 비용</span>{t ? <b>{monthly(t)}만 원</b> : <b className="nil">—</b>}</div>
-        <button className="btn-line full" id="file-copy" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button>
+        <button className="btn-line full" id="file-save" onClick={saveFile} data-act="파일 저장">파일로 저장하기 (.txt)</button>
+        <button className="btn-line full" id="file-copy" onClick={copyFile} style={{ marginTop: 8 }} data-act="파일 복사">전체 복사하기</button>
       </div>
       <ProfileMini />
     </>

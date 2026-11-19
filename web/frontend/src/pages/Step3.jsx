@@ -5,7 +5,7 @@ import { S, set, go, focusId } from '../store.js';
 import {
   HOMES, FAC, LIFE, SCENES, PRIO, MAX_HOMES, ADDR_RESULTS, ADDR_Q, DEST, val, fareMonth, feeOf, feeKnown, monthly, cheapest, r1,
   scores, reasons, weakness, nextSlot, addHome, homeVis, kakaoOn, liveSearch, livePick, addLive, hs, houseSupport, me, walkPre, shortRoute, lifeScore,
-  jump, openEdit, saveEdit, nm3, ja3, askCmp, API_OK, copyFile,
+  jump, openEdit, saveEdit, nm3, ja3, askCmp, API_OK, saveFile,
 } from '../lib/core.js';
 import { Html, Icon, Tile, BBest, BUnk, ChHead, Modal, IcCk, IcX, IcDash, IcPen, IcDown } from '../components/ui.jsx';
 import { MapBox, NeighMap, MiniMap } from '../components/Maps.jsx';
@@ -349,7 +349,7 @@ function CmpPage({ H, rank }) {
         <div className="cmp tz-tbl"><CmpSummary H={H} /><CmpTable H={H} /></div>
       </section>
       <section className="tz-sec" aria-label="더 보기"><CmpChecks /></section>
-      <div className="cta s3-advance"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" id="file-copy2" onClick={copyFile} data-act="파일 복사">파일 전체 복사하기</button></div>
+      <div className="cta s3-advance"><button className="btn ghost" onClick={() => go(2)}>이전</button><button className="btn pri wide" id="file-save2" onClick={saveFile} data-act="파일 저장">내 첫 집 파일 저장하기 (.txt)</button></div>
       <CmpSec rank={rank} />
       <p className="cmp-src">주변 시설 거리 · 카카오 로컬 · 오가는 시간과 요금 · ODsay{ex ? ' · 예시 집의 보증금·월세·관리비는 화면 설명용 값이에요' : ''}</p>
       {S.editKey ? <CmpEdit /> : null}
