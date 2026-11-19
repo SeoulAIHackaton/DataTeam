@@ -47,7 +47,7 @@ export function Rail() {
 
 /* ----- 오른쪽 패널 ----- */
 export function ProfileMini() {
-  const R = [['age', '나이'], ['income', '월 소득'], ['cash', '모아둔 돈'], ['place', '자주 가는 곳'], ['own', '내 집']];
+  const R = [['age', '나이'], ['income', '월 소득'], ['cash', '보증금'], ['place', '자주 가는 곳'], ['own', '내 집']];
   return (
     <div className="panel">
       <div className="panel-t">내 조건<button className="link" onClick={() => go(1)} data-act="1단계로">고치기</button></div>
