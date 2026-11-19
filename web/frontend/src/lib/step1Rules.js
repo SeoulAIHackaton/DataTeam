@@ -18,7 +18,7 @@
  */
 const Step1Rules = (function () {
   'use strict';
-  const TODAY = '2026-11-21';   // 본선 시연일
+  const TODAY = (d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)(new Date());   // 오늘 날짜 (YYYY-MM-DD, 사용자 기기 기준)
 
   /* ---------------- 장소 ---------------- */
   const KNOWN_PLACES = {

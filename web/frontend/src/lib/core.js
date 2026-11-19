@@ -177,7 +177,7 @@ export const JB = {ok:['ok','해당돼요'], no:['no','안 돼요'], cond:['cond
 
 export const ddayOf = e => e ? Math.round((new Date(2026,e[0],e[1]) - TODAY)/864e5) : null;
 
-export const TODAY1 = SR.TODAY;              // 날짜 판단 기준 = 본선 시연일 2026-11-21
+export const TODAY1 = SR.TODAY;              // 날짜 판단 기준 = 오늘 (YYYY-MM-DD)
 
 export const GROUPS1 = [
   { id:'basic', title:'기본 정보', desc:'지원 대상에 해당하는지 확인해요.', fields:['age','job','own','sep'] },
@@ -405,7 +405,7 @@ export const won = SR.won, money = SR.money, KNOWN_PLACES = SR.KNOWN_PLACES, pla
 
 export function setDest(name, q){ DEST.name = name; DEST.addr = q; }
 
-export const TODAY = new Date(2026,10,21);
+export const TODAY = (d => new Date(d.getFullYear(), d.getMonth(), d.getDate()))(new Date());   // 오늘 0시 · D-day 계산 기준
 
 export const PCOL = {
   molit: {fg: '#1F5E4B', bg: '#E6EFEA', bd: '#B9D2C6', short: '국토부 월세'},
@@ -899,8 +899,8 @@ export function copyText(txt, ids, msg){
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
 }
 
-// 내보내는 날의 날짜 → '2026년 11월 21일' (파일 첫 줄) · '2026-11-21' (파일 이름)
-const today = () => { const d = new Date(); return {ko: `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`, iso: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`}; };
+// 오늘 날짜 → '2026년 11월 21일' (파일 첫 줄) · '2026-11-21' (파일 이름)
+const today = () => { const d = TODAY; return {ko: `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`, iso: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`}; };
 
 // txt 꾸미기: 한글은 두 칸 너비로 세서 라벨 뒤 값의 시작 위치를 맞춰요 (고정폭 글꼴 기준)
 const tw = s => [...String(s)].reduce((n, c) => n + (/[ᄀ-ᇿ　-鿿가-힯＀-￯]/.test(c) ? 2 : 1), 0);
