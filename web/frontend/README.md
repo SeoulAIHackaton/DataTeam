@@ -1,6 +1,6 @@
 # my-house · 첫집 내비 (내 첫 집 파일)
 
-처음 독립하는 청년이 **01 내 조건 → 02 받을 지원 → 03 집 고르기 → 04 할 일** 순서로 한 파일을 채워 가는 웹 서비스예요.
+처음 독립하는 청년이 **01 내 조건 → 02 받을 지원 → 03 집 고르기** 순서로 한 파일을 채워 가는 웹 서비스예요.
 `~/Downloads/index/firsthome.html` 한 파일을 React(Vite) 프로젝트로 옮긴 거예요. 계산·판정·문구는 그대로이고, 화면만 컴포넌트로 나눴어요.
 
 - PC 화면 전용이에요 (가로 1240px 이상).
@@ -71,7 +71,7 @@ my-house/
 ├─ public/favicon.svg
 └─ src/
    ├─ main.jsx             시작점 · ?easy=1 처리 · CSS 불러오기
-   ├─ App.jsx              화면 고르기: 처음 화면 → 로딩 → 01~04 틀(위 막대 · 목차 · 본문 · 도구 칸)
+   ├─ App.jsx              화면 고르기: 처음 화면 → 로딩 → 01~03 틀(위 막대 · 목차 · 본문 · 도구 칸)
    ├─ store.js             앱 상태 S 하나 + set() / go() / finishLoading() / focusId()
    ├─ lib/
    │  ├─ core.js           계산 · 판정 · 데이터 · 지도 · AI 호출 (원본 함수 그대로)
@@ -79,7 +79,6 @@ my-house/
    ├─ components/
    │  ├─ Shell.jsx         위 막대 · 목차 · 아래 막대 · 도구 칸 부품
    │  ├─ Maps.jsx          카카오 지도 칸 · 그림 지도 · 작은 지도
-   │  ├─ Calendar.jsx      04 신청 일정 달력
    │  ├─ Ask.jsx           AI 답 카드
    │  └─ ui.jsx            아이콘 · 배지 · 장 머리 · Html(문구 안 HTML)
    ├─ pages/
@@ -87,8 +86,7 @@ my-house/
    │  ├─ Loading.jsx       01 → 02 3초 로딩 화면
    │  ├─ Step1.jsx         01 내 조건
    │  ├─ Step2.jsx         02 받을 지원
-   │  ├─ Step3.jsx         03 집 고르기 · 비교 · 동네 자세히
-   │  └─ Step4.jsx         04 할 일
+   │  └─ Step3.jsx         03 집 고르기 · 비교 · 동네 자세히 · 내 첫 집 파일 저장
    └─ styles/
       ├─ app.css           원본 CSS (폰 그림 부분만 뺐어요)
       ├─ web-mockup.css    처음 화면의 브라우저 창 그림
