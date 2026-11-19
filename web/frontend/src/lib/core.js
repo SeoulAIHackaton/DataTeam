@@ -30,12 +30,6 @@ export const POL = [
    quote:'보증금 <mark>8천만원 이하·월세 60만원 이하</mark>. 월세 60 초과여도 (보증금×5%/12 + 월세) ≤ 93만원이면 가능', src:'서울시 청년몽땅정보통'}
 ];
 
-export const WHATIF = {
-  age:{label:'내년에 35살이 되면', total:280, plus:['서울시 청년월세 240만 원 (만 39세까지)'], minus:['국토부 청년월세 480만 원 (만 34세까지)','청년 전월세 대출보증 (만 34세까지)']},
-  income:{label:'국토부 소득 조건이 안 맞으면', total:280, plus:['서울시 청년월세 240만 원'], minus:['국토부 청년월세 480만 원']},
-  jeonse:{label:'전세로 계약하면', total:null, plus:['서울시 청년 임차보증금 이자지원 (연 2.0% 이자 지원)','전세보증금반환보증 보증료 지원'], minus:['국토부·서울시 청년월세 (월세 거주 조건)']}
-};
-
 export const MED1 = 256.4;
 
 export function me(o){ const P=S.prof||{}, sp=S.sep||P.sep, jobs=jobs1(); return {age:P.age||27, inc:P.income!=null?P.income:230, own:(S.own||P.own)==='있어요', sep:sp==='네'||sp==='모름', sepQ:sp==='모름', cash:P.cash!=null?P.cash:2000, job:jobs.includes('대학생')?'대학생':jobs[0]||'직장인', ...(o||{})}; }   // sep '모름'은 '네'와 같이 다뤄요 → 국토부 독립거주 '확인 필요'
@@ -154,8 +148,6 @@ export function apiAsk(q){
     .then(r=>r.ok?r.json():null).catch(()=>null);
 }
 
-export const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
 export function ask3(q, k){   // q: 질문 문장 · k: 예시 질문 키 (서버가 없을 때 미리 넣어 둔 답)
   q=(q||'').trim(); if(!q) return;
   if(!location.protocol.startsWith('http')){ S.q3res=null; S.q3k=k||null; S.q3t=k?null:q; S.q3=k||matchQ(q); render(); return; }
@@ -172,8 +164,6 @@ export const MORE = [
   {n:'2026 청년과 어르신 주거공유', o:'서울특별시 · 12/31까지', j:'no', why:'✗ 대학(원)생 대상 · {NM}은 직장인', qt:'대학(원)생에게 주변 임대료보다 저렴하게 주거공간을 제공'},
   {n:'2026 청년 매입임대주택 사업', o:'서울특별시', j:'no', why:'✗ 접수 마감 (2026-06-30) · 내년 공고 확인', qt:'무주택 저소득 청년층에게 저렴하게 공급'}
 ];
-
-export const JB = {ok:['ok','해당돼요'], no:['no','안 돼요'], cond:['cond','조건부'], q:['q','조건 확인 필요']};
 
 export const ddayOf = e => e ? Math.round((new Date(2026,e[0],e[1]) - TODAY)/864e5) : null;
 
@@ -283,11 +273,6 @@ export function year1(v, fid){ const y = +v || null, P = {...S.prof};
 
 export function bd1(v){ const y = S.prof.birthYear; S.prof = {...S.prof, bday:v, age: NOW_Y - y - (v==='before' ? 1 : 0)}; render(); focusId('f1-bd-' + v); }
 
-export function choose1(k, j){ const v = F1K[k].opts[j][1];
-  if(k==='own') S.own = v; else if(k==='sep') S.sep = v; else S.prof = {...S.prof, [k]: v};
-  if(k==='job') S.prof.jobs=[v];
-  render(); focusId(`f1-${k}-${j}`); }
-
 export const srvPlace = () => location.protocol.startsWith('http') && !window._psfail;
 
 export const liveOn1 = () => kakaoOn() || srvPlace();
@@ -391,9 +376,6 @@ export const fmtMin = m => m >= 999 ? '상관없어요' : m >= 60 ? `${Math.floo
 
 export const tPct1 = v => (v - T_RANGE1[0]) / (T_RANGE1[1] - T_RANGE1[0]) * 100;
 
-export function whenOpts1(){ const m = +TODAY1.slice(5, 7), nx = k => (m - 1 + k) % 12 + 1, yr = k => nx(k) < m ? `${NOW_Y + 1}년` : '';
-  return [[`${m}월`, '이번 달', '이번 달'], [`${nx(1)}월`, '다음 달' + (yr(1) ? ` · ${yr(1)}` : ''), '다음 달'], [`${nx(2)}월`, yr(2), `${nx(2)}월`], [`${nx(3)}월`, yr(3), `${nx(3)}월`], ['미정', '아직 몰라요', '아직 몰라요']]; }
-
 export function pick1(k, v, id){ if(k === 'own') S.own = v; else if(k === 'sep') S.sep = v; else S.prof = {...S.prof, [k]: v}; render(); focusId(id); }
 
 export const CARD1 = {
@@ -423,7 +405,6 @@ export const CAL_EVENTS = [
   {id:null,    name:'전입신고 (입주 후 14일 안)', s:[11,1], e:[11,14], kind:'me'}
 ];
 
-export function d0(m,d){ return new Date(2026,m,d); }
 
 export function toggleAlarm(id){ set({alarm:S.alarm.includes(id)?S.alarm.filter(x=>x!==id):[...S.alarm,id]}); }
 
@@ -678,20 +659,6 @@ export function houseSupport(h){
   return {molit, seoul, move, monthSup, total:(molit.ok?Math.min(r,20)*24:seoul.ok?Math.min(r,20)*12:0)+(move.ok?40:0)};
 }
 
-export const IC_CK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-
-export const IC_Q = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><path d="M12 17.2h.01"/></svg>';
-
-export const IC_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-
-export const IC_DASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12"/></svg>';
-
-export const IC_PEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
-
-export const IC_SWAP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-3.5-3.5"/><path d="M20 16H6l3.5 3.5"/></svg>';
-
-export const IC_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>';
-
 export const walkPre = h => h.route === '걸어서' ? '걸어서 ' : '';
 
 export const shortRoute = h => h.route === '걸어서' ? '걸어서' : h.route.split(' · ')[0];
@@ -714,24 +681,6 @@ export function saveEdit(k){
   const d = g('ed-dep'), r = g('ed-rent');
   S.over[k] = { ...(S.over[k] || {}), ...(d != null ? { deposit: d } : {}), ...(r != null ? { rent: r } : {}), fee: g('ed-fee') };   // 관리비를 비우면 '확인 필요'
   set({ editKey: null, cmpQ: [] });
-}
-
-export function cmpChecks(H){
-  const cash = me().cash, ask = [];
-  H.forEach(h => { if (!feeKnown(h)) ask.push({ id: 'fee' + h.key, h, t: '관리비는 얼마이고 어떤 항목이 들어가나요?' }); });
-  H.forEach(h => { if (feeKnown(h) && feeOf(h) > 0) ask.push({ id: 'inc' + h.key, h, t: `관리비 ${feeOf(h)}만 원에 인터넷·수도가 들어가나요?` }); });
-  H.forEach(h => { const s = houseSupport(h).seoul; if (!s.ok && !s.dup && /월세 60만 원 초과/.test(s.t)) ask.push({ id: 'rent' + h.key, h, t: '월세를 60만 원 이하로 맞출 수 있나요? 서울시 청년월세 기준이에요.' }); });
-  H.forEach(h => { if (val(h, 'deposit') > cash) ask.push({ id: 'dep' + h.key, h, t: `보증금을 ${cash.toLocaleString()}만 원 안으로 낮출 수 있나요?` }); });
-  ask.push({ id: 'use', t: '건물이 주거용인가요? · 후보 집 공통' });
-  return { ask, visit: [{ id: 'water', t: '수압과 곰팡이' }, { id: 'noise', t: '소음과 채광' }] };
-}
-
-export function copyChecks(){
-  const { ask, visit } = cmpChecks(hs()), line = it => `${S.chk && S.chk[it.id] ? '☑' : '☐'} ${it.h ? `[${it.h.key} ${it.h.label}] ` : ''}${it.t}`;
-  const txt = ['중개사에게 물어볼 것', ...ask.map(line), '', '집 보러 가서 볼 것', ...visit.map(line)].join('\n');
-  const done = () => { const b = document.getElementById('chk-copy'); if (b) { b.textContent = '복사했어요'; setTimeout(() => { b.textContent = '목록 복사하기'; }, 1500); } };
-  const fallback = () => { const t = document.createElement('textarea'); t.value = txt; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done(); };
-  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
 }
 
 export const nm3 = h => h.label.replace(' 원룸', '').replace(/동$/, '');
@@ -851,10 +800,6 @@ export function topRank(){      // 03에서 관리비까지 확인된 집 중 1�
   const r = scores().find(x => !x.unk); return r ? r.h : null;
 }
 
-export const DONE = () => S.done || (S.done = {});
-
-export const todoFlat = G => [...G.before, ...G.move, ...G.apply, ...G.next];
-
 export function chSum(n){
   if (n === 1) { const k = W1.filter(f => done1(f.k)).length; return k === W1.length ? `${W1.length}개 모두 채움` : `${k} / ${W1.length} 채움`; }
   if (n === 2) { const t = judge().total; return t ? `최대 ${t.toLocaleString()}만 원` : '받을 지원 없음'; }
@@ -869,29 +814,6 @@ export function chDone(n){
   if (n === 3) return S.homesDone && S.homes.length >= 2;
   return false;
 }
-
-export function todoAll(){
-  const J = judge(), M = moreJ(), G = {before: [], move: [], apply: [], next: []};
-  const dd = e => `${e[0] + 1}월 ${e[1]}일 마감 · D-${ddayOf(e)}`;
-  if (M[0].j === 'ok') G.before.push({id: 'safe', t: '안심계약 도움서비스 신청하기', when: dd(M[0].end), d: '계약 상담과 집 보기 동행을 무료로 받아요. 후보 집을 보러 가기 전에 신청하면 좋아요.', why: M[0].why, qt: M[0].qt, open: 'ai0'});
-  if (S.homesDone && S.homes.length >= 2) {
-    const {ask, visit} = cmpChecks(hs());
-    G.before.push({id: 'ask', t: '중개사에게 물어볼 것', d: `후보 집 ${S.homes.length}곳 비교에서 나온 질문이에요. 03 집 고르기의 체크와 같이 움직여요.`, sub: ask, go: 3});
-    G.before.push({id: 'visit', t: '집 보러 가서 직접 볼 것', d: '지도 데이터로는 알 수 없는 부분이에요.', sub: visit});
-  } else G.before.push({id: 'homes', t: '후보 집 2곳 이상 넣기', d: '집을 넣으면 중개사에게 물어볼 것과 직접 볼 것이 여기에 정리돼요.', go: 3, goT: '집 넣으러 가기'});
-  if (J.m.sep) G.move.push({id: 'sep', t: '이사하면서 세대 분리하기', d: `국토부 청년월세는 부모님과 따로 사는 청년만 받아요. 전입신고할 때 세대주로 신고하면 돼요.${J.m.sepQ ? ' 지금 부모님과 같은 주소인지 먼저 확인해 보세요.' : ''}`});
-  const mv = whenDate1();   // 01은 연도·월까지만 받아요 → 특정 날짜를 만들지 않아요
-  G.move.push({id: 'jeonip', t: '전입신고 하기', when: mv ? `${mv.month}월 입주 후 14일 안` : '입주 후 14일 안', d: `${mv ? `${mv.year}년 ${mv.month}월에 입주할 예정이에요. ` : ''}입주한 날부터 14일 안에 주민센터나 정부24에서 해요. 서울시 지원은 전입신고를 마친 사람만 신청할 수 있어요.`});
-  if (J.chosen.some(p => p.id === 'move')) G.move.push({id: 'moveR', t: '중개보수·이사비 영수증 챙기기', d: '서울시 중개보수·이사비 지원은 실제로 낸 금액만큼, 최대 40만 원까지 받아요. 내년 신청 때 영수증이 필요해요.'});
-  if (M[1].j === 'ok') G.apply.push({id: 'house', t: '청년안심주택 공급(매입) 신청 검토하기', when: dd(M[1].end), d: '시세보다 저렴한 임대주택이에요. 소득·자산은 신청 서류로 확인해요.', why: M[1].why, qt: M[1].qt, open: 'ai1'});
-  if (M[2].j === 'ok') G.apply.push({id: 'loan', t: '청년 전월세 대출보증 알아보기', when: '언제든 신청', d: '보증금이 모자라면 은행 대출에 보증을 받아요. 계약 전에 한도를 확인해 두면 좋아요.', why: M[2].why, qt: M[2].qt});
-  J.chosen.forEach(p => G.next.push({id: 'al-' + p.id, t: `${p.name} 공고 기다리기`, when: '2027년 공고', d: `${p.how} · ${p.last}`, alarm: p.id}));
-  return G;
-}
-
-export function tdDone(id, v){ S.done = {...DONE(), [id]: v}; render(); focusId('tdc-' + id); }
-
-export function tdOpen(x){ return S.tdOpen === x.id || (!!x.open && S.open === x.open); }
 
 export function copyText(txt, ids, msg){
   const done = () => ids.forEach(id => { const b = document.getElementById(id); if (b) { const o = b.textContent; b.textContent = msg; setTimeout(() => { b.textContent = o; }, 1500); } });

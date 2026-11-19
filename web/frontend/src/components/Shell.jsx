@@ -68,14 +68,6 @@ export function AlarmPanel() {
   );
 }
 
-export function TipsPanel() {
-  return (
-    <div className="panel soft"><div className="panel-t">이렇게 넣어 보세요</div>
-      <p className="s" style={{ lineHeight: 1.9 }}>부동산 앱에서 본 집 주소를 건물 번호까지 검색해요.<br />보증금과 월세는 매물에 적힌 금액을 넣어요.<br />관리비를 모르면 비워 두세요. 0원으로 치지 않아요.<br />2곳 이상이면 비교할 수 있어요 (최대 3곳).</p>
-    </div>
-  );
-}
-
 export function FileSummary() {
   const J = judge(), t = topRank(), H = S.homesDone ? hs() : [];
   return (

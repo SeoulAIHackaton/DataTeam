@@ -4,7 +4,6 @@
 .s1 .ch-lead{max-width:540px;line-height:1.75}
 .s1-group + .s1-group{margin-top:32px}
 .s1-group-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.s1-group-no{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border:1px solid var(--line2);border-radius:10px;color:var(--pri);font-size:12px;font-weight:800;background:var(--sheet)}
 .s1-group-head h2{font-size:18px;font-weight:800;letter-spacing:-.4px}
 .s1-group-head p{font-size:13px;color:var(--sub);margin-top:3px}
 .s1-group-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--sub);font-variant-numeric:tabular-nums}

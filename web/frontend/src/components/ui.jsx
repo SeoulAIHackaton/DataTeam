@@ -17,7 +17,6 @@ export const IcQ = () => <svg {...P} strokeWidth="2.2" strokeLinejoin="round"><c
 export const IcX = () => <svg {...P} strokeWidth="2.6"><path d="M6 6l12 12M18 6L6 18" /></svg>;
 export const IcDash = () => <svg {...P} strokeWidth="2.6"><path d="M6 12h12" /></svg>;
 export const IcPen = () => <svg {...P} strokeWidth="2" strokeLinejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" /></svg>;
-export const IcSwap = () => <svg {...P} strokeWidth="2" strokeLinejoin="round"><path d="M4 8h14l-3.5-3.5" /><path d="M20 16H6l3.5 3.5" /></svg>;
 export const IcDown = () => <svg {...P} strokeWidth="2.4" strokeLinejoin="round"><path d="M12 5v14" /><path d="M6 13l6 6 6-6" /></svg>;
 export const IcLock = () => <svg {...P} strokeWidth="2" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>;
 
