@@ -259,7 +259,7 @@ export function val1(k){
     case 'job': return jobs1().map(v => lbl1('job',v)).join(' · ');
     case 'when': { const date=whenDate1(); return date ? `${date.year}년 ${date.month}월` : P.when==='아직 몰라요' ? '아직 미정' : P.when; }
     case 'own': return S.own;
-    case 'sep': return S.sep;
+    case 'sep': return {'네':'같아요', '아니요':'달라요', '모름':'잘 모르겠어요'}[S.sep] || S.sep;   // '부모님과 주소 · 같아요'처럼 라벨과 이어 읽혀요
     default: return lbl1(k, P[k]);
   }
 }
