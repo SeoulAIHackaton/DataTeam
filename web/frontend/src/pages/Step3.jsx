@@ -365,7 +365,7 @@ function Easy({ H, top }) {
     <>
       <div className="eyebrow">3단계</div><h1>관리비를 알면<br />어느 집이 맞을지 알려드려요</h1>
       <div className="lead">넣은 집 모두 관리비를 몰라서 한 달에 드는 돈을 비교할 수 없어요. 집주인이나 중개사에게 관리비를 물어보세요.</div>
-      <div className="cta"><button className="btn pri wide" onClick={() => set({ easy: false })} data-act="일반 화면으로 자세히">자세히 보기</button></div>
+      <div className="cta ez-save"><button className="btn ghost" onClick={() => set({ easy: false })} data-act="일반 화면으로 자세히">자세히 보기</button><button className="btn pri wide" id="file-save2" onClick={saveFile} data-act="파일 저장">내 첫 집 파일 저장하기</button></div>
     </>
   );
   return (
@@ -379,7 +379,7 @@ function Easy({ H, top }) {
         {wk ? <div className="erow"><span className="ico lg warn"><Icon n="cart" /></span><div><div className="t">조금 먼 곳도 있어요</div><div className="d">{wk}</div></div></div> : null}
         {H.filter(h => !feeKnown(h)).map(h => <div className="erow" key={h.key}><span className="ico lg warn"><Icon n="receipt" /></span><div><div className="t">{h.key} 집은 관리비를 몰라서 빼고 골랐어요</div><div className="d">관리비를 알면 넣어 주세요. 다시 비교해 드려요.</div></div></div>)}
       </div>
-      <div className="cta"><button className="btn pri wide" onClick={() => set({ easy: false })} data-act="일반 화면으로 자세히">자세히 비교하기</button></div>
+      <div className="cta ez-save"><button className="btn ghost" onClick={() => set({ easy: false })} data-act="일반 화면으로 자세히">자세히 비교하기</button><button className="btn pri wide" id="file-save2" onClick={saveFile} data-act="파일 저장">내 첫 집 파일 저장하기</button></div>
     </>
   );
 }

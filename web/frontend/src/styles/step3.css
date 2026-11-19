@@ -75,3 +75,9 @@
   .s3-compare .tz-links .tr-a{width:auto;justify-content:flex-start;margin-left:44px}
   .responsive-shell .s3-candidate-actions .btn.wide,.s3-advance .btn.wide{flex:1;min-width:0}
 }
+
+/* 쉬운 화면 3단계 · 좁은 화면에서는 [저장하기]를 위로, 두 버튼을 세로로 쌓아요 (큰 글자라 한 줄에 안 들어가요) */
+@media (max-width:600px){
+  .easy .cta.ez-save{flex-direction:column-reverse}
+  .easy .cta.ez-save .btn{width:100%;flex:none}
+}
